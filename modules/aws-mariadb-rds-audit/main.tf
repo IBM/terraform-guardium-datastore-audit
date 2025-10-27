@@ -5,11 +5,11 @@ locals {
   log_group = format("/aws/rds/instance/%s/audit", var.mariadb_rds_cluster_identifier)
 }
 
-module "aws_configuration" {
+module "common_aws-configuration" {
   source = "IBM/common/guardium//modules/aws-configuration"
 }
 
-module "rds-mariadb-parameter-group" {
+module "common_rds-mariadb-parameter-group" {
   source = "IBM/common/guardium//modules/rds-mariadb-parameter-group"
 
   mariadb_rds_cluster_identifier = var.mariadb_rds_cluster_identifier
@@ -22,7 +22,7 @@ module "rds-mariadb-parameter-group" {
   tags = var.tags
 }
 
-module "rds-mariadb-cloudwatch-registration" {
+module "common_rds-postgres-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
   source = "IBM/common/guardium//modules/rds-mariadb-cloudwatch-registration"
 

@@ -2,7 +2,7 @@ provider "aws" {
   region = var.aws_region
 }
 
-module "aws_mariadb_rds_audit" {
+module "datastore-audit_aws-mariadb-rds-audit" {
   source = "IBM/datastore-audit/guardium//modules/aws-mariadb-rds-audit"
 
   # AWS Configuration

@@ -24,7 +24,7 @@ This approach provides comprehensive coverage of database activity, ensuring tha
 ## Usage
 
 ```hcl
-module "postgresql_session_audit" {
+module "datastore-audit_aws-postgresql-rds-session" {
   source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-session"
 
   # AWS configuration

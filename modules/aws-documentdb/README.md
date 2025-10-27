@@ -21,7 +21,7 @@ The module performs two key functions:
 ## Usage
 
 ```hcl
-module "documentdb_audit_config" {
+module "datastore-audit_aws-documentdb" {
   source = "IBM/datastore-audit/guardium//modules/aws-documentdb"
 
   # AWS DocumentDB details

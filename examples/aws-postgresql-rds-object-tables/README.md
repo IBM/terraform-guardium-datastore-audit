@@ -7,7 +7,7 @@ This example demonstrates how to configure table-specific grants for the Postgre
 To use this example, include the `tables` variable in your module configuration:
 
 ```hcl
-module "postgres_audit_config" {
+module "datastore-audit_aws-postgresql-rds-object" {
   source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-object"
   
   # Basic configuration

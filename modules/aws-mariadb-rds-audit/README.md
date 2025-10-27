@@ -16,7 +16,7 @@ Before using this module, you need to:
 |------|---------|
 | terraform | >= 1.0.0 |
 | aws | >= 4.0.0 |
-| guardium-data-protection | >= 0.0.4 |
+| guardium-data-protection | >= 1.0.0 |
 
 ### Option Group and Parameter Group Import Process
 

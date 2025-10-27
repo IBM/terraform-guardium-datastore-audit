@@ -5,7 +5,7 @@ data "aws_dynamodb_table" "tables" {
   name  = element(local.dynamodb_tables, count.index)
 }
 
-module "aws_configuration" {
+module "common_aws-configuration" {
   source = "IBM/common/guardium//modules/aws-configuration"
 }
 
@@ -230,7 +230,7 @@ locals {
   })
 }
 
-module "universal_connector" {
+module "gdp_connect-datasource-to-uc" {
   source = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
   count  = var.enable_universal_connector ? 1 : 0  # Skip creation when disabled
   udc_name = local.udc_name_safe

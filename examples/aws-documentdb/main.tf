@@ -1,4 +1,4 @@
-module "aws-documentdb" {
+module "datastore-audit_aws-documentdb" {
   source = "IBM/datastore-audit/guardium//modules/aws-documentdb"
 
   documentdb_cluster_identifier = var.documentdb_cluster_identifier

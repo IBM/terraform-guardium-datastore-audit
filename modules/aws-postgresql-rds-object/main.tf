@@ -5,7 +5,7 @@ locals {
   log_group = format("/aws/rds/instance/%s/postgresql", var.postgres_rds_cluster_identifier)
 }
 
-module "aws_configuration" {
+module "common_aws-configuration" {
   source = "IBM/common/guardium//modules/aws-configuration"
 }
 
@@ -13,7 +13,7 @@ locals {
   pg_audit_user = "rds_pgaudit"
 }
 
-module "rds-postgres-parameter-group" {
+module "common_rds-postgres-parameter-group" {
   source = "IBM/common/guardium//modules/rds-postgres-parameter-group"
   pg_audit_log = "none"
   pg_audit_role = "rds_pgaudit"
@@ -53,7 +53,7 @@ resource "postgresql_grant" "table_permissions" {
   depends_on = [postgresql_role.rds_pgaudit]
 }
 
-module "rds-postgres-sqs-registration" {
+module "common_rds-postgres-sqs-registration" {
   count  = var.log_export_type == "SQS" ? 1 : 0
   source = "IBM/common/guardium//modules/rds-postgres-sqs-registration"
 
@@ -70,7 +70,7 @@ module "rds-postgres-sqs-registration" {
   log_group = local.log_group
 }
 
-module "rds-postgres-cloudwatch-registration" {
+module "common_rds-postgres-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
   source = "IBM/common/guardium//modules/rds-postgres-cloudwatch-registration"
 
