@@ -6,11 +6,11 @@ locals {
 }
 
 module "aws_configuration" {
-  source = "../../common/aws-configuration"
+  source = "IBM/common/guardium//modules/aws-configuration"
 }
 
 module "rds-mariadb-parameter-group" {
-  source = "../../common/rds-mariadb-parameter-group"
+  source = "IBM/common/guardium//modules/rds-mariadb-parameter-group"
 
   mariadb_rds_cluster_identifier = var.mariadb_rds_cluster_identifier
   mariadb_major_version = var.mariadb_major_version
@@ -24,7 +24,7 @@ module "rds-mariadb-parameter-group" {
 
 module "rds-mariadb-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
-  source = "../../common/rds-mariadb-cloudwatch-registration"
+  source = "IBM/common/guardium//modules/rds-mariadb-cloudwatch-registration"
 
   aws_region = var.aws_region
   aws_account_id = local.aws_account_id

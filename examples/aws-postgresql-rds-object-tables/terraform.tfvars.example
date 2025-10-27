@@ -1,0 +1,111 @@
+# =====================================================================
+# AWS CONFIGURATION - CRITICAL
+# =====================================================================
+# REQUIRED: Your AWS region - MUST match where your RDS instance is deployed
+aws_region = "us-east-1"  # CHANGE THIS to your actual AWS region (e.g., "us-west-2")
+
+# The identifier of your RDS PostgreSQL instance (found in RDS console)
+postgres_rds_cluster_identifier = "guardium-postgres"
+
+# Whether to force a failover when applying parameter changes (requires Multi-AZ)
+force_failover = false
+
+# =====================================================================
+# DATABASE CONNECTION DETAILS - CRITICAL
+# =====================================================================
+# REQUIRED: The endpoint address of your RDS PostgreSQL instance WITHOUT the port
+# This is the "Endpoint" value from the RDS console, without the ":5432" part
+# Example: "mydb.abcdefg.us-west-2.rds.amazonaws.com"
+db_host = "guardium-postgres.abcdefg.us-east-1.rds.amazonaws.com"
+
+# The port your PostgreSQL database is listening on (usually 5432)
+db_port = 5432
+
+# REQUIRED: Master username for your PostgreSQL database
+db_username = "postgres_admin"
+
+# REQUIRED: Master password for your PostgreSQL database
+db_password = "YourSecurePassword123!"
+
+# The name of the database to connect to (default is "postgres")
+db_name = "postgres"
+
+# SSL mode for PostgreSQL connection (options: disable, prefer, require, verify-ca, verify-full)
+ssl_mode = "prefer"
+
+# =====================================================================
+# GUARDIUM CONFIGURATION - CRITICAL
+# =====================================================================
+# Name for the Universal Connector (used for AWS resource naming)
+udc_name = "postgres-audit-connector"
+
+# REQUIRED: Name of the AWS credential defined in Guardium
+# This must match a credential you've already created in Guardium
+udc_aws_credential = "aws-guardium-credential"
+
+# REQUIRED: Guardium server hostname/IP and connection details
+gdp_server = "guardium.example.com"
+gdp_port = "8443"
+gdp_username = "admin"                 # Replace with your Guardium username
+gdp_password = "password"              # Replace with your Guardium password
+
+# REQUIRED: OAuth client credentials for Guardium API access
+# These are obtained by running the "grdapi register_oauth_client" command
+gdp_client_id = "client4"              # Replace with your client ID
+gdp_client_secret = "client-secret"    # Replace with your client secret
+
+# REQUIRED: SSH access details for Guardium
+gdp_ssh_username = "root"              # Replace with your SSH username
+gdp_ssh_privatekeypath = "~/.ssh/id_rsa" # Full path to SSH private key file
+
+# Comma-separated list of Guardium Managed Units to deploy the profile to
+gdp_mu_host = "mu1.guardium.example.com,mu2.guardium.example.com"
+
+
+# =====================================================================
+# UNIVERSAL CONNECTOR CONFIGURATION
+# =====================================================================
+# Whether to enable the Universal Connector (set to false to disable)
+enable_universal_connector = true
+
+# Start position for log processing: "beginning" or "end"
+# - "beginning": Process all available logs (may cause high initial load)
+# - "end": Process only new logs going forward
+csv_start_position = "end"
+
+# Polling interval in seconds for checking new logs
+csv_interval = "15"
+
+# Event filter for Universal Connector (leave empty for no filtering)
+csv_event_filter = ""
+
+# Log export type: "SQS" or "Cloudwatch"
+# - "SQS": Use Amazon SQS for log delivery (more real-time)
+# - "Cloudwatch": Use CloudWatch Logs for log delivery (more reliable)
+log_export_type = "Cloudwatch"
+
+# =====================================================================
+# TABLE GRANTS CONFIGURATION - OBJECT-LEVEL AUDITING
+# =====================================================================
+# List of tables to monitor with specific grants
+# For each table, specify:
+# - schema: The schema name (e.g., "public")
+# - table: The table name (e.g., "users")
+# - grants: List of operations to audit (SELECT, INSERT, UPDATE, DELETE, etc.)
+tables = [
+  {
+    schema = "public"
+    table  = "users"
+    grants = ["SELECT", "INSERT", "UPDATE", "DELETE"]  # Audit all operations on users table
+  },
+  {
+    schema = "public"
+    table  = "orders"
+    grants = ["SELECT", "INSERT", "UPDATE"]  # Don't audit DELETE operations
+  },
+  {
+    schema = "accounting"
+    table  = "transactions"
+    grants = ["SELECT"]  # Only audit SELECT operations (read-only)
+  }
+]

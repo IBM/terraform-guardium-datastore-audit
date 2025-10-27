@@ -6,7 +6,7 @@ locals {
 }
 
 module "aws_configuration" {
-  source = "../../common/aws-configuration"
+  source = "IBM/common/guardium//modules/aws-configuration"
 }
 
 locals {
@@ -14,7 +14,7 @@ locals {
 }
 
 module "rds-postgres-parameter-group" {
-  source = "../../common/rds-postgres-parameter-group"
+  source = "IBM/common/guardium//modules/rds-postgres-parameter-group"
   pg_audit_log = "none"
   pg_audit_role = "rds_pgaudit"
   force_failover = var.force_failover
@@ -37,25 +37,25 @@ resource "postgresql_role" "rds_pgaudit" {
   name  = local.pg_audit_user
   login = false
 }
-  
+
 # Grant permissions on tables based on the tables variable
 # This resource creates grants for the pgaudit role on specified tables
 resource "postgresql_grant" "table_permissions" {
   for_each = { for idx, table in var.tables : "${table.schema}.${table.table}" => table }
-  
+
   database    = var.db_name
   role        = local.pg_audit_user
   schema      = each.value.schema
   object_type = "table"
   objects     = [each.value.table]
   privileges  = each.value.grants
-  
+
   depends_on = [postgresql_role.rds_pgaudit]
 }
 
 module "rds-postgres-sqs-registration" {
   count  = var.log_export_type == "SQS" ? 1 : 0
-  source = "../../common/rds-postgres-sqs-registration"
+  source = "IBM/common/guardium//modules/rds-postgres-sqs-registration"
 
   aws_account_id = local.aws_account_id
   gdp_client_id = var.gdp_client_id
@@ -72,7 +72,7 @@ module "rds-postgres-sqs-registration" {
 
 module "rds-postgres-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
-  source = "../../common/rds-postgres-cloudwatch-registration"
+  source = "IBM/common/guardium//modules/rds-postgres-cloudwatch-registration"
 
   aws_account_id = local.aws_account_id
   gdp_client_id = var.gdp_client_id

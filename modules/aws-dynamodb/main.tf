@@ -6,7 +6,7 @@ data "aws_dynamodb_table" "tables" {
 }
 
 module "aws_configuration" {
-  source = "../../common/aws-configuration"
+  source = "IBM/common/guardium//modules/aws-configuration"
 }
 
 locals {
@@ -14,13 +14,13 @@ locals {
   cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/cloudtrail/${var.name_prefix}"
   cloudtrail_name           = var.existing_cloudtrail_name != "" ? var.existing_cloudtrail_name : var.name_prefix
   cloudtrail_s3_bucket      = "${var.name_prefix}-cloudtrail"
-  
+
   # Determine if we're using existing resources
   use_existing_cloudtrail = var.existing_cloudtrail_name != ""
   use_existing_cloudwatch_log_group = var.existing_cloudwatch_log_group_name != ""
 
   ct_bucket = aws_s3_bucket.dynamodb_monitoring.bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring.arn}/AWSLogs/${module.aws_configuration.aws_account_id}/*"] : ["${aws_s3_bucket.dynamodb_monitoring.arn}/${aws_s3_bucket.dynamodb_monitoring.bucket_prefix}/AWSLogs/${module.aws_configuration.aws_account_id}/*"]
-  
+
   # Format CloudWatch Logs Group ARN for CloudTrail
   formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "${data.aws_cloudwatch_log_group.existing[0].arn}:*" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
   dynamodb_monitoring_role = replace("${var.name_prefix}_role", "-", "_")
@@ -153,7 +153,7 @@ resource "aws_iam_policy" "cloudtrail_cloudwatch_logs" {
   name   = replace("${local.cloudtrail_name}_cloudtrail_cloudwatch", "-", "_")
   policy = data.aws_iam_policy_document.cloudtrail_cloudwatch_logs.json
   tags   = var.tags
-  
+
   # Add lifecycle configuration to ensure proper destruction
   lifecycle {
     create_before_destroy = true
@@ -174,7 +174,7 @@ resource "aws_iam_policy_attachment" "main" {
 # CloudTrail
 resource "aws_cloudtrail" "dynamodb_monitoring" {
   count = local.use_existing_cloudtrail ? 0 : 1
-  
+
   depends_on = [
     aws_s3_bucket_policy.dynamodb_monitoring,
     aws_iam_policy_attachment.main
@@ -231,7 +231,7 @@ locals {
 }
 
 module "universal_connector" {
-  source = "../../universal-connector/install-gdp-connector"
+  source = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
   count  = var.enable_universal_connector ? 1 : 0  # Skip creation when disabled
   udc_name = local.udc_name_safe
   udc_csv_parsed = local.udc_csv
