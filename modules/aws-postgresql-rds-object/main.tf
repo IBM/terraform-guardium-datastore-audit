@@ -1,7 +1,7 @@
 locals {
   udc_name = format("%s%s-%s", var.aws_region, var.postgres_rds_cluster_identifier, local.aws_account_id)
   aws_region     = var.aws_region
-  aws_account_id = module.aws_configuration.aws_account_id
+  aws_account_id = module.common_aws-configuration.aws_account_id
   log_group = format("/aws/rds/instance/%s/postgresql", var.postgres_rds_cluster_identifier)
 }
 

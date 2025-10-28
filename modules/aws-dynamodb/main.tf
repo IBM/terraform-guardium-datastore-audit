@@ -19,7 +19,7 @@ locals {
   use_existing_cloudtrail = var.existing_cloudtrail_name != ""
   use_existing_cloudwatch_log_group = var.existing_cloudwatch_log_group_name != ""
 
-  ct_bucket = aws_s3_bucket.dynamodb_monitoring.bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring.arn}/AWSLogs/${module.aws_configuration.aws_account_id}/*"] : ["${aws_s3_bucket.dynamodb_monitoring.arn}/${aws_s3_bucket.dynamodb_monitoring.bucket_prefix}/AWSLogs/${module.aws_configuration.aws_account_id}/*"]
+  ct_bucket = aws_s3_bucket.dynamodb_monitoring.bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring.arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] : ["${aws_s3_bucket.dynamodb_monitoring.arn}/${aws_s3_bucket.dynamodb_monitoring.bucket_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
 
   # Format CloudWatch Logs Group ARN for CloudTrail
   formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "${data.aws_cloudwatch_log_group.existing[0].arn}:*" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
@@ -72,7 +72,7 @@ data "aws_iam_policy_document" "dynamodb_monitoring" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = ["arn:${var.aws_partition}:cloudtrail:${var.aws_region}:${module.aws_configuration.aws_account_id}:trail/${local.cloudtrail_name}"]
+      values   = ["arn:${var.aws_partition}:cloudtrail:${var.aws_region}:${module.common_aws-configuration.aws_account_id}:trail/${local.cloudtrail_name}"]
     }
   }
 
@@ -96,7 +96,7 @@ data "aws_iam_policy_document" "dynamodb_monitoring" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = ["arn:${var.aws_partition}:cloudtrail:${var.aws_region}:${module.aws_configuration.aws_account_id}:trail/${local.cloudtrail_name}"]
+      values   = ["arn:${var.aws_partition}:cloudtrail:${var.aws_region}:${module.common_aws-configuration.aws_account_id}:trail/${local.cloudtrail_name}"]
     }
   }
 }
@@ -212,7 +212,7 @@ resource "aws_cloudtrail" "dynamodb_monitoring" {
 
 locals {
   # Create a sanitized version of the UDC name for file paths
-  udc_name = format("%s-%s-%s", var.aws_region, local.cloudwatch_log_group_name, module.aws_configuration.aws_account_id)
+  udc_name = format("%s-%s-%s", var.aws_region, local.cloudwatch_log_group_name, module.common_aws-configuration.aws_account_id)
   udc_name_safe = replace(local.udc_name, "/", "-")
 
   # Generate the CSV content from the template
@@ -221,7 +221,7 @@ locals {
     credential_name = var.udc_aws_credential
     aws_region      = var.aws_region
     aws_log_group   = local.cloudwatch_log_group_name
-    aws_account_id  = module.aws_configuration.aws_account_id
+    aws_account_id  = module.common_aws-configuration.aws_account_id
     start_position  = var.csv_start_position
     interval        = var.csv_interval
     event_filter    = var.csv_event_filter
