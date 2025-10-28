@@ -152,21 +152,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
-#----------------------------------------
-# CloudTrail S3 Bucket Configuration
-#----------------------------------------
-variable "create_cloudtrail_s3_bucket" {
-  description = "Whether to create a new S3 bucket for CloudTrail logs"
-  type        = bool
-  default     = true
-}
-
-#----------------------------------------
-# CloudWatch Log Group Configuration
-#----------------------------------------
-variable "aws_log_group" {
-  description = "Name of the CloudWatch log group where CloudTrail logs will be stored"
-  type        = string
-  default     = "dynamodb-logs"
-}

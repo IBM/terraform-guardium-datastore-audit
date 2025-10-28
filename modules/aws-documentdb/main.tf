@@ -94,5 +94,5 @@ module "gdp_connect-datasource-to-uc" {
 }
 
 output "profile_csv" {
-  value = var.enable_universal_connector ? module.gdp_connect-datasource-to-uc[0].profile_csv : "Universal connector disabled"
+  value = var.enable_universal_connector ? module.universal_connector[0].profile_csv : "Universal connector disabled"
 }

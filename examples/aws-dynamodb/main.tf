@@ -8,8 +8,8 @@
 #----------------------------------------
 # DynamoDB Universal Connector Configuration
 #----------------------------------------
-module "dynamodb_uc" {
-  source = "../../modules/aws-dynamodb"
+module "datastore-audit_aws-dynamodb" {
+  source = "IBM/datastore-audit/guardium//modules/aws-dynamodb"
 
   # AWS Configuration
   aws_region     = var.aws_region

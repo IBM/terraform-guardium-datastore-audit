@@ -2,40 +2,47 @@ provider "aws" {
   region = "us-east-1"
 }
 
-module "postgresql_rds_object" {
-  source = "../../modules/aws-postgresql-rds-object"
+module "datastore-audit_aws-postgresql-rds-object" {
+  source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-object"
 
   # Basic configuration
-  aws_region                     = var.aws_region
-  postgres_rds_cluster_identifier = var.postgres_rds_cluster_identifier
-  force_failover                 = var.force_failover
-  db_host                        = var.db_host
-  db_port                        = var.db_port
-  db_username                    = var.db_username
-  db_password                    = var.db_password
-  db_name                        = var.db_name
-  ssl_mode                       = var.ssl_mode
+  aws_region                     = "us-east-1"
+  postgres_rds_cluster_identifier = "example-postgres"
+  db_host                        = "example-postgres.abcdefg.us-east-1.rds.amazonaws.com"
+  db_port                        = 5432
+  db_username                    = "admin"
+  db_password                    = "example-password"
+  db_name                        = "postgres"
 
   # Guardium configuration
-  udc_name                       = var.udc_name
-  udc_aws_credential             = var.udc_aws_credential
-  gdp_client_secret              = var.gdp_client_secret
-  gdp_client_id                  = var.gdp_client_id
-  gdp_server                     = var.gdp_server
-  gdp_port                       = var.gdp_port
-  gdp_username                   = var.gdp_username
-  gdp_password                   = var.gdp_password
-  gdp_ssh_username               = var.gdp_ssh_username
-  gdp_ssh_privatekeypath         = var.gdp_ssh_privatekeypath
-  gdp_mu_host                    = var.gdp_mu_host
+  udc_aws_credential = "aws-credential-name"
+  gdp_client_secret  = "client-secret"
+  gdp_client_id      = "client-id"
+  gdp_server         = "guardium-server.example.com"
+  gdp_username       = "guardium-user"
+  gdp_password       = "guardium-password"
+  gdp_ssh_username   = "guardium-ssh-user"
+  gdp_ssh_privatekeypath = "/path/to/private/key"
 
-  # Universal Connector configuration
-  enable_universal_connector     = var.enable_universal_connector
-  csv_start_position             = var.csv_start_position
-  csv_interval                   = var.csv_interval
-  csv_event_filter               = var.csv_event_filter
-  log_export_type                = var.log_export_type
+  # Audit configuration
+  auditing_type = "object"
 
   # Table-specific grants configuration
-  tables = var.tables
+  tables = [
+    {
+      schema = "public"
+      table  = "users"
+      grants = ["SELECT", "INSERT", "UPDATE"]
+    },
+    {
+      schema = "app_schema"
+      table  = "transactions"
+      grants = ["SELECT"]
+    },
+    {
+      schema = "app_schema"
+      table  = "audit_logs"
+      grants = ["SELECT", "INSERT"]
+    }
+  ]
 }
