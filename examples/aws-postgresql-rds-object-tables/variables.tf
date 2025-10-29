@@ -4,8 +4,7 @@
 
 variable "aws_region" {
   type        = string
-  description = "AWS region"
-  default     = "us-east-1"
+  description = "This is the AWS region. IMPORTANT: You MUST set this value in your terraform.tfvars file."
 }
 
 variable "tags" {
@@ -14,65 +13,71 @@ variable "tags" {
   default     = {}
 }
 
-//////
-// MariaDB RDS variables
-//////
-
-variable "mariadb_rds_cluster_identifier" {
+variable "postgres_rds_cluster_identifier" {
   type        = string
-  description = "MariaDB RDS cluster identifier to be monitored"
-  default     = "guardium-mariadb"
+
+  description = "DocumentDB cluster identifier to be monitored"
 }
 
 variable "force_failover" {
   type        = bool
+  default = true
   description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
-  default     = false
 }
 
-variable "mariadb_major_version" {
+variable "db_host" {
+  description = "The hostname of the RDS PostgreSQL instance"
   type        = string
-  description = "Major version of MariaDB (e.g., '10.6')"
-  default     = "10.6"
 }
 
-variable "audit_events" {
-  type        = string
-  description = "Comma-separated list of events to audit (CONNECT,QUERY,TABLE,QUERY_DDL,QUERY_DML,QUERY_DCL)"
-  default     = "CONNECT,QUERY"
+variable "db_port" {
+  description = "The port of the RDS PostgreSQL instance"
+  type        = number
+  default     = 5432
 }
 
-variable "audit_file_rotations" {
+variable "db_username" {
+  description = "The master username for the RDS PostgreSQL instance"
   type        = string
-  description = "Number of audit file rotations to keep"
-  default     = "10"
 }
 
-variable "audit_file_rotate_size" {
+variable "db_password" {
+  description = "The master password for the RDS PostgreSQL instance"
   type        = string
-  description = "Size in bytes before rotating audit file"
-  default     = "1000000"
+  sensitive   = true
 }
+
+variable "db_name" {
+  description = "The database to connect to"
+  type        = string
+  default     = "postgres"
+}
+
+variable "ssl_mode" {
+  description = "SSL mode for postgres"
+  type        = string
+  default     = "prefer"
+}
+
 
 //////
-// Guardium variables
+// General variables
 //////
-
 variable "udc_name" {
   type        = string
   description = "Name for universal connector. Is used for all aws objects"
-  default     = "mariadb-gdp"
+  default     = "rds-postgres-gdp-object"
 }
+
 
 variable "udc_aws_credential" {
   type        = string
-  description = "Name of AWS credential defined in Guardium"
+  description = "name of AWS credential defined in Guardium"
 }
 
 variable "gdp_client_secret" {
   type        = string
   description = "Client secret from output of grdapi register_oauth_client"
-  sensitive   = true
 }
 
 variable "gdp_client_id" {
@@ -119,7 +124,7 @@ variable "gdp_mu_host" {
 }
 
 //////
-// Universal Connector variables
+// Universal Connector Control
 //////
 
 variable "enable_universal_connector" {
@@ -147,12 +152,34 @@ variable "csv_event_filter" {
 }
 
 variable "log_export_type" {
-  description = "The type of log exporting to be configured. Option: Cloudwatch"
-  type        = string
-  default     = "Cloudwatch"
+  description = "The type of log exporting to be configured. Options SQS, Cloudwatch"
+  default = "object"
 
   validation {
-    condition     = var.log_export_type == "Cloudwatch"
-    error_message = "log_export_type must be 'Cloudwatch'"
+    condition = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
+    error_message = "log_export_type must be 'SQS' or 'Cloudwatch'"
   }
 }
+
+variable "tables" {
+  type = list(object({
+    schema = string
+    table  = string
+    grants = list(string)
+  }))
+
+  validation {
+    condition = alltrue([
+      for t in var.tables : alltrue([
+        for g in t.grants : contains(
+          ["SELECT", "INSERT", "UPDATE", "DELETE", "REFERENCES", "TRIGGER", "ALL"],
+          upper(g)
+        )
+      ])
+    ])
+
+    error_message = "Each grant must be one of: SELECT, INSERT, UPDATE, DELETE,  REFERENCES, TRIGGER (case-insensitive)."
+  }
+  default = []
+}
+

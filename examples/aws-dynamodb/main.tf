@@ -8,8 +8,8 @@
 #----------------------------------------
 # DynamoDB Universal Connector Configuration
 #----------------------------------------
-module "dynamodb_uc" {
-  source = "../../modules/datastore-audit-config/aws-dynamodb"
+module "datastore-audit_aws-dynamodb" {
+  source = "IBM/datastore-audit/guardium//modules/aws-dynamodb"
 
   # AWS Configuration
   aws_region     = var.aws_region
@@ -23,7 +23,7 @@ module "dynamodb_uc" {
   # CloudTrail and CloudWatch Configuration
   existing_cloudtrail_name         = var.existing_cloudtrail_name
   existing_cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name
-  
+
   # Guardium Data Protection Configuration
   gdp_server             = var.gdp_server
   gdp_port               = var.gdp_port
@@ -34,11 +34,11 @@ module "dynamodb_uc" {
   gdp_ssh_username       = var.gdp_ssh_username
   gdp_ssh_privatekeypath = var.gdp_ssh_privatekeypath
   gdp_mu_host            = var.gdp_mu_host
-  
+
   # Universal Connector Configuration
   udc_aws_credential     = var.udc_aws_credential
   enable_universal_connector = var.enable_universal_connector
-  
+
   # CSV Configuration
   csv_start_position     = var.csv_start_position
   csv_interval           = var.csv_interval

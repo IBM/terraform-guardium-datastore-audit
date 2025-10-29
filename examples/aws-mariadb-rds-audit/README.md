@@ -115,10 +115,9 @@ aws rds describe-db-instances \
 ```
 
 Import existing parameter group:
-```bash
-# Import parameter group
-terraform import module.aws_mariadb_rds_audit.module.rds-mariadb-parameter-group.aws_db_parameter_group.mariadb_param_group <parameter-group-name>
-```
+   ```bash
+   terraform import -var-file="/path/to/terraform.tfvars" module.datastore-audit_aws-mariadb-rds-audit.module.common_rds-mariadb-parameter-group.aws_db_parameter_group.mariadb_param_group <your-parameter-group-name>
+   ```
 
 Identify existing option group name:
 
@@ -132,11 +131,11 @@ aws rds describe-db-instances \
 ```
 
 Import existing option group:
-```bash
-# Import the option group into Terraform state
-terraform import module.aws_mariadb_rds_audit.module.rds-mariadb-parameter-group.aws_db_option_group.audit <your-option-group-name>
-```
-**Note**: Skipping the import step will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
+   ```bash
+   terraform import -var-file="/path/to/terraform.tfvars" module.datastore-audit_aws-mariadb-rds-audit.module.common_rds-mariadb-parameter-group.aws_db_option_group.audit <your-option-group-name>
+   ```
+
+**Note**: Skipping the import steps will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
 
 ### 4. Apply the Configuration
 

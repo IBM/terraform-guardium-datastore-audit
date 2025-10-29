@@ -16,8 +16,8 @@ provider "aws" {
   region = var.aws_region
 }
 
-module "postgresql_audit_config" {
-  source = "../../../modules/datastore-audit-config/aws-postgresql-rds-session"
+module "datastore-audit_aws-postgresql-rds-session" {
+  source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-session"
 
   # AWS configuration
   aws_region                     = var.aws_region

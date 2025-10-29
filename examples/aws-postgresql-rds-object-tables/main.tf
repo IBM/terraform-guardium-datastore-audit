@@ -2,9 +2,9 @@ provider "aws" {
   region = "us-east-1"
 }
 
-module "postgres_audit_config" {
-  source = "../"
-  
+module "datastore-audit_aws-postgresql-rds-object" {
+  source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-object"
+
   # Basic configuration
   aws_region                     = "us-east-1"
   postgres_rds_cluster_identifier = "example-postgres"
@@ -13,7 +13,7 @@ module "postgres_audit_config" {
   db_username                    = "admin"
   db_password                    = "example-password"
   db_name                        = "postgres"
-  
+
   # Guardium configuration
   udc_aws_credential = "aws-credential-name"
   gdp_client_secret  = "client-secret"
@@ -23,10 +23,10 @@ module "postgres_audit_config" {
   gdp_password       = "guardium-password"
   gdp_ssh_username   = "guardium-ssh-user"
   gdp_ssh_privatekeypath = "/path/to/private/key"
-  
+
   # Audit configuration
   auditing_type = "object"
-  
+
   # Table-specific grants configuration
   tables = [
     {

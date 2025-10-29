@@ -5,8 +5,8 @@ data "aws_dynamodb_table" "tables" {
   name  = element(local.dynamodb_tables, count.index)
 }
 
-module "aws_configuration" {
-  source = "../../common/aws-configuration"
+module "common_aws-configuration" {
+  source = "IBM/common/guardium//modules/aws-configuration"
 }
 
 locals {
@@ -14,13 +14,13 @@ locals {
   cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/cloudtrail/${var.name_prefix}"
   cloudtrail_name           = var.existing_cloudtrail_name != "" ? var.existing_cloudtrail_name : var.name_prefix
   cloudtrail_s3_bucket      = "${var.name_prefix}-cloudtrail"
-  
+
   # Determine if we're using existing resources
   use_existing_cloudtrail = var.existing_cloudtrail_name != ""
   use_existing_cloudwatch_log_group = var.existing_cloudwatch_log_group_name != ""
 
-  ct_bucket = aws_s3_bucket.dynamodb_monitoring.bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring.arn}/AWSLogs/${module.aws_configuration.aws_account_id}/*"] : ["${aws_s3_bucket.dynamodb_monitoring.arn}/${aws_s3_bucket.dynamodb_monitoring.bucket_prefix}/AWSLogs/${module.aws_configuration.aws_account_id}/*"]
-  
+  ct_bucket = aws_s3_bucket.dynamodb_monitoring.bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring.arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] : ["${aws_s3_bucket.dynamodb_monitoring.arn}/${aws_s3_bucket.dynamodb_monitoring.bucket_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
+
   # Format CloudWatch Logs Group ARN for CloudTrail
   formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "${data.aws_cloudwatch_log_group.existing[0].arn}:*" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
   dynamodb_monitoring_role = replace("${var.name_prefix}_role", "-", "_")
@@ -72,7 +72,7 @@ data "aws_iam_policy_document" "dynamodb_monitoring" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = ["arn:${var.aws_partition}:cloudtrail:${var.aws_region}:${module.aws_configuration.aws_account_id}:trail/${local.cloudtrail_name}"]
+      values   = ["arn:${var.aws_partition}:cloudtrail:${var.aws_region}:${module.common_aws-configuration.aws_account_id}:trail/${local.cloudtrail_name}"]
     }
   }
 
@@ -96,7 +96,7 @@ data "aws_iam_policy_document" "dynamodb_monitoring" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = ["arn:${var.aws_partition}:cloudtrail:${var.aws_region}:${module.aws_configuration.aws_account_id}:trail/${local.cloudtrail_name}"]
+      values   = ["arn:${var.aws_partition}:cloudtrail:${var.aws_region}:${module.common_aws-configuration.aws_account_id}:trail/${local.cloudtrail_name}"]
     }
   }
 }
@@ -153,7 +153,7 @@ resource "aws_iam_policy" "cloudtrail_cloudwatch_logs" {
   name   = replace("${local.cloudtrail_name}_cloudtrail_cloudwatch", "-", "_")
   policy = data.aws_iam_policy_document.cloudtrail_cloudwatch_logs.json
   tags   = var.tags
-  
+
   # Add lifecycle configuration to ensure proper destruction
   lifecycle {
     create_before_destroy = true
@@ -174,7 +174,7 @@ resource "aws_iam_policy_attachment" "main" {
 # CloudTrail
 resource "aws_cloudtrail" "dynamodb_monitoring" {
   count = local.use_existing_cloudtrail ? 0 : 1
-  
+
   depends_on = [
     aws_s3_bucket_policy.dynamodb_monitoring,
     aws_iam_policy_attachment.main
@@ -212,7 +212,7 @@ resource "aws_cloudtrail" "dynamodb_monitoring" {
 
 locals {
   # Create a sanitized version of the UDC name for file paths
-  udc_name = format("%s-%s-%s", var.aws_region, local.cloudwatch_log_group_name, module.aws_configuration.aws_account_id)
+  udc_name = format("%s-%s-%s", var.aws_region, local.cloudwatch_log_group_name, module.common_aws-configuration.aws_account_id)
   udc_name_safe = replace(local.udc_name, "/", "-")
 
   # Generate the CSV content from the template
@@ -221,7 +221,7 @@ locals {
     credential_name = var.udc_aws_credential
     aws_region      = var.aws_region
     aws_log_group   = local.cloudwatch_log_group_name
-    aws_account_id  = module.aws_configuration.aws_account_id
+    aws_account_id  = module.common_aws-configuration.aws_account_id
     start_position  = var.csv_start_position
     interval        = var.csv_interval
     event_filter    = var.csv_event_filter
@@ -230,8 +230,8 @@ locals {
   })
 }
 
-module "universal_connector" {
-  source = "../../universal-connector/install-gdp-connector"
+module "gdp_connect-datasource-to-uc" {
+  source = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
   count  = var.enable_universal_connector ? 1 : 0  # Skip creation when disabled
   udc_name = local.udc_name_safe
   udc_csv_parsed = local.udc_csv

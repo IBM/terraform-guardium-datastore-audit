@@ -27,8 +27,8 @@ This approach allows you to focus auditing on specific tables and operations, re
 ## Usage
 
 ```hcl
-module "postgresql_object_audit" {
-  source = "../../modules/datastore-audit-config/aws-postgresql-rds-object"
+module "datastore-audit_aws-postgresql-rds-object" {
+  source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-object"
 
   # AWS configuration
   aws_region = "us-east-1"
