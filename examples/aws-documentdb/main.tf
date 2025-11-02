@@ -1,5 +1,5 @@
 module "datastore-audit_aws-documentdb" {
-  source = "IBM/datastore-audit/guardium//modules/aws-documentdb"
+  source = "../../modules/aws-documentdb"
 
   documentdb_cluster_identifier = var.documentdb_cluster_identifier
   gdp_client_id                 = var.gdp_client_id
