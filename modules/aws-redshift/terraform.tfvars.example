@@ -1,0 +1,47 @@
+# AWS Redshift Universal Connector Module Example Configuration
+
+# General Configuration
+name_prefix = "guardium"
+aws_region  = "us-east-1"
+tags = {
+  Purpose = "guardium-redshift-uc"
+  Owner   = "your-email@example.com"
+}
+
+# Redshift Configuration
+redshift_cluster_identifier = "my-redshift-cluster"
+
+# Input Configuration
+input_type = "cloudwatch"  # Options: "cloudwatch" or "s3" - determines which logging method to use
+
+# CloudWatch Configuration (if input_type = "cloudwatch")
+existing_cloudwatch_log_group_name = ""  # Leave empty to create a new one, or specify an existing log group name
+
+# S3 Configuration (if input_type = "s3")
+existing_s3_bucket_name = ""  # Leave empty to create a new one, or specify an existing bucket name
+s3_prefix = ""  # Leave empty to use default prefix, or specify a custom prefix
+
+# Parameter Group Configuration
+create_parameter_group = true
+existing_parameter_group_name = ""  # Leave empty to create a new one
+enable_logging = true  # Enable logging
+
+# Guardium Data Protection Configuration
+gdp_server             = "guardium.example.com"
+gdp_port               = 8443
+gdp_username           = "guardium_admin"
+gdp_password           = "your-password"
+gdp_client_id          = "your-client-id"
+gdp_client_secret      = "your-client-secret"
+gdp_ssh_username       = "ec2-user"
+gdp_ssh_privatekeypath = "~/.ssh/id_rsa"
+gdp_mu_host            = "default"
+
+# Universal Connector Configuration
+enable_universal_connector = true
+udc_aws_credential        = "aws-credential-name"
+csv_start_position        = "beginning"
+csv_interval              = "60"
+csv_event_filter          = "*"
+csv_description           = "Redshift Universal Connector"
+csv_cluster_name          = "default"
