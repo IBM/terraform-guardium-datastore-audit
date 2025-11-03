@@ -1,0 +1,65 @@
+# =====================================================================
+# AWS CONFIGURATION - CRITICAL
+# =====================================================================
+# REQUIRED: Your AWS region - MUST match where your Aurora PostgreSQL cluster is deployed
+aws_region = "us-east-1"  # CHANGE THIS to your actual AWS region (e.g., "us-west-2")
+
+# The identifier of your Aurora PostgreSQL cluster (found in RDS console)
+aurora_postgres_cluster_identifier = "guardium-aurora-postgres"
+
+# Whether to force a failover when applying parameter changes (requires Multi-AZ)
+force_failover = false
+
+# pgAudit log configuration for session-level auditing
+# Default logs all statement types except miscellaneous commands
+pg_audit_log = "all, -misc"
+
+# =====================================================================
+# GUARDIUM CONFIGURATION - CRITICAL
+# =====================================================================
+# Name for the Universal Connector (used for AWS resource naming)
+udc_name = "aurora-postgres-audit-connector"
+
+# REQUIRED: Name of the AWS credential defined in Guardium
+# This must match a credential you've already created in Guardium
+udc_aws_credential = "aws-guardium-credential"
+
+# REQUIRED: Guardium server hostname/IP and connection details
+gdp_server = "guardium.example.com"
+gdp_port = "8443"
+gdp_username = "admin"                 # Replace with your Guardium username
+gdp_password = "password"              # Replace with your Guardium password
+
+# REQUIRED: OAuth client credentials for Guardium API access
+# These are obtained by running the "grdapi register_oauth_client" command
+gdp_client_id = "client4"              # Replace with your client ID
+gdp_client_secret = "client-secret"    # Replace with your client secret
+
+# REQUIRED: SSH access details for Guardium
+gdp_ssh_username = "root"              # Replace with your SSH username
+gdp_ssh_privatekeypath = "~/.ssh/id_rsa" # Full path to SSH private key file
+
+# Comma-separated list of Guardium Managed Units to deploy the profile to
+gdp_mu_host = "mu1.guardium.example.com,mu2.guardium.example.com"
+
+# =====================================================================
+# UNIVERSAL CONNECTOR CONFIGURATION
+# =====================================================================
+# Whether to enable the Universal Connector (set to false to disable)
+enable_universal_connector = true
+
+# Start position for log processing: "beginning" or "end"
+# - "beginning": Process all available logs (may cause high initial load)
+# - "end": Process only new logs going forward
+csv_start_position = "end"
+
+# Polling interval in seconds for checking new logs
+csv_interval = "15"
+
+# Event filter for Universal Connector (leave empty for no filtering)
+csv_event_filter = ""
+
+# Log export type: "SQS" or "Cloudwatch"
+# - "SQS": Use Amazon SQS for log delivery (more real-time)
+# - "Cloudwatch": Use CloudWatch Logs for log delivery (more reliable)
+log_export_type = "Cloudwatch"
