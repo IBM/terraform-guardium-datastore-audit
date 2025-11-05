@@ -22,7 +22,7 @@ provider "guardium-data-protection" {
 }
 
 module "aurora_postgres_session_audit" {
-  source = "../../../modules/aws-aurora-postgres-session"
+  source = "../../modules/aws-aurora-postgres-session"
 
   # AWS configuration
   aws_region                     = var.aws_region

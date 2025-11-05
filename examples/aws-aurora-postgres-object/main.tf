@@ -22,7 +22,7 @@ provider "guardium-data-protection" {
 }
 
 module "aurora_postgres_object_audit" {
-  source = "../../../modules/aws-aurora-postgres-object"
+  source = "../../modules/aws-aurora-postgres-object"
 
   # AWS Configuration
   aws_region     = var.aws_region
