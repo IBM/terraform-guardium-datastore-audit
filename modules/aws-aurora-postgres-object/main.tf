@@ -6,7 +6,7 @@ locals {
 }
 
 module "aws_configuration" {
-  source = "../../../terraform-guardium-common/modules/aws-configuration"
+  source = "git::https://github.com/IBM/terraform-guardium-common.git//modules/aws-configuration?ref=SV-INS-60624"
 }
 
 locals {
@@ -14,7 +14,7 @@ locals {
 }
 
 module "aurora-postgres-parameter-group" {
-  source = "../../../terraform-guardium-common/modules/aurora-postgres-parameter-group"
+  source = "git::https://github.com/IBM/terraform-guardium-common.git//modules/aurora-postgres-parameter-group?ref=SV-INS-60624"
   pg_audit_log = "none"  # For object auditing, we don't use session logging
   pg_audit_role = "rds_pgaudit"  # Use the dedicated audit role
   force_failover = var.force_failover
@@ -55,7 +55,7 @@ resource "postgresql_grant" "table_permissions" {
 
 module "aurora-postgres-sqs-registration" {
   count  = var.log_export_type == "SQS" ? 1 : 0
-  source = "../../../terraform-guardium-common/modules/aurora-postgres-sqs-registration"
+  source = "git::https://github.com/IBM/terraform-guardium-common.git//modules/aurora-postgres-sqs-registration?ref=SV-INS-60624"
 
   aws_account_id = local.aws_account_id
   gdp_client_id = var.gdp_client_id
@@ -77,7 +77,7 @@ module "aurora-postgres-sqs-registration" {
 
 module "aurora-postgres-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
-  source = "../../../terraform-guardium-common/modules/aurora-postgres-cloudwatch-registration"
+  source = "git::https://github.com/IBM/terraform-guardium-common.git//modules/aurora-postgres-cloudwatch-registration?ref=SV-INS-60624"
 
   aws_account_id = local.aws_account_id
   gdp_client_id = var.gdp_client_id
