@@ -53,18 +53,11 @@ This approach provides comprehensive coverage of database activity but may gener
      --region <your-aws-region> \
      --filters "Name=db-cluster-resource-id,Values=<your-cluster-resource-id>" \
      --query "DBClusters[0].{Identifier:DBClusterIdentifier, ParameterGroup:DBClusterParameterGroup}"
-
-     cluster-3IV3XNMQ4YH27DCHWJEJS7R4N4
-
-      aws rds describe-db-clusters \
-     --region us-east-1 \
-     --filters "Name=db-cluster-resource-id,Values= cluster-3IV3XNMQ4YH27DCHWJEJS7R4N4" \
-     --query "DBClusters[0].{Identifier:DBClusterIdentifier, ParameterGroup:DBClusterParameterGroup}"
    ```
    
    Replace:
    - `<your-aws-region>` with your AWS region (e.g., us-west-2, us-east-1)
-   - `<your-cluster-resource-id>` with your cluster resource ID (e.g., cluster-7LW2I6624XLLLRFPOXMMVJHACQ)
+   - `<your-cluster-resource-id>` with your cluster resource ID (e.g., cluster-7LW2I6...)
    
    You can find your cluster resource ID in the AWS Console under RDS → Databases → Configuration tab, or by running:
    ```
