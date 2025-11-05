@@ -64,7 +64,7 @@ This approach allows you to focus auditing on specific tables and operations, re
    
    Replace:
    - `<your-aws-region>` with your AWS region (e.g., us-west-2, us-east-1)
-   - `<your-cluster-resource-id>` with your cluster resource ID (e.g., cluster-7LW2I6624XLLLRFPOXMMVJHACQ)
+   - `<your-cluster-resource-id>` with your cluster resource ID (e.g., cluster-7LW2MMVJHACQ)
    
    You can find your cluster resource ID in the AWS Console under RDS → Databases → Configuration tab, or by running:
    ```
