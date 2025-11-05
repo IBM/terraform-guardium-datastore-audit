@@ -16,7 +16,7 @@ force_failover = false
 # REQUIRED: The endpoint address of your Aurora PostgreSQL cluster WITHOUT the port
 # This is the "Endpoint" value from the RDS console, without the ":5432" part
 # Example: "my-cluster.cluster-abcdefg.us-west-2.rds.amazonaws.com"
-db_host = "guardium-aurora-postgres.cluster-abcdefg.us-east-1.rds.amazonaws.com"
+db_host = ""
 
 # The port your PostgreSQL database is listening on (usually 5432)
 db_port = 5432
