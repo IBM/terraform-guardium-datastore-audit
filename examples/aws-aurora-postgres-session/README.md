@@ -39,7 +39,6 @@ This approach provides comprehensive coverage of database activity but may gener
    ```
    terraform import module.aurora_postgres_session_audit.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium <parameter group name>
    ```
-   guardium-aurora-postgres-params
    __NOTE__ To get the parameter group name, you can use the AWS CLI:
    ```
    aws rds describe-db-cluster-parameter-groups --query "DBClusterParameterGroups[*].DBClusterParameterGroupName" --output text
