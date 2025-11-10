@@ -5,9 +5,40 @@ This module configures AWS Redshift to send audit logs to Guardium Data Protecti
 ## Features
 
 - Configures Redshift to send audit logs to CloudWatch Logs or S3
-- Creates necessary AWS resources (CloudWatch Log Group, S3 bucket, parameter group)
+- Creates two separate CloudWatch Log Groups for connection logs and user activity logs:
+  - `/aws/redshift/cluster/{cluster-identifier}/connectionlog`
+  - `/aws/redshift/cluster/{cluster-identifier}/useractivitylog`
+- Creates necessary AWS resources (CloudWatch Log Groups, S3 bucket, parameter group)
 - Configures Guardium Data Protection Universal Connector to receive and process Redshift audit logs
 - Supports both CloudWatch Logs and S3 as input sources
+
+## Important: Handling Existing Log Groups
+
+If Redshift has already created the log groups (which happens when you enable logging), you have two options:
+
+### Option 1: Import Existing Log Groups (Recommended)
+
+Import the existing log groups into Terraform state:
+
+```bash
+# Import connection log group
+terraform import 'module.datastore-audit_aws-redshift.aws_cloudwatch_log_group.redshift_connectionlog[0]' '/aws/redshift/cluster/YOUR-CLUSTER-NAME/connectionlog'
+
+# Import user activity log group
+terraform import 'module.datastore-audit_aws-redshift.aws_cloudwatch_log_group.redshift_useractivitylog[0]' '/aws/redshift/cluster/YOUR-CLUSTER-NAME/useractivitylog'
+```
+
+Replace `YOUR-CLUSTER-NAME` with your actual Redshift cluster identifier.
+
+### Option 2: Use Existing Log Groups
+
+Set the `existing_cloudwatch_log_group_name` variable to the base path (without `/connectionlog` or `/useractivitylog`):
+
+```hcl
+existing_cloudwatch_log_group_name = "/aws/redshift/cluster/YOUR-CLUSTER-NAME"
+```
+
+The module will automatically append `/connectionlog` and `/useractivitylog` to this base path.
 
 ## Prerequisites
 

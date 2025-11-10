@@ -10,9 +10,14 @@ output "udc_name" {
   value       = local.udc_name_safe
 }
 
-output "cloudwatch_log_group_name" {
-  description = "Name of the CloudWatch Log Group"
-  value       = var.input_type == "cloudwatch" ? (local.use_existing_cloudwatch_log_group ? var.existing_cloudwatch_log_group_name : try(aws_cloudwatch_log_group.redshift_logs[0].name, "")) : ""
+output "cloudwatch_log_group_connectionlog" {
+  description = "Name of the CloudWatch Log Group for connection logs"
+  value       = var.input_type == "cloudwatch" ? (local.use_existing_cloudwatch_log_group ? "${var.existing_cloudwatch_log_group_name}/connectionlog" : try(aws_cloudwatch_log_group.redshift_connectionlog[0].name, "")) : ""
+}
+
+output "cloudwatch_log_group_useractivitylog" {
+  description = "Name of the CloudWatch Log Group for user activity logs"
+  value       = var.input_type == "cloudwatch" ? (local.use_existing_cloudwatch_log_group ? "${var.existing_cloudwatch_log_group_name}/useractivitylog" : try(aws_cloudwatch_log_group.redshift_useractivitylog[0].name, "")) : ""
 }
 
 output "s3_bucket_name" {

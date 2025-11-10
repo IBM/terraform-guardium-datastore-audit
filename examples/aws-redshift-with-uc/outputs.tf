@@ -5,9 +5,14 @@ output "udc_name" {
   value       = module.datastore-audit_aws-redshift.udc_name
 }
 
-output "cloudwatch_log_group_name" {
-  description = "Name of the CloudWatch Log Group"
-  value       = module.datastore-audit_aws-redshift.cloudwatch_log_group_name
+output "cloudwatch_log_group_connectionlog" {
+  description = "Name of the CloudWatch Log Group for connection logs"
+  value       = module.datastore-audit_aws-redshift.cloudwatch_log_group_connectionlog
+}
+
+output "cloudwatch_log_group_useractivitylog" {
+  description = "Name of the CloudWatch Log Group for user activity logs"
+  value       = module.datastore-audit_aws-redshift.cloudwatch_log_group_useractivitylog
 }
 
 output "s3_bucket_name" {

@@ -154,13 +154,13 @@ variable "csv_interval" {
 variable "csv_event_filter" {
   description = "Event filter for the Universal Connector"
   type        = string
-  default     = "*"
+  default     = ""
 }
 
 variable "codec_pattern" {
   description = "Codec pattern for the Universal Connector"
   type        = string
-  default     = "plain"
+  default     = "((^'%%{TIMESTAMP_ISO8601:timestamp})|(^(?<action>[^:]*) \\|%%{DAY:day}\\, %%{MONTHDAY:md} %%{MONTH:month} %%{YEAR:year} %%{TIME:time}))"
 }
 
 variable "csv_description" {

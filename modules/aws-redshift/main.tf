@@ -12,7 +12,9 @@ locals {
   aws_account_id = module.common_aws-configuration.aws_account_id
   
   # CloudWatch and S3 configuration
-  cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/redshift/cluster/${var.redshift_cluster_identifier}"
+  cloudwatch_log_group_base = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/redshift/cluster/${var.redshift_cluster_identifier}"
+  cloudwatch_log_group_connectionlog = "${local.cloudwatch_log_group_base}/connectionlog"
+  cloudwatch_log_group_useractivitylog = "${local.cloudwatch_log_group_base}/useractivitylog"
   s3_bucket_name = var.existing_s3_bucket_name != "" ? var.existing_s3_bucket_name : "${var.name_prefix}-redshift-logs"
   s3_prefix = var.s3_prefix != "" ? var.s3_prefix : "AWSLogs/${local.aws_account_id}/redshift/${var.aws_region}/"
   
@@ -29,7 +31,8 @@ locals {
     udc_name        = local.udc_name_safe
     credential_name = var.udc_aws_credential
     aws_region      = var.aws_region
-    aws_log_group   = local.cloudwatch_log_group_name
+    aws_log_group_connectionlog   = local.cloudwatch_log_group_connectionlog
+    aws_log_group_useractivitylog = local.cloudwatch_log_group_useractivitylog
     aws_account_id  = local.aws_account_id
     start_position  = var.csv_start_position
     interval        = var.csv_interval
@@ -53,7 +56,7 @@ locals {
   })
 }
 
-# Data source for existing CloudWatch Log Group
+# Data source for existing CloudWatch Log Group (legacy support)
 data "aws_cloudwatch_log_group" "existing" {
   count = local.use_existing_cloudwatch_log_group && var.input_type == "cloudwatch" ? 1 : 0
   name  = var.existing_cloudwatch_log_group_name
@@ -73,10 +76,17 @@ resource "aws_s3_bucket" "redshift_logs" {
   tags          = var.tags
 }
 
-# Create CloudWatch Log Group if needed
-resource "aws_cloudwatch_log_group" "redshift_logs" {
+# Create CloudWatch Log Groups if needed (one for connectionlog, one for useractivitylog)
+# Note: If these already exist (created by Redshift), import them or set existing_cloudwatch_log_group_name
+resource "aws_cloudwatch_log_group" "redshift_connectionlog" {
   count = var.input_type == "cloudwatch" && !local.use_existing_cloudwatch_log_group ? 1 : 0
-  name  = local.cloudwatch_log_group_name
+  name  = local.cloudwatch_log_group_connectionlog
+  tags  = var.tags
+}
+
+resource "aws_cloudwatch_log_group" "redshift_useractivitylog" {
+  count = var.input_type == "cloudwatch" && !local.use_existing_cloudwatch_log_group ? 1 : 0
+  name  = local.cloudwatch_log_group_useractivitylog
   tags  = var.tags
 }
 
