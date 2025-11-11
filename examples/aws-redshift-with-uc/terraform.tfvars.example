@@ -1,5 +1,3 @@
-aws sts get-caller-identity# AWS Redshift with Universal Connector Example Configuration
-
 # General Configuration
 name_prefix = "guardium"
 aws_region  = "us-east-1"
