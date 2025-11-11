@@ -33,6 +33,11 @@ The following diagram illustrates how this module orchestrates the configuration
         │  │  + pgAudit (Object/Session Level)                │    │
         │  └──────────────────────────────────────────────────┘    │
         │                                                           │
+        │  ┌──────────────────────────────────────────────────┐    │
+        │  │  Redshift                                        │    │
+        │  │  + Connection & User Activity Logs               │    │
+        │  └──────────────────────────────────────────────────┘    │
+        │                                                           │
         └───────────────────────────────────────────────────────────┘
                                         │
                                         │ Audit Logs
@@ -82,6 +87,7 @@ The following diagram illustrates how this module orchestrates the configuration
    - **DocumentDB**: Enables audit and profiler logs via parameter groups
    - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
    - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
+   - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
 
 2. **Log Aggregation**: Audit logs are collected in AWS:
    - CloudWatch Log Groups store structured logs
@@ -111,6 +117,7 @@ This module provides audit configuration for the following AWS datastores:
 | AWS MariaDB RDS | `modules/aws-mariadb-rds-audit` | MariaDB Audit Plugin | CloudWatch Logs |
 | AWS PostgreSQL RDS (Object) | `modules/aws-postgresql-rds-object` | pgAudit (Object-Level) | CloudWatch/SQS |
 | AWS PostgreSQL RDS (Session) | `modules/aws-postgresql-rds-session` | pgAudit (Session-Level) | CloudWatch/SQS |
+| AWS Redshift | `modules/aws-redshift` | Connection & User Activity Logs | CloudWatch Logs/S3 |
 
 ## Prerequisites
 
@@ -312,6 +319,47 @@ module "postgres_session_audit" {
 }
 ```
 
+### AWS Redshift Audit Configuration
+
+Enable comprehensive audit logging for Redshift clusters:
+
+```hcl
+module "redshift_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-redshift"
+
+  # AWS Configuration
+  aws_region                  = "us-west-1"
+  redshift_cluster_identifier = "my-redshift-cluster"
+  name_prefix                 = "my-redshift-audit"
+  
+  # Input Type: "cloudwatch" or "s3"
+  input_type = "cloudwatch"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_ssh_username       = "root"
+  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  gdp_mu_host        = "guardium-mu.example.com"
+  
+  # Audit Configuration
+  codec_pattern    = "((^'%{TIMESTAMP_ISO8601:timestamp})|(^(?<action>[^:]*) \\|%{DAY:day}\\, %{MONTHDAY:md} %{MONTH:month} %{YEAR:year} %{TIME:time}))"
+  csv_event_filter = ""
+
+  tags = {
+    Environment = "production"
+    Project     = "data-security"
+  }
+}
+```
+
 ## Examples
 
 Complete working examples are available in the `examples/` directory:
@@ -322,6 +370,7 @@ Complete working examples are available in the `examples/` directory:
 - [aws-postgresql-rds-object](examples/aws-postgresql-rds-object) - PostgreSQL object-level auditing
 - [aws-postgresql-rds-object-tables](examples/aws-postgresql-rds-object-tables) - PostgreSQL object-level auditing with specific tables
 - [aws-postgresql-rds-session](examples/aws-postgresql-rds-session) - PostgreSQL session-level auditing
+- [aws-redshift-with-uc](examples/aws-redshift-with-uc) - Redshift audit configuration with Universal Connector
 
 Each example includes:
 - Complete Terraform configuration
