@@ -31,45 +31,40 @@ This approach allows you to focus auditing on specific tables and operations, re
    cp terraform.tfvars.example terraform.tfvars
    ```
    
-   **Important**: You MUST complete this step and fill in all required values before proceeding to the next steps, as Terraform needs these variables for the import operation.
-
-2. Initialize Terraform (use `-upgrade` to update provider versions):
-   ```
-   terraform init -upgrade
-   ```
+   **CRITICAL**: You MUST complete this step and fill in ALL required values before proceeding:
+   - **`aurora_postgres_cluster_identifier`** - CANNOT be empty! Set this to your actual cluster name
+   - **`db_host`**, **`db_username`**, **`db_password`** - Database connection details
+   - All Guardium connection details must be filled in
+   - Leaving any required variable empty will cause errors during import/plan/apply
    
-   **Note**: The `-upgrade` flag is important to update the `.terraform.lock.hcl` file with the new provider versions.
+   To find your cluster identifier:
+   ```bash
+   aws rds describe-db-clusters --query "DBClusters[*].DBClusterIdentifier" --output text
+   ```
+
+2. Initialize Terraform:
+   ```
+   terraform init
+   ```
 
 3. Import the existing cluster parameter group:
+
+   **Find your cluster's parameter group:**
+   
+   Use the cluster identifier from your `terraform.tfvars` file:
+   ```bash
+   aws rds describe-db-clusters \
+     --db-cluster-identifier <your-cluster-identifier> \
+     --query "DBClusters[0].DBClusterParameterGroup" \
+     --output text
    ```
-   terraform import 'module.aurora_postgres_object_audit.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium' <parameter group name>
+   
+   **Import the parameter group:**
+   ```bash
+   terraform import 'module.aurora_postgres_object_audit.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium' <parameter-group-name>
    ```
    
    **Note**: The quotes around the module path are important when the path contains hyphens.
-   
-   __NOTE__ To get the parameter group name, you can use the AWS CLI:
-   ```
-   aws rds describe-db-cluster-parameter-groups --query "DBClusterParameterGroups[*].DBClusterParameterGroupName" --output text
-   ```
-   
-   Look for a parameter group with a name pattern like `aurora-postgresql-[your-identifier]-guardium-postgresql-params`.
-   
-   Alternatively, to get both the cluster identifier and parameter group name in a more readable format, you can use:
-   ```
-   aws rds describe-db-clusters \
-     --region <your-aws-region> \
-     --filters "Name=db-cluster-resource-id,Values=<your-cluster-resource-id>" \
-     --query "DBClusters[0].{Identifier:DBClusterIdentifier, ParameterGroup:DBClusterParameterGroup}"
-   ```
-   
-   Replace:
-   - `<your-aws-region>` with your AWS region (e.g., us-west-2, us-east-1)
-   - `<your-cluster-resource-id>` with your cluster resource ID (e.g., cluster-7LW2MMVJHACQ)
-   
-   You can find your cluster resource ID in the AWS Console under RDS → Databases → Configuration tab, or by running:
-   ```
-   aws rds describe-db-clusters --query "DBClusters[*].[DBClusterIdentifier,DbClusterResourceId]" --output table
-   ```
 
 4. Apply the configuration:
    ```
@@ -144,12 +139,14 @@ Key differences when using Aurora PostgreSQL compared to RDS PostgreSQL:
 
 ## Troubleshooting
 
+
 ### Parameter Group Import Issues
 
 If you encounter errors during the import step:
 - Verify the parameter group name is correct
 - Ensure you have the necessary AWS permissions
 - Check that the parameter group is associated with your Aurora cluster
+- **Most importantly**: Ensure `terraform.tfvars` is configured BEFORE running import
 
 ### Connection Issues
 
@@ -158,3 +155,4 @@ If Terraform cannot connect to the database:
 - Check security group rules allow connections from your Terraform execution environment
 - Ensure the database credentials are correct
 - Verify SSL mode settings match your Aurora cluster configuration
+

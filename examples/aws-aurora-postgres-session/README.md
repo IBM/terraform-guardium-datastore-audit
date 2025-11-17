@@ -36,32 +36,25 @@ This approach provides comprehensive coverage of database activity but may gener
    ```
 
 3. Import the existing cluster parameter group:
-   ```
-   terraform import module.aurora_postgres_session_audit.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium <parameter group name>
-   ```
-   __NOTE__ To get the parameter group name, you can use the AWS CLI:
-   ```
-   aws rds describe-db-cluster-parameter-groups --query "DBClusterParameterGroups[*].DBClusterParameterGroupName" --output text
-   ```
+
+   **Find your cluster's parameter group:**
    
-   Look for a parameter group with a name pattern like `aurora-postgresql-[your-identifier]-guardium-postgresql-params`.
-   
-   Alternatively, to get both the cluster identifier and parameter group name in a more readable format, you can use:
-   ```
+   Use the cluster identifier from your `terraform.tfvars` file:
+   ```bash
    aws rds describe-db-clusters \
-     --region <your-aws-region> \
-     --filters "Name=db-cluster-resource-id,Values=<your-cluster-resource-id>" \
-     --query "DBClusters[0].{Identifier:DBClusterIdentifier, ParameterGroup:DBClusterParameterGroup}"
+     --db-cluster-identifier <your-cluster-identifier> \
+     --query "DBClusters[0].DBClusterParameterGroup" \
+     --output text
    ```
    
-   Replace:
-   - `<your-aws-region>` with your AWS region (e.g., us-west-2, us-east-1)
-   - `<your-cluster-resource-id>` with your cluster resource ID (e.g., cluster-7LW2I6...)
    
-   You can find your cluster resource ID in the AWS Console under RDS → Databases → Configuration tab, or by running:
+   
+   **Import the parameter group:**
+   ```bash
+   terraform import module.aurora_postgres_session_audit.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium <parameter-group-name>
    ```
-   aws rds describe-db-clusters --query "DBClusters[*].[DBClusterIdentifier,DbClusterResourceId]" --output table
-   ```
+   
+   
 
 4. Apply the configuration:
    ```
