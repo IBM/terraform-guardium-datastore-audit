@@ -62,7 +62,7 @@ Before using this module, you need to perform some one-time manual configuration
 2. Configuring AWS credentials in Universal Connector
 3. Setting up SSH access for Terraform
 
-For detailed instructions, please refer to the [Preparing Guardium Documentation](../../docs/preparing-guardium.md).
+For detailed instructions, please refer to the [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md).
 
 ## Quick Start
 

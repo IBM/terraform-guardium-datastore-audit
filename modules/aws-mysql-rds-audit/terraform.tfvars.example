@@ -1,20 +1,20 @@
 ###############################################################################
-# AWS MariaDB RDS Audit Configuration - Terraform Variables
+# AWS MySQL RDS Audit Configuration - Terraform Variables
 ###############################################################################
 
 #------------------------------------------------------------------------------
 # AWS Configuration
 #------------------------------------------------------------------------------
 
-# AWS region where the MariaDB RDS instance is located
+# AWS region where the MySQL RDS instance is located
 aws_region = "us-east-1"
 
-# The identifier of the MariaDB RDS instance to be monitored
-mariadb_rds_cluster_identifier = "your-mariadb-instance"
+# The identifier of the MySQL RDS instance to be monitored
+mysql_rds_cluster_identifier = "your-mysql-instance"
 
-# Major version of MariaDB (e.g., '10.6')
+# Major version of MySQL (e.g., '5.7')
 # This is required to select the appropriate parameter group family
-mariadb_major_version = "10.6"
+mysql_major_version = "5.7"
 
 # Optional: Set to true to force a failover during parameter group update
 # Only applicable for multi-AZ deployments, will cause minimal downtime
@@ -67,7 +67,7 @@ gdp_ssh_privatekeypath = "/path/to/private/key"
 # Audit Configuration
 #------------------------------------------------------------------------------
 
-# Type of log export mechanism to use: "Cloudwatch" or "SQS"
+# Type of log export mechanism to use: "Cloudwatch"
 # Cloudwatch is recommended for most deployments
 log_export_type = "Cloudwatch"
 
@@ -100,9 +100,9 @@ audit_query_log_limit = "1024"
 # Universal Connector Configuration
 #------------------------------------------------------------------------------
 
-# Optional: Name for universal connector (default: mariadb-gdp)
+# Optional: Name for universal connector (default: mysql-gdp)
 # This name is used for all AWS objects created by the connector
-# udc_name = "mariadb-gdp"
+# udc_name = "mysql-gdp"
 
 # Optional: Whether to enable the universal connector (default: true)
 # Set to false to completely disable the universal connector

@@ -56,7 +56,7 @@ Before using this example, ensure you have:
 
 2. **Guardium Data Protection**:
    - A running Guardium Data Protection instance
-   - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](../../docs/preparing-guardium.md):
+   - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
       - OAuth client registered via `grdapi register_oauth_client`
       - AWS credentials configured in Guardium Data Protection
       - SSH access configured for Terraform
@@ -65,83 +65,55 @@ Before using this example, ensure you have:
 
 ### 1. Create a terraform.tfvars File
 
-Create a `terraform.tfvars` file with your specific configuration values:
-
-```hcl
-# AWS Configuration
-aws_region = "us-east-1"
-mariadb_rds_cluster_identifier = "your-mariadb-instance"
-mariadb_major_version = "10.6"
-
-# Guardium Configuration
-gdp_server = "guardium.example.com"
-gdp_username = "guardium-user"
-gdp_password = "guardium-password"
-gdp_ssh_username = "guardium-ssh-user"
-gdp_ssh_privatekeypath = "/path/to/private/key"
-gdp_client_id = "client1"
-gdp_client_secret = "client-secret-value"
-udc_aws_credential = "aws-credential-name"
-gdp_mu_host = "mu1,mu2"
-
-# Audit Configuration
-audit_events = "CONNECT,QUERY"
-log_export_type = "Cloudwatch"
-
-# Resource Tags
-tags = {
-  Environment = "Production"
-  Owner       = "Security Team"
-}
-```
+Create a `defaults.tfvars` file with your configuration. See [terraform.tfvars.example](./terraform.tfvars.example) for an example with available options and detailed comments.
 
 ### 2. Initialize Terraform
 
-```bash
-terraform init
-```
+  ```bash
+  terraform init
+  ```
 
 ### 3. Import the MariaDB Parameter Group and Option Group
 
 Identify existing parameter group name:
 
-```bash
-# Get current parameter group name
-aws rds describe-db-instances \
-  --db-instance-identifier your-mariadb-instance \
-  --region your-region \
-  --query "DBInstances[0].DBParameterGroups[0].DBParameterGroupName" \
-  --output text
-```
+  ```bash
+  # Get current parameter group name
+  aws rds describe-db-instances \
+    --db-instance-identifier your-mariadb-instance \
+    --region your-region \
+    --query "DBInstances[0].DBParameterGroups[0].DBParameterGroupName" \
+    --output text
+  ```
 
 Import existing parameter group:
    ```bash
-   terraform import -var-file="/path/to/terraform.tfvars" module.datastore-audit_aws-mariadb-rds-audit.module.common_rds-mariadb-parameter-group.aws_db_parameter_group.mariadb_param_group <your-parameter-group-name>
+   terraform import module.datastore-audit_aws-mariadb-rds-audit.module.common_rds-mariadb-mysql-parameter-group.aws_db_parameter_group.db_param_group <your-parameter-group-name>
    ```
 
 Identify existing option group name:
 
-```bash
-# Get current option group name
-aws rds describe-db-instances \
-  --db-instance-identifier your-mariadb-instance \
-  --region your-region \
-  --query "DBInstances[0].OptionGroupMemberships[0].OptionGroupName" \
-  --output text
-```
+  ```bash
+  # Get current option group name
+  aws rds describe-db-instances \
+    --db-instance-identifier your-mariadb-instance \
+    --region your-region \
+    --query "DBInstances[0].OptionGroupMemberships[0].OptionGroupName" \
+    --output text
+  ```
 
 Import existing option group:
    ```bash
-   terraform import -var-file="/path/to/terraform.tfvars" module.datastore-audit_aws-mariadb-rds-audit.module.common_rds-mariadb-parameter-group.aws_db_option_group.audit <your-option-group-name>
+   terraform import module.datastore-audit_aws-mariadb-rds-audit.module.common_rds-mariadb-mysql-parameter-group.aws_db_option_group.audit <your-option-group-name>
    ```
 
 **Note**: Skipping the import steps will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
 
 ### 4. Apply the Configuration
 
-```bash
-terraform apply --var-file terraform.tfvars
-```
+  ```bash
+  terraform apply -var-file=defaults.tfvars
+  ```
 
 Review the planned changes and type `yes` to apply them.
 
@@ -153,7 +125,7 @@ After successful application:
 2. Navigate to **Universal Connector** → **Datasource Profile Management**
 3. Verify that the MariaDB profile has been created and is active
 4. Navigate to **CloudWatch** → **Log Groups** on the AWS UI and search for `/aws/rds/instance/<mariadb_instance_id>/audit`. You should see log groups created
-5. Navigate to the machine unit the UC is deployed on and ensure the STAP status is green/ active.
+5. Navigate to the machine unit the UC is deployed on and ensure the STAP status is green/active
 
 ## CloudWatch Integration
 
@@ -176,29 +148,45 @@ You can configure which events to audit using the `audit_events` variable:
 
 ## Input Variables
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| aws_region | AWS region where resources will be created | `string` | `"us-east-1"` | no |
+| Name | Description | Type | Default              | Required |
+|------|-------------|------|----------------------|:--------:|
+| aws_region | AWS region where resources will be created | `string` | `"us-east-1"`        | no |
 | mariadb_rds_cluster_identifier | MariaDB RDS instance identifier to be monitored | `string` | `"guardium-mariadb"` | no |
-| mariadb_major_version | Major version of MariaDB (e.g., '10.6') | `string` | `"10.6"` | no |
-| audit_events | Comma-separated list of events to audit | `string` | `"CONNECT,QUERY"` | no |
-| audit_file_rotations | Number of audit file rotations to keep | `string` | `"10"` | no |
-| audit_file_rotate_size | Size in bytes before rotating audit file | `string` | `"1000000"` | no |
-| udc_name | Name for universal connector (used for AWS objects) | `string` | `"mariadb-gdp"` | no |
-| udc_aws_credential | Name of AWS credential defined in Guardium | `string` | n/a | yes |
-| gdp_client_id | Client ID used when running grdapi register_oauth_client | `string` | n/a | yes |
-| gdp_client_secret | Client secret from output of grdapi register_oauth_client | `string` | n/a | yes |
-| gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a | yes |
-| gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
-| gdp_username | Username of Guardium Web UI user | `string` | n/a | yes |
-| gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
-| gdp_ssh_username | Guardium OS user with SSH access | `string` | n/a | yes |
-| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS | `string` | n/a | yes |
-| gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
-| log_export_type | Type of log export (Cloudwatch) | `string` | `"Cloudwatch"` | no |
-| force_failover | Whether to force failover during parameter group update | `bool` | `false` | no |
-| enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
-| csv_start_position | Start position for UDC | `string` | `"end"` | no |
-| csv_interval | Polling interval for UDC | `string` | `"5"` | no |
-| csv_event_filter | UDC Event filters | `string` | `""` | no |
-| tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
+| mariadb_major_version | Major version of MariaDB (e.g., '10.6') | `string` | `"10.6"`             | no |
+| audit_events | Comma-separated list of events to audit | `string` | `"CONNECT,QUERY"`    | no |
+| audit_file_rotations | Number of audit file rotations to keep | `string` | `"10"`               | no |
+| audit_file_rotate_size | Size in bytes before rotating audit file | `string` | `"1000000"`          | no |
+| audit_incl_users | Comma-separated list of users to include in audit logs (SERVER_AUDIT_INCL_USERS). If set, only these users will be audited. Leave empty to audit all users. | `string` | `""`                 | no |
+| audit_excl_users | Comma-separated list of users to exclude from audit logs (SERVER_AUDIT_EXCL_USERS). The rdsadmin user queries the database every second for health checks, which can cause log files to grow quickly. | `string` | `"rdsadmin"`         | no |
+| audit_query_log_limit | Maximum query length to log in bytes (SERVER_AUDIT_QUERY_LOG_LIMIT). Queries longer than this will be truncated. | `string` | `"1024"`             | no |
+| udc_name | Name for universal connector (used for AWS objects) | `string` | `"mariadb-gdp"`      | no |
+| udc_aws_credential | Name of AWS credential defined in Guardium | `string` | n/a                  | yes |
+| gdp_client_id | Client ID used when running grdapi register_oauth_client | `string` | n/a                  | yes |
+| gdp_client_secret | Client secret from output of grdapi register_oauth_client | `string` | n/a                  | yes |
+| gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a                  | yes |
+| gdp_port | Port of Guardium Central Manager | `string` | `"8443"`             | no |
+| gdp_username | Username of Guardium Web UI user | `string` | n/a                  | yes |
+| gdp_password | Password of Guardium Web UI user | `string` | n/a                  | yes |
+| gdp_ssh_username | Guardium OS user with SSH access | `string` | n/a                  | yes |
+| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS | `string` | n/a                  | yes |
+| gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""`                 | no |
+| log_export_type | Type of log export (Cloudwatch) | `string` | `"Cloudwatch"`       | no |
+| force_failover | Whether to force failover during parameter group update | `bool` | `false`              | no |
+| enable_universal_connector | Whether to enable the universal connector | `bool` | `true`               | no |
+| csv_start_position | Start position for UDC | `string` | `"end"`              | no |
+| csv_interval | Polling interval for UDC | `string` | `"5"`                | no |
+| csv_event_filter | UDC Event filters | `string` | `""`                 | no |
+| tags | Map of tags to apply to resources | `map(string)` | `{}`                 | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| udc_name | Name of the Universal Connector |
+| cloudwatch_log_group | Name of the CloudWatch Log Group for audit logs |
+| parameter_group_name | Name of the RDS parameter group |
+| option_group_name | Name of the RDS option group with audit plugin |
+| aws_region | AWS region where resources are deployed |
+| aws_account_id | AWS account ID |
+| rds_cluster_identifier | RDS cluster identifier |
+| log_export_type | Type of log export |

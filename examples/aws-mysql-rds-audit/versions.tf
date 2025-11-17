@@ -2,7 +2,6 @@
 # Copyright IBM Corp. 2025
 # SPDX-License-Identifier: Apache-2.0
 #
-
 terraform {
   required_version = ">= 1.0.0"
   required_providers {
@@ -15,14 +14,4 @@ terraform {
       version = ">= 1.0.0"
     }
   }
-}
-
-# Configure the AWS Provider
-provider "aws" {
-  region = var.aws_region
-}
-
-provider "guardium-data-protection" {
-  host = var.gdp_server
-  port = var.gdp_port
 }

@@ -1,9 +1,4 @@
-#
-# Copyright IBM Corp. 2025
-# SPDX-License-Identifier: Apache-2.0
-#
-
-# AWS MariaDB RDS with IBM Guardium Data Protection - Terraform Variables
+# AWS MySQL RDS with IBM Guardium Data Protection - Terraform Variables
 
 #----------------------------------------
 # General Configuration
@@ -16,10 +11,10 @@ tags = {
 }
 
 #----------------------------------------
-# MariaDB RDS Configuration
+# MySQL RDS Configuration
 #----------------------------------------
-mariadb_rds_cluster_identifier = "your-mariadb-instance"
-mariadb_major_version = "10.6"
+mysql_rds_cluster_identifier = "your-mysql-instance"
+mysql_major_version = "5.7"
 force_failover = false
 
 #----------------------------------------
@@ -37,7 +32,7 @@ log_export_type = "Cloudwatch"
 # Universal Connector Configuration
 #----------------------------------------
 enable_universal_connector = true
-udc_name = "mariadb-gdp"
+udc_name = "mysql-gdp"
 udc_aws_credential = "guardium-aws"  # Name of the AWS credential stored in Guardium Central Manager
 
 # CSV Configuration

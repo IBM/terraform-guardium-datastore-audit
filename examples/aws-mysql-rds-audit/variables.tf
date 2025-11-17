@@ -20,13 +20,13 @@ variable "tags" {
 }
 
 //////
-// MariaDB RDS variables
+// MySQL RDS variables
 //////
 
-variable "mariadb_rds_cluster_identifier" {
+variable "mysql_rds_cluster_identifier" {
   type        = string
-  description = "MariaDB RDS cluster identifier to be monitored"
-  default     = "guardium-mariadb"
+  description = "MySQL RDS cluster identifier to be monitored"
+  default     = "guardium-mysql"
 }
 
 variable "force_failover" {
@@ -35,10 +35,10 @@ variable "force_failover" {
   default     = false
 }
 
-variable "mariadb_major_version" {
+variable "mysql_major_version" {
   type        = string
-  description = "Major version of MariaDB (e.g., '10.6')"
-  default     = "10.6"
+  description = "Major version of MySQL (e.g., '5.7')"
+  default     = "5.7"
 }
 
 variable "audit_events" {
@@ -84,7 +84,7 @@ variable "audit_query_log_limit" {
 variable "udc_name" {
   type        = string
   description = "Name for universal connector. Is used for all aws objects"
-  default     = "mariadb-gdp"
+  default     = "mysql-gdp"
 }
 
 variable "udc_aws_credential" {

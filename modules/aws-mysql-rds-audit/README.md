@@ -1,12 +1,12 @@
-# AWS MariaDB RDS Audit Configuration
+# AWS MySQL RDS Audit Configuration
 
-This module configures audit logging for MariaDB RDS instances with IBM Guardium Data Protection. It enables the MariaDB Audit Plugin through an option group and configures log collection via CloudWatch.
+This module configures audit logging for MySQL RDS instances with IBM Guardium Data Protection. It enables the MariaDB Audit Plugin through an option group and configures log collection via CloudWatch.
 
 ## Prerequisites
 
 Before using this module, you need to:
 
-1. Have an existing MariaDB RDS instance
+1. Have an existing MySQL RDS instance
 2. Have Guardium set up with appropriate credentials
 3. **Important**: You must initialize Terraform and import the existing parameter and option group before applying this module
 
@@ -27,11 +27,11 @@ To ensure Terraform manages your RDS instance correctly:
    ```bash
    terraform init
    ```
-
+   
 2. Identify your current parameter group:
    ```bash
    aws rds describe-db-instances \
-   --db-instance-identifier your-mariadb-instance \
+   --db-instance-identifier your-mysql-instance \
    --region your-region \
    --query "DBInstances[0].DBParameterGroups[0].DBParameterGroupName" \
    --output text
@@ -41,11 +41,11 @@ To ensure Terraform manages your RDS instance correctly:
    ```bash
    terraform import module.common_rds-mariadb-mysql-parameter-group.aws_db_parameter_group.db_param_group <your-parameter-group-name>
    ```
-
+   
 4. Identify your current option group name:
    ```bash
    aws rds describe-db-instances \
-     --db-instance-identifier your-mariadb-instance \
+     --db-instance-identifier your-mysql-instance \
      --region your-region \
      --query "DBInstances[0].OptionGroupMemberships[0].OptionGroupName" \
      --output text
@@ -56,11 +56,11 @@ To ensure Terraform manages your RDS instance correctly:
    terraform import module.common_rds-mariadb-mysql-parameter-group.aws_db_option_group.audit <your-option-group-name>
    ```
 
-**Note**: Skipping the import steps will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
+**Note**: Skipping the import step will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
 
 ## Features
 
-- Configures MariaDB RDS for audit logging
+- Configures MySQL RDS for audit logging
 - Configures audit events to capture (CONNECT, QUERY, etc.)
 - Integrates with Guardium for audit data collection via CloudWatch
 
@@ -109,7 +109,7 @@ na.artifactory.swg-devops.com/ibm/guardium-data-protection
 This module uses the following internal modules:
 
 1. `aws-configuration` - Retrieves AWS account information
-2. `rds-mariadb-mysql-parameter-group` - Configures the MariaDB parameter group for audit logging
+2. `rds-mariadb-mysql-parameter-group` - Configures the MySQL parameter group for audit logging
 3. `rds-mariadb-mysql-cloudwatch-registration` - Sets up CloudWatch integration for audit logs (when using CloudWatch)
 
 ## Audit Events Configuration
@@ -130,10 +130,10 @@ Valid audit event options:
 
 ## CloudWatch Integration
 
-This module configures CloudWatch integration for MariaDB RDS auditing. The audit logs are sent to a CloudWatch log group with the format:
+This module configures CloudWatch integration for MySQL RDS auditing. The audit logs are sent to a CloudWatch log group with the format:
 
 ```
-/aws/rds/instance/<mariadb_rds_cluster_identifier>/audit
+/aws/rds/instance/<mysql_rds_cluster_identifier>/audit
 ```
 
 Guardium is configured to collect and analyze these logs.
@@ -143,8 +143,8 @@ Guardium is configured to collect and analyze these logs.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | aws_region | AWS region | string | `"us-east-2"` | no |
-| mariadb_rds_cluster_identifier | MariaDB RDS cluster identifier | string | `"guardium-mariadb"` | no |
-| mariadb_major_version | Major version of MariaDB (e.g., '10.6') | string | `"10.6"` | no |
+| mysql_rds_cluster_identifier | MySQL RDS cluster identifier | string | `"guardium-mysql"` | no |
+| mysql_major_version | Major version of MySQL (e.g., '5.7') | string | `"5.7"` | no |
 | audit_events | Comma-separated list of events to audit | string | `"CONNECT,QUERY"` | no |
 | audit_file_rotations | Number of audit file rotations to keep | string | `"10"` | no |
 | audit_file_rotate_size | Size in bytes before rotating audit file | string | `"1000000"` | no |
@@ -164,7 +164,7 @@ Guardium is configured to collect and analyze these logs.
 | log_export_type | Log export type (Cloudwatch) | string | `"Cloudwatch"` | no |
 | force_failover | Whether to force failover during option group update | bool | `false` | no |
 | tags | Map of tags to apply to resources | map(string) | `{}` | no |
-| udc_name | Name for universal connector | string | `"mariadb-gdp"` | no |
+| udc_name | Name for universal connector | string | `"mysql-gdp"` | no |
 | enable_universal_connector | Whether to enable the universal connector | bool | `true` | no |
 | csv_start_position | Start position for UDC | string | `"end"` | no |
 | csv_interval | Polling interval for UDC | string | `"5"` | no |

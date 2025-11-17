@@ -9,8 +9,8 @@
 
 variable "aws_region" {
   type        = string
-  description = "AWS region"
-  default     = "us-east-1"
+  description = "This is the AWS region."
+  default     = "us-east-2"
 }
 
 variable "tags" {
@@ -19,26 +19,22 @@ variable "tags" {
   default     = {}
 }
 
-//////
-// MariaDB RDS variables
-//////
-
-variable "mariadb_rds_cluster_identifier" {
+variable "mysql_rds_cluster_identifier" {
   type        = string
-  description = "MariaDB RDS cluster identifier to be monitored"
-  default     = "guardium-mariadb"
+  default     = "guardium-mysql"
+  description = "MySQL RDS cluster identifier to be monitored"
 }
 
 variable "force_failover" {
   type        = bool
-  description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
   default     = false
+  description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
 }
 
-variable "mariadb_major_version" {
+variable "mysql_major_version" {
   type        = string
-  description = "Major version of MariaDB (e.g., '10.6')"
-  default     = "10.6"
+  description = "Major version of MySQL (e.g., '5.7')"
+  default     = "5.7"
 }
 
 variable "audit_events" {
@@ -78,24 +74,23 @@ variable "audit_query_log_limit" {
 }
 
 //////
-// Guardium variables
+// General variables
 //////
-
 variable "udc_name" {
   type        = string
   description = "Name for universal connector. Is used for all aws objects"
-  default     = "mariadb-gdp"
+  default     = "mysql-gdp"
 }
+
 
 variable "udc_aws_credential" {
   type        = string
-  description = "Name of AWS credential defined in Guardium"
+  description = "name of AWS credential defined in Guardium"
 }
 
 variable "gdp_client_secret" {
   type        = string
   description = "Client secret from output of grdapi register_oauth_client"
-  sensitive   = true
 }
 
 variable "gdp_client_id" {
@@ -142,7 +137,7 @@ variable "gdp_mu_host" {
 }
 
 //////
-// Universal Connector variables
+// Universal Connector Control
 //////
 
 variable "enable_universal_connector" {
@@ -171,11 +166,11 @@ variable "csv_event_filter" {
 
 variable "log_export_type" {
   description = "The type of log exporting to be configured. Option: Cloudwatch"
-  type        = string
-  default     = "Cloudwatch"
+  default = "Cloudwatch"
 
   validation {
-    condition     = var.log_export_type == "Cloudwatch"
+    condition = var.log_export_type == "Cloudwatch"
     error_message = "log_export_type must be 'Cloudwatch'"
   }
 }
+

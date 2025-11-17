@@ -1,3 +1,8 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
 //////
 // AWS variables
 //////
@@ -15,7 +20,7 @@ variable "tags" {
 }
 
 variable "mariadb_rds_cluster_identifier" {
-  type        = string
+  type = string
   default     = "guardium-mariadb"
   description = "MariaDB RDS cluster identifier to be monitored"
 }
@@ -29,6 +34,7 @@ variable "force_failover" {
 variable "mariadb_major_version" {
   type        = string
   description = "Major version of MariaDB (e.g., '10.6')"
+  default = "10.6"
 }
 
 variable "audit_events" {
@@ -47,6 +53,24 @@ variable "audit_file_rotate_size" {
   type        = string
   description = "Size in bytes before rotating audit file"
   default     = "1000000"
+}
+
+variable "audit_incl_users" {
+  type        = string
+  description = "Comma-separated list of users to include in audit logs (SERVER_AUDIT_INCL_USERS). If set, only these users will be audited. Leave empty to audit all users."
+  default     = ""
+}
+
+variable "audit_excl_users" {
+  type        = string
+  description = "Comma-separated list of users to exclude from audit logs (SERVER_AUDIT_EXCL_USERS). Example: 'rdsadmin,testuser'. The rdsadmin user queries the database every second for health checks, which can cause log files to grow quickly."
+  default     = "rdsadmin"
+}
+
+variable "audit_query_log_limit" {
+  type        = string
+  description = "Maximum query length to log in bytes (SERVER_AUDIT_QUERY_LOG_LIMIT). Queries longer than this will be truncated. Default is 1024 bytes."
+  default     = "1024"
 }
 
 //////

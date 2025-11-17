@@ -4,10 +4,10 @@
 #
 
 locals {
-  udc_name = format("%s%s-%s", var.aws_region, var.mariadb_rds_cluster_identifier, local.aws_account_id)
+  udc_name = format("%s%s-%s", var.aws_region, var.mysql_rds_cluster_identifier, local.aws_account_id)
   aws_region     = var.aws_region
   aws_account_id = module.common_aws-configuration.aws_account_id
-  log_group = format("/aws/rds/instance/%s/audit", var.mariadb_rds_cluster_identifier)
+  log_group = format("/aws/rds/instance/%s/audit", var.mysql_rds_cluster_identifier)
 }
 
 module "common_aws-configuration" {
@@ -17,9 +17,9 @@ module "common_aws-configuration" {
 module "common_rds-mariadb-mysql-parameter-group" {
   source = "IBM/common/guardium//modules/rds-mariadb-mysql-parameter-group"
 
-  db_engine = "mariadb"
-  rds_cluster_identifier = var.mariadb_rds_cluster_identifier
-  db_major_version = var.mariadb_major_version
+  db_engine = "mysql"
+  rds_cluster_identifier = var.mysql_rds_cluster_identifier
+  db_major_version = var.mysql_major_version
   audit_events = var.audit_events
   audit_file_rotations = var.audit_file_rotations
   audit_file_rotate_size = var.audit_file_rotate_size
@@ -35,8 +35,8 @@ module "common_rds-mariadb-mysql-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
  source = "IBM/common/guardium//modules/rds-mariadb-mysql-cloudwatch-registration"
 
-  db_engine = "mariadb"
-  rds_cluster_identifier = var.mariadb_rds_cluster_identifier
+  db_engine = "mysql"
+  rds_cluster_identifier = var.mysql_rds_cluster_identifier
   aws_region = var.aws_region
   aws_account_id = local.aws_account_id
   gdp_client_id = var.gdp_client_id

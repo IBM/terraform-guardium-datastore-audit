@@ -7,15 +7,15 @@ provider "aws" {
   region = var.aws_region
 }
 
-module "datastore-audit_aws-mariadb-rds-audit" {
-  source = "../../modules/aws-mariadb-rds-audit"
+module "datastore-audit_aws-mysql-rds-audit" {
+  source = "../../modules/aws-mysql-rds-audit"
 
   # AWS Configuration
   aws_region                     = var.aws_region
 
-  # MariaDB RDS Configuration
-  mariadb_rds_cluster_identifier = var.mariadb_rds_cluster_identifier
-  mariadb_major_version          = var.mariadb_major_version
+  # MySQL RDS Configuration
+  mysql_rds_cluster_identifier   = var.mysql_rds_cluster_identifier
+  mysql_major_version            = var.mysql_major_version
   force_failover                 = var.force_failover
 
   # Audit Configuration

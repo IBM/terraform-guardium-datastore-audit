@@ -19,7 +19,7 @@ Before using this example, ensure you have:
 
 2. **Guardium Data Protection**:
    - A running Guardium Data Protection instance
-   - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](../../docs/preparing-guardium.md):
+   - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
      - OAuth client registered via `grdapi register_oauth_client`
      - AWS credentials configured in Guardium Data Protection
      - SSH access configured for Terraform

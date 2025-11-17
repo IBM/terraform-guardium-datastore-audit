@@ -23,20 +23,20 @@ The following diagram illustrates how this module orchestrates the configuration
         │                                                           │
         │              AWS Datastore Configuration                  │
         │                                                           │
-        │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐ │
-        │  │  DynamoDB   │  │  DocumentDB  │  │  MariaDB RDS    │ │
-        │  │  + CloudTrail│  │  + Audit Logs│  │  + Audit Plugin │ │
-        │  └─────────────┘  └──────────────┘  └─────────────────┘ │
+        │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐   │
+        │  │  DynamoDB   │  │  DocumentDB  │  │  MariaDB RDS    │   │
+        │  │ + CloudTrail│  │  + Audit Logs│  │  + Audit Plugin │   │
+        │  └─────────────┘  └──────────────┘  └─────────────────┘   │
         │                                                           │
-        │  ┌──────────────────────────────────────────────────┐    │
-        │  │  PostgreSQL RDS                                  │    │
-        │  │  + pgAudit (Object/Session Level)                │    │
-        │  └──────────────────────────────────────────────────┘    │
+        │  ┌─────────────────┐  ┌────────────────────────────┐      │
+        │  │  MySQL RDS      │  │  PostgreSQL RDS            │      │
+        │  │  + Audit Plugin │  │  + pgAudit (Object/Session)│      │
+        │  └─────────────────┘  └────────────────────────────┘      │
         │                                                           │
-        │  ┌──────────────────────────────────────────────────┐    │
-        │  │  Redshift                                        │    │
-        │  │  + Connection & User Activity Logs               │    │
-        │  └──────────────────────────────────────────────────┘    │
+        │  ┌──────────────────────────────────────────────────┐     │
+        │  │  Redshift                                        │     │
+        │  │  + Connection & User Activity Logs               │     │
+        │  └──────────────────────────────────────────────────┘     │
         │                                                           │
         └───────────────────────────────────────────────────────────┘
                                         │
@@ -46,10 +46,10 @@ The following diagram illustrates how this module orchestrates the configuration
         │                                                           │
         │              AWS Log Aggregation Layer                    │
         │                                                           │
-        │  ┌─────────────────┐         ┌──────────────────────┐   │
-        │  │  CloudWatch     │         │  S3 Buckets          │   │
-        │  │  Log Groups     │         │  (CloudTrail Logs)   │   │
-        │  └─────────────────┘         └──────────────────────┘   │
+        │  ┌─────────────────┐         ┌──────────────────────┐     │
+        │  │  CloudWatch     │         │  S3 Buckets          │     │
+        │  │  Log Groups     │         │  (CloudTrail Logs)   │     │
+        │  └─────────────────┘         └──────────────────────┘     │
         │                                                           │
         └───────────────────────────────────────────────────────────┘
                                         │
@@ -83,28 +83,29 @@ The following diagram illustrates how this module orchestrates the configuration
 ### Architecture Flow
 
 1. **Datastore Configuration**: The module configures each AWS datastore to enable audit logging:
-   - **DynamoDB**: Enables CloudTrail data events to capture API calls
-   - **DocumentDB**: Enables audit and profiler logs via parameter groups
-   - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
-   - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
-   - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
+  - **DynamoDB**: Enables CloudTrail data events to capture API calls
+  - **DocumentDB**: Enables audit and profiler logs via parameter groups
+  - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
+  - **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
+  - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
+  - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
 
 2. **Log Aggregation**: Audit logs are collected in AWS:
-   - CloudWatch Log Groups store structured logs
-   - S3 buckets provide long-term storage for CloudTrail logs
-   - IAM roles and policies ensure secure access
+  - CloudWatch Log Groups store structured logs
+  - S3 buckets provide long-term storage for CloudTrail logs
+  - IAM roles and policies ensure secure access
 
 3. **Universal Connector**: The module deploys and configures Guardium Universal Connector:
-   - Establishes connection to CloudWatch Logs or S3
-   - Uses AWS credentials configured in Guardium
-   - Applies parsing rules specific to each datastore type
-   - Streams processed data to Guardium Data Protection
+  - Establishes connection to CloudWatch Logs or S3
+  - Uses AWS credentials configured in Guardium
+  - Applies parsing rules specific to each datastore type
+  - Streams processed data to Guardium Data Protection
 
 4. **Guardium Integration**: Audit data flows into Guardium for:
-   - Real-time security monitoring
-   - Compliance reporting (PCI-DSS, HIPAA, GDPR, etc.)
-   - Threat detection and alerting
-   - Forensic analysis and investigation
+  - Real-time security monitoring
+  - Compliance reporting (PCI-DSS, HIPAA, GDPR, etc.)
+  - Threat detection and alerting
+  - Forensic analysis and investigation
 
 ## Supported Datastores
 
@@ -115,6 +116,7 @@ This module provides audit configuration for the following AWS datastores:
 | AWS DynamoDB | `modules/aws-dynamodb` | CloudTrail Data Events | CloudWatch Logs |
 | AWS DocumentDB | `modules/aws-documentdb` | DocumentDB Audit Logs | CloudWatch Logs |
 | AWS MariaDB RDS | `modules/aws-mariadb-rds-audit` | MariaDB Audit Plugin | CloudWatch Logs |
+| AWS MySQL RDS | `modules/aws-mysql-rds-audit` | MariaDB Audit Plugin | CloudWatch Logs |
 | AWS PostgreSQL RDS (Object) | `modules/aws-postgresql-rds-object` | pgAudit (Object-Level) | CloudWatch/SQS |
 | AWS PostgreSQL RDS (Session) | `modules/aws-postgresql-rds-session` | pgAudit (Session-Level) | CloudWatch/SQS |
 | AWS Redshift | `modules/aws-redshift` | Connection & User Activity Logs | CloudWatch Logs/S3 |
@@ -124,17 +126,17 @@ This module provides audit configuration for the following AWS datastores:
 Before using this module, ensure you have:
 
 1. **AWS Account**: With appropriate permissions to create and manage:
-   - CloudTrail and CloudWatch resources
-   - IAM roles and policies
-   - S3 buckets
-   - Database parameter/option groups
-   - SQS queues (for PostgreSQL modules)
+  - CloudTrail and CloudWatch resources
+  - IAM roles and policies
+  - S3 buckets
+  - Database parameter/option groups
+  - SQS queues (for PostgreSQL modules)
 
 2. **Guardium Data Protection Instance**: A running GDP cluster with:
-   - SSH access configured
-   - Web UI credentials with appropriate permissions
-   - OAuth client registered via `grdapi register_oauth_client`
-   - AWS credentials configured in Universal Connector
+  - SSH access configured
+  - Web UI credentials with appropriate permissions
+  - OAuth client registered via `grdapi register_oauth_client`
+  - AWS credentials configured in Universal Connector
 
 3. **Terraform**: Version 1.0.0 or later
 
@@ -223,7 +225,42 @@ module "mariadb_audit" {
   mariadb_major_version          = "10.6"
   
   # Audit Configuration
-  audit_events = "CONNECT,QUERY,TABLE"
+  audit_events          = "CONNECT,QUERY"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_ssh_username       = "root"
+  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  log_export_type    = "Cloudwatch"
+
+  tags = {
+    Environment = "production"
+  }
+}
+```
+
+### AWS MySQL RDS Audit Configuration
+
+Configure MariaDB Audit Plugin for MySQL RDS instances:
+
+```hcl
+module "mysql_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-mysql-rds-audit"
+
+  # AWS Configuration
+  aws_region                   = "us-east-1"
+  mysql_rds_cluster_identifier = "my-mysql-instance"
+  mysql_major_version          = "5.7"
+  
+  # Audit Configuration
+  audit_events          = "CONNECT,QUERY"
   
   # Guardium Configuration
   gdp_server             = "guardium.example.com"
@@ -367,6 +404,7 @@ Complete working examples are available in the `examples/` directory:
 - [aws-documentdb](examples/aws-documentdb) - DocumentDB audit configuration with Universal Connector
 - [aws-dynamodb](examples/aws-dynamodb) - DynamoDB audit configuration with Universal Connector
 - [aws-mariadb-rds-audit](examples/aws-mariadb-rds-audit) - MariaDB RDS audit configuration
+- [aws-mysql-rds-audit](examples/aws-mysql-rds-audit) - MySQL RDS audit configuration
 - [aws-postgresql-rds-object](examples/aws-postgresql-rds-object) - PostgreSQL object-level auditing
 - [aws-postgresql-rds-object-tables](examples/aws-postgresql-rds-object-tables) - PostgreSQL object-level auditing with specific tables
 - [aws-postgresql-rds-session](examples/aws-postgresql-rds-session) - PostgreSQL session-level auditing
@@ -381,7 +419,7 @@ Each example includes:
 
 - **Automated Configuration**: Automatically configures audit logging for AWS datastores
 - **Universal Connector Integration**: Seamlessly integrates with Guardium Universal Connector
-- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, and PostgreSQL RDS
+- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, and PostgreSQL RDS
 - **Flexible Audit Levels**: Choose between object-level and session-level auditing for PostgreSQL
 - **CloudWatch Integration**: Leverages CloudWatch Logs for centralized log management
 - **Compliance Ready**: Supports compliance requirements (PCI-DSS, HIPAA, GDPR, SOC 2)
@@ -401,24 +439,24 @@ Each example includes:
 ### Common Issues
 
 1. **CloudTrail Not Capturing Events**:
-   - Verify CloudTrail is configured with data events for the specific datastore
-   - Check IAM permissions for CloudTrail
-   - Ensure CloudWatch Log Group is properly configured
+  - Verify CloudTrail is configured with data events for the specific datastore
+  - Check IAM permissions for CloudTrail
+  - Ensure CloudWatch Log Group is properly configured
 
 2. **Universal Connector Not Processing Logs**:
-   - Verify AWS credentials are correctly configured in Guardium
-   - Check network connectivity between Guardium and AWS
-   - Review Universal Connector logs in Guardium UI
+  - Verify AWS credentials are correctly configured in Guardium
+  - Check network connectivity between Guardium and AWS
+  - Review Universal Connector logs in Guardium UI
 
 3. **Parameter/Option Group Changes Not Applied**:
-   - Some changes require database restart or failover
-   - Check the `force_failover` variable setting
-   - Review AWS RDS events for any errors
+  - Some changes require database restart or failover
+  - Check the `force_failover` variable setting
+  - Review AWS RDS events for any errors
 
 4. **Authentication Errors**:
-   - Verify Guardium OAuth client credentials
-   - Ensure SSH key has correct permissions (600)
-   - Check Guardium user has appropriate permissions
+  - Verify Guardium OAuth client credentials
+  - Ensure SSH key has correct permissions (600)
+  - Check Guardium user has appropriate permissions
 
 For detailed troubleshooting, refer to the individual module READMEs.
 
