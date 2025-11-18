@@ -4,7 +4,7 @@ Terraform module which configures AWS datastores for audit logging and integrate
 
 ## Scope
 
-This module automates the configuration of audit logging for various AWS datastores (DynamoDB, DocumentDB, MariaDB RDS, PostgreSQL RDS) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
+This module automates the configuration of audit logging for various AWS datastores (DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, PostgreSQL RDS, Aurora PostgreSQL) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
 
 ## High-Level Architecture
 
@@ -32,6 +32,11 @@ The following diagram illustrates how this module orchestrates the configuration
         │  │  MySQL RDS      │  │  PostgreSQL RDS            │      │
         │  │  + Audit Plugin │  │  + pgAudit (Object/Session)│      │
         │  └─────────────────┘  └────────────────────────────┘      │
+        │                                                           │
+        │  ┌──────────────────────────────────────────────────┐     │
+        │  │  Aurora PostgreSQL                               │     │
+        │  │  + pgAudit (Object/Session)                      │     │
+        │  └──────────────────────────────────────────────────┘     │
         │                                                           │
         │  ┌──────────────────────────────────────────────────┐     │
         │  │  Redshift                                        │     │
@@ -88,6 +93,7 @@ The following diagram illustrates how this module orchestrates the configuration
   - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
   - **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
   - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
+  - **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
   - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
 
 2. **Log Aggregation**: Audit logs are collected in AWS:
@@ -119,6 +125,8 @@ This module provides audit configuration for the following AWS datastores:
 | AWS MySQL RDS | `modules/aws-mysql-rds-audit` | MariaDB Audit Plugin | CloudWatch Logs |
 | AWS PostgreSQL RDS (Object) | `modules/aws-postgresql-rds-object` | pgAudit (Object-Level) | CloudWatch/SQS |
 | AWS PostgreSQL RDS (Session) | `modules/aws-postgresql-rds-session` | pgAudit (Session-Level) | CloudWatch/SQS |
+| AWS Aurora PostgreSQL (Object) | `modules/aws-aurora-postgres-object` | pgAudit (Object-Level) | CloudWatch/SQS |
+| AWS Aurora PostgreSQL (Session) | `modules/aws-aurora-postgres-session` | pgAudit (Session-Level) | CloudWatch/SQS |
 | AWS Redshift | `modules/aws-redshift` | Connection & User Activity Logs | CloudWatch Logs/S3 |
 
 ## Prerequisites
@@ -356,6 +364,90 @@ module "postgres_session_audit" {
 }
 ```
 
+### AWS Aurora PostgreSQL Object-Level Audit Configuration
+
+Monitor specific tables in Aurora PostgreSQL clusters with granular control:
+
+```hcl
+module "aurora_postgres_object_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-aurora-postgres-object"
+
+  # AWS Configuration
+  aws_region                         = "us-east-1"
+  aurora_postgres_cluster_identifier = "my-aurora-cluster"
+  
+  # Database Connection
+  db_host     = "my-aurora-cluster.cluster-example.region.rds.amazonaws.com"
+  db_port     = 5432
+  db_username = "admin"
+  db_password = "password"
+  db_name     = "postgres"
+  
+  # Tables to Monitor
+  tables = [
+    {
+      schema = "public"
+      table  = "users"
+      grants = ["SELECT", "INSERT", "UPDATE", "DELETE"]
+    },
+    {
+      schema = "public"
+      table  = "orders"
+      grants = ["SELECT", "INSERT"]
+    }
+  ]
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_ssh_username       = "root"
+  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  log_export_type    = "Cloudwatch"
+  
+  # Optional: Force cluster failover to apply parameter changes immediately
+  force_failover = false
+}
+```
+
+### AWS Aurora PostgreSQL Session-Level Audit Configuration
+
+Capture all database activity comprehensively for Aurora PostgreSQL clusters:
+
+```hcl
+module "aurora_postgres_session_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-aurora-postgres-session"
+
+  # AWS Configuration
+  aws_region                         = "us-east-1"
+  aurora_postgres_cluster_identifier = "my-aurora-cluster"
+  
+  # Audit Configuration
+  pg_audit_log = "all"  # Options: all, ddl, write, read, function, role, misc
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_ssh_username       = "root"
+  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  log_export_type    = "Cloudwatch"
+  
+  # Optional: Force cluster failover to apply parameter changes immediately
+  force_failover = false
+}
+```
+
 ### AWS Redshift Audit Configuration
 
 Enable comprehensive audit logging for Redshift clusters:
@@ -401,13 +493,15 @@ module "redshift_audit" {
 
 Complete working examples are available in the `examples/` directory:
 
+- [aws-aurora-postgres-object](examples/aws-aurora-postgres-object) - Aurora PostgreSQL object-level auditing
+- [aws-aurora-postgres-session](examples/aws-aurora-postgres-session) - Aurora PostgreSQL session-level auditing
 - [aws-documentdb](examples/aws-documentdb) - DocumentDB audit configuration with Universal Connector
 - [aws-dynamodb](examples/aws-dynamodb) - DynamoDB audit configuration with Universal Connector
 - [aws-mariadb-rds-audit](examples/aws-mariadb-rds-audit) - MariaDB RDS audit configuration
 - [aws-mysql-rds-audit](examples/aws-mysql-rds-audit) - MySQL RDS audit configuration
-- [aws-postgresql-rds-object](examples/aws-postgresql-rds-object) - PostgreSQL object-level auditing
-- [aws-postgresql-rds-object-tables](examples/aws-postgresql-rds-object-tables) - PostgreSQL object-level auditing with specific tables
-- [aws-postgresql-rds-session](examples/aws-postgresql-rds-session) - PostgreSQL session-level auditing
+- [aws-postgresql-rds-object](examples/aws-postgresql-rds-object) - PostgreSQL RDS object-level auditing
+- [aws-postgresql-rds-object-tables](examples/aws-postgresql-rds-object-tables) - PostgreSQL RDS object-level auditing with specific tables
+- [aws-postgresql-rds-session](examples/aws-postgresql-rds-session) - PostgreSQL RDS session-level auditing
 - [aws-redshift-with-uc](examples/aws-redshift-with-uc) - Redshift audit configuration with Universal Connector
 
 Each example includes:
@@ -419,9 +513,10 @@ Each example includes:
 
 - **Automated Configuration**: Automatically configures audit logging for AWS datastores
 - **Universal Connector Integration**: Seamlessly integrates with Guardium Universal Connector
-- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, and PostgreSQL RDS
-- **Flexible Audit Levels**: Choose between object-level and session-level auditing for PostgreSQL
+- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, PostgreSQL RDS, and Aurora PostgreSQL
+- **Flexible Audit Levels**: Choose between object-level and session-level auditing for PostgreSQL and Aurora PostgreSQL
 - **CloudWatch Integration**: Leverages CloudWatch Logs for centralized log management
+- **Aurora Cluster Support**: Native support for Aurora PostgreSQL clusters with automatic parameter group management
 - **Compliance Ready**: Supports compliance requirements (PCI-DSS, HIPAA, GDPR, SOC 2)
 - **Terraform Native**: Fully declarative infrastructure as code approach
 
