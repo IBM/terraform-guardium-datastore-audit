@@ -1,3 +1,8 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
 locals {
   log_group = format("/aws/rds/cluster/%s/postgresql", var.aurora_postgres_cluster_identifier)
 }

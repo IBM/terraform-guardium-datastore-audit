@@ -1,3 +1,8 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
 locals {
   udc_name = format("%s%s-%s", var.aws_region, var.aurora_postgres_cluster_identifier, local.aws_account_id)
   aws_region     = var.aws_region
