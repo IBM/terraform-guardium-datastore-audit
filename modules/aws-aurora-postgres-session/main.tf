@@ -3,7 +3,7 @@ locals {
 }
 
 module "aws_configuration" {
-  source = "git::https://github.com/IBM/terraform-guardium-common.git//modules/aws-configuration?ref=SV-INS-60624"
+  source = "IBM/terraform-guardium-common//modules/aws-configuration"
 }
 
 data "aws_rds_cluster" "cluster_metadata" {
@@ -11,7 +11,7 @@ data "aws_rds_cluster" "cluster_metadata" {
 }
 
 module "aurora-postgres-parameter-group" {
-  source = "git::https://github.com/IBM/terraform-guardium-common.git//modules/aurora-postgres-parameter-group?ref=SV-INS-60624"
+  source = "IBM/terraform-guardium-common//modules/aurora-postgres-parameter-group"
   pg_audit_log = var.pg_audit_log
   pg_audit_role = ""  # Not used in session auditing
   force_failover = var.force_failover
@@ -21,7 +21,7 @@ module "aurora-postgres-parameter-group" {
 
 module "aurora-postgres-sqs-registration" {
   count  = var.log_export_type == "SQS" ? 1 : 0
-  source = "git::https://github.com/IBM/terraform-guardium-common.git//modules/aurora-postgres-sqs-registration?ref=SV-INS-60624"
+  source = "IBM/terraform-guardium-common//modules/aurora-postgres-sqs-registration"
 
   aws_account_id = module.aws_configuration.aws_account_id
   gdp_client_id = var.gdp_client_id
@@ -43,7 +43,7 @@ module "aurora-postgres-sqs-registration" {
 
 module "aurora-postgres-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
-  source = "git::https://github.com/IBM/terraform-guardium-common.git//modules/aurora-postgres-cloudwatch-registration?ref=SV-INS-60624"
+  source = "IBM/terraform-guardium-common//modules/aurora-postgres-cloudwatch-registration"
 
   aws_account_id = module.aws_configuration.aws_account_id
   gdp_client_id = var.gdp_client_id
