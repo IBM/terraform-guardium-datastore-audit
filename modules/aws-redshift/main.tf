@@ -156,9 +156,9 @@ resource "null_resource" "configure_logging" {
   depends_on = [null_resource.apply_parameter_group]
 }
 
-# Universal Connector module - using local fork with configurable log directory
+# Universal Connector module - using fixed registry module with configurable log directory
 module "gdp_connect-datasource-to-uc" {
-  source = "../connect-datasource-to-uc"
+  source = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
   count  = var.enable_universal_connector ? 1 : 0  # Skip creation when disabled
   
   udc_name = local.udc_name_safe

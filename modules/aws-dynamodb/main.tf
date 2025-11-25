@@ -231,7 +231,7 @@ locals {
 }
 
 module "gdp_connect-datasource-to-uc" {
-  source = "../connect-datasource-to-uc"
+  source = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
   count  = var.enable_universal_connector ? 1 : 0  # Skip creation when disabled
   udc_name = local.udc_name_safe
   udc_csv_parsed = local.udc_csv
