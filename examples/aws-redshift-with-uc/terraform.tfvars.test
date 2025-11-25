@@ -1,0 +1,51 @@
+# AWS Redshift with Universal Connector Configuration - TEST VERSION
+
+# General Configuration
+name_prefix = "guardium"
+aws_region  = "us-west-1"
+tags = {
+  Purpose = "guardium-redshift-uc-test"
+  Owner   = "reza"
+}
+
+# Redshift Configuration
+redshift_cluster_identifier = "guardium-redshift"
+
+# Input Configuration
+input_type = "cloudwatch"  # Using CloudWatch as requested
+
+# CloudWatch Configuration
+existing_cloudwatch_log_group_name = "/aws/redshift/cluster/guardium-redshift"  # Use existing log group
+
+# S3 Configuration
+existing_s3_bucket_name = ""
+s3_prefix = ""
+
+# Parameter Group Configuration
+create_parameter_group = false  # We'll use the existing parameter group
+existing_parameter_group_name = "redshift-monitoring-params-jncyoqla"  # The parameter group we modified earlier
+enable_logging = true  # Enable logging
+
+# Guardium Data Protection Configuration
+gdp_server = "cm-rr-guardium.dev.fyre.ibm.com"
+gdp_ssh_username = "root"
+gdp_ssh_privatekeypath = "/Users/reza/.ssh/gdpssh"
+gdp_username = "admin"
+gdp_password = "!QAZ2wsx"
+gdp_mu_host = "mu2-rr-1-guardium.dev.fyre.ibm.com"
+gdp_client_id = "client2"
+gdp_client_secret = "996a0ca5-d9db-499f-8be1-88f7318ca6fe"
+
+
+# Universal Connector Configuration
+enable_universal_connector = true
+udc_aws_credential        = "glenn_aws"  # Name for the AWS credential in Guardium
+csv_start_position        = "end"
+csv_interval              = "5"
+codec_pattern             = "plain"
+csv_event_filter          = "*"
+csv_description           = "Redshift Universal Connector TEST"
+csv_cluster_name          = "guardium-redshift"
+
+# Log Directory - where CSV files are stored on Guardium server (defaults to /home/cli)
+# log_directory = "/home/cli"

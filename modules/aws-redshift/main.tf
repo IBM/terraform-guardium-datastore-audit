@@ -156,16 +156,16 @@ resource "null_resource" "configure_logging" {
   depends_on = [null_resource.apply_parameter_group]
 }
 
-# Universal Connector module - using fixed registry module with configurable log directory
+# Universal Connector module - TESTING with local fixed module
 module "gdp_connect-datasource-to-uc" {
-  source = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
+  source = "../connect-datasource-to-uc-test"
   count  = var.enable_universal_connector ? 1 : 0  # Skip creation when disabled
   
   udc_name = local.udc_name_safe
   udc_csv_parsed = local.udc_csv
   
-  # Log directory configuration - defaults to /var/log/guardium if not specified
-  log_directory = var.log_directory
+  # Log directory configuration - only pass if explicitly set, otherwise use module default
+  log_directory = var.log_directory != "" ? var.log_directory : "/home/cli"
   
   client_id              = var.gdp_client_id
   client_secret          = var.gdp_client_secret
