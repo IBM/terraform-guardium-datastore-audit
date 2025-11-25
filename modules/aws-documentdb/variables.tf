@@ -100,3 +100,9 @@ variable "csv_event_filter" {
   description = "UDC Event filters"
   default     = ""
 }
+
+variable "log_directory" {
+  type        = string
+  description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/log/guardium if not specified."
+  default     = ""
+}

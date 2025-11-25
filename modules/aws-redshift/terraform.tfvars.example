@@ -45,3 +45,8 @@ csv_interval              = "60"
 csv_event_filter          = "*"
 csv_description           = "Redshift Universal Connector"
 csv_cluster_name          = "default"
+
+# Log Directory Configuration
+# Directory on Guardium server where CSV files will be stored
+# Leave empty to use default: /var/log/guardium (customer-accessible)
+log_directory = ""

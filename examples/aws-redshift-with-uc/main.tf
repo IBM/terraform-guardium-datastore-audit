@@ -59,4 +59,7 @@ module "datastore-audit_aws-redshift" {
   csv_event_filter          = var.csv_event_filter
   csv_description           = var.csv_description
   csv_cluster_name          = var.csv_cluster_name
+  
+  # Log Directory Configuration
+  log_directory             = var.log_directory
 }

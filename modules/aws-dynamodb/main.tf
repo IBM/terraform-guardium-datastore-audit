@@ -231,10 +231,14 @@ locals {
 }
 
 module "gdp_connect-datasource-to-uc" {
-  source = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
+  source = "../connect-datasource-to-uc"
   count  = var.enable_universal_connector ? 1 : 0  # Skip creation when disabled
   udc_name = local.udc_name_safe
   udc_csv_parsed = local.udc_csv
+  
+  # Log directory configuration - defaults to /var/log/guardium if not specified
+  log_directory = var.log_directory
+  
   client_id              = var.gdp_client_id
   client_secret          = var.gdp_client_secret
   gdp_server             = var.gdp_server

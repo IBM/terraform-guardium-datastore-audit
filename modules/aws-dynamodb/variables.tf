@@ -157,3 +157,9 @@ variable "existing_cloudwatch_log_group_name" {
   default     = ""
 }
 
+variable "log_directory" {
+  type        = string
+  description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/log/guardium if not specified."
+  default     = ""
+}
+

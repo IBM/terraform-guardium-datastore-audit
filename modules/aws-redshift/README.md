@@ -110,6 +110,7 @@ module "redshift_uc" {
 | csv_event_filter | Event filter for the Universal Connector | string | "*" | no |
 | csv_description | Description for the Universal Connector | string | "Redshift Universal Connector" | no |
 | csv_cluster_name | Cluster name for the Universal Connector | string | "default" | no |
+| log_directory | Directory path on Guardium server where CSV files will be stored | string | "" (defaults to /var/log/guardium) | no |
 
 ## Output Variables
 
