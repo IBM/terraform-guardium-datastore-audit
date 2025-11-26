@@ -1,8 +1,8 @@
 locals {
   udc_name =  var.udc_name
   udc_csv = var.udc_csv_parsed
-  # Use provided log_directory or default to /home/cli if empty
-  log_directory = var.log_directory != "" ? var.log_directory : "/home/cli"
+  # Use provided log_directory or default to /var/IBM/Guardium/file-server/upload if empty
+  log_directory = var.log_directory != "" ? var.log_directory : "/var/IBM/Guardium/file-server/upload"
 }
 
 resource "terraform_data" "copy_csv" {
@@ -59,8 +59,9 @@ output "test" {
 }
 
 resource "guardium-data-protection_import_profiles" "import_profiles" {
+  depends_on = [terraform_data.copy_csv]
   access_token = data.guardium-data-protection_authentication.access_token.access_token
-  path_to_file = terraform_data.copy_csv.output.path_to_file
+  path_to_file = format("%s/%s.csv", local.log_directory, var.udc_name)
   update_mode = true
 }
 
