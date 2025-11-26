@@ -37,7 +37,8 @@ module "common_rds-postgres-sqs-registration" {
   gdp_ssh_username = var.gdp_ssh_username
   udc_aws_credential = var.udc_aws_credential
   log_group = local.log_group
-  profile_upload_directory = var.profile_upload_directory != "" ? var.profile_upload_directory : "/var/IBM/Guardium/file-server/upload"
+  profile_upload_directory = var.profile_upload_directory
+  profile_api_directory    = var.profile_api_directory
 }
 
 module "common_rds-postgres-cloudwatch-registration" {
@@ -55,5 +56,6 @@ module "common_rds-postgres-cloudwatch-registration" {
   gdp_ssh_username = var.gdp_ssh_username
   udc_aws_credential = var.udc_aws_credential
   log_group = local.log_group
-  profile_upload_directory = var.profile_upload_directory != "" ? var.profile_upload_directory : "/var/IBM/Guardium/file-server/upload"
+  profile_upload_directory = var.profile_upload_directory
+  profile_api_directory    = var.profile_api_directory
 }
