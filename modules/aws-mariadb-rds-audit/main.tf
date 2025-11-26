@@ -55,4 +55,5 @@ module "common_rds-mariadb-mysql-cloudwatch-registration" {
   csv_start_position = var.csv_start_position
   csv_interval = var.csv_interval
   csv_event_filter = var.csv_event_filter
+  log_directory = var.log_directory != "" ? var.log_directory : "/var/IBM/Guardium/file-server/upload"
 }

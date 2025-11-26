@@ -181,7 +181,7 @@ variable "csv_cluster_name" {
 }
 
 variable "log_directory" {
-  description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/log/guardium if not specified. Must be accessible to customers."
   type        = string
+  description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/IBM/Guardium/file-server/upload if not specified. Must be accessible to tomcat user for Guardium API."
   default     = ""
 }

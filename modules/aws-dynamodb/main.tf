@@ -236,8 +236,8 @@ module "gdp_connect-datasource-to-uc" {
   udc_name = local.udc_name_safe
   udc_csv_parsed = local.udc_csv
   
-  # Log directory configuration - defaults to /var/log/guardium if not specified
-  log_directory = var.log_directory
+  # Log directory configuration - only pass if explicitly set, otherwise use module default
+  log_directory = var.log_directory != "" ? var.log_directory : "/var/IBM/Guardium/file-server/upload"
   
   client_id              = var.gdp_client_id
   client_secret          = var.gdp_client_secret

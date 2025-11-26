@@ -103,6 +103,6 @@ variable "csv_event_filter" {
 
 variable "log_directory" {
   type        = string
-  description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/log/guardium if not specified."
+  description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/IBM/Guardium/file-server/upload if not specified. Must be accessible to tomcat user for Guardium API."
   default     = ""
 }

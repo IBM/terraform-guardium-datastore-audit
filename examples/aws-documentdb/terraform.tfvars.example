@@ -18,6 +18,18 @@ gdp_mu_host = "mu1,mu2"  # Comma-separated list of Managed Units
 udc_name = "documentdb-gdp"  # Default name for the connector
 csv_interval = "30"  # Polling interval in seconds
 
+# Log Directory Configuration
+#----------------------------------------
+# Directory on Guardium server where CSV files will be stored
+# Leave empty to use default: /var/IBM/Guardium/file-server/upload
+# This directory is accessible to both Guardium API and internal processes
+# Common options:
+#   - "" (empty) - Uses /var/IBM/Guardium/file-server/upload (default, API-accessible)
+#   - "/var/IBM/Guardium/file-server/upload" - Explicit default (recommended)
+#   - Custom path - Must be accessible to tomcat user for Guardium API
+#----------------------------------------
+log_directory = ""  # Leave empty for default /var/IBM/Guardium/file-server/upload
+
 # Resource Tags
 tags = {
   Environment = "Production"
