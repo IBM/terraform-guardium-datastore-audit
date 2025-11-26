@@ -181,7 +181,7 @@ variable "csv_cluster_name" {
   default     = "default"
 }
 
-variable "log_directory" {
+variable "profile_upload_directory" {
   description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/log/guardium if not specified."
   type        = string
   default     = ""

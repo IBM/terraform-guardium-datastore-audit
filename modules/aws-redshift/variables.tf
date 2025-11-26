@@ -180,7 +180,7 @@ variable "csv_cluster_name" {
   default     = "default"
 }
 
-variable "log_directory" {
+variable "profile_upload_directory" {
   type        = string
   description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/IBM/Guardium/file-server/upload if not specified. Must be accessible to tomcat user for Guardium API."
   default     = ""

@@ -46,7 +46,7 @@ csv_cluster_name = ""
 #   - "/var/IBM/Guardium/file-server/upload" - Explicit default (recommended)
 #   - Custom path - Must be accessible to tomcat user for Guardium API
 #----------------------------------------
-log_directory = ""  # Leave empty for default /var/IBM/Guardium/file-server/upload
+profile_upload_directory = ""  # Leave empty for default /var/IBM/Guardium/file-server/upload
 
 #----------------------------------------
 # Guardium Connection Details

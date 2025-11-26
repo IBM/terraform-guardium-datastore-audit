@@ -64,7 +64,7 @@ variable "udc_name" {
   description = "Universal Data Collector name. This will be the unique name used in the UI"
 }
 
-variable "log_directory" {
+variable "profile_upload_directory" {
   type        = string
   description = "Directory on Guardium server where CSV configuration files will be stored"
   default     = "/var/IBM/Guardium/file-server/upload"

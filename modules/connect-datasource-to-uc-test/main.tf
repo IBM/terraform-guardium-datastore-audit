@@ -1,14 +1,14 @@
 locals {
   udc_name =  var.udc_name
   udc_csv = var.udc_csv_parsed
-  # Use provided log_directory or default to /var/IBM/Guardium/file-server/upload if empty
-  log_directory = var.log_directory != "" ? var.log_directory : "/var/IBM/Guardium/file-server/upload"
+  # Use provided profile_upload_directory or default to /var/IBM/Guardium/file-server/upload if empty
+  profile_upload_directory = var.profile_upload_directory != "" ? var.profile_upload_directory : "/var/IBM/Guardium/file-server/upload"
 }
 
 resource "terraform_data" "copy_csv" {
   input = {
-    path_to_file     = format("%s/%s.csv", local.log_directory, var.udc_name)
-    log_directory    = local.log_directory
+    path_to_file     = format("%s/%s.csv", local.profile_upload_directory, var.udc_name)
+    profile_upload_directory    = local.profile_upload_directory
     content          = local.udc_csv
     gdp_server       = var.gdp_server
     gdp_ssh_username = var.gdp_ssh_username
@@ -25,7 +25,7 @@ resource "terraform_data" "copy_csv" {
 
   provisioner "remote-exec" {
     inline = [
-      "mkdir -p ${self.input.log_directory}"
+      "mkdir -p ${self.input.profile_upload_directory}"
     ]
   }
 
@@ -61,7 +61,7 @@ output "test" {
 resource "guardium-data-protection_import_profiles" "import_profiles" {
   depends_on = [terraform_data.copy_csv]
   access_token = data.guardium-data-protection_authentication.access_token.access_token
-  path_to_file = format("%s/%s.csv", local.log_directory, var.udc_name)
+  path_to_file = format("%s/%s.csv", local.profile_upload_directory, var.udc_name)
   update_mode = true
 }
 

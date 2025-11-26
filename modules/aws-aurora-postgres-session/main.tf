@@ -44,7 +44,7 @@ module "aurora-postgres-sqs-registration" {
   csv_start_position = var.csv_start_position
   csv_interval = var.csv_interval
   csv_event_filter = var.csv_event_filter
-  log_directory = var.log_directory != "" ? var.log_directory : "/var/IBM/Guardium/file-server/upload"
+  profile_upload_directory = var.profile_upload_directory != "" ? var.profile_upload_directory : "/var/IBM/Guardium/file-server/upload"
 }
 
 module "aurora-postgres-cloudwatch-registration" {
@@ -67,5 +67,5 @@ module "aurora-postgres-cloudwatch-registration" {
   csv_start_position = var.csv_start_position
   csv_interval = var.csv_interval
   csv_event_filter = var.csv_event_filter
-  log_directory = var.log_directory != "" ? var.log_directory : "/var/IBM/Guardium/file-server/upload"
+  profile_upload_directory = var.profile_upload_directory != "" ? var.profile_upload_directory : "/var/IBM/Guardium/file-server/upload"
 }
