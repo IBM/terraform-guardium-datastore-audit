@@ -103,6 +103,12 @@ variable "csv_event_filter" {
 
 variable "profile_upload_directory" {
   type        = string
-  description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/IBM/Guardium/file-server/upload if not specified. Must be accessible to tomcat user for Guardium API."
+  description = "Directory path for SFTP upload (may be chroot path for CLI user, e.g., /upload)"
+  default     = ""
+}
+
+variable "profile_api_directory" {
+  type        = string
+  description = "Full filesystem path for Guardium API to read CSV files (e.g., /var/IBM/Guardium/file-server/upload)"
   default     = ""
 }

@@ -83,8 +83,9 @@ module "gdp_connect-datasource-to-uc" {
   udc_name = local.udc_name
   udc_csv_parsed = local.document_db_csv
   
-  # Log directory configuration - only pass if explicitly set, otherwise use module default
+  # Directory configuration - only pass if explicitly set, otherwise use module default
   profile_upload_directory = var.profile_upload_directory != "" ? var.profile_upload_directory : "/var/IBM/Guardium/file-server/upload"
+  profile_api_directory    = var.profile_api_directory != "" ? var.profile_api_directory : "/var/IBM/Guardium/file-server/upload"
   
   client_id              = var.gdp_client_id
   client_secret          = var.gdp_client_secret

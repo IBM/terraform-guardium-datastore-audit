@@ -60,6 +60,7 @@ module "datastore-audit_aws-redshift" {
   csv_description           = var.csv_description
   csv_cluster_name          = var.csv_cluster_name
   
-  # Log Directory Configuration
-  profile_upload_directory             = var.profile_upload_directory
+  # Directory Configuration
+  profile_upload_directory = var.profile_upload_directory
+  profile_api_directory    = var.profile_api_directory
 }

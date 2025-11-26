@@ -182,7 +182,13 @@ variable "csv_cluster_name" {
 }
 
 variable "profile_upload_directory" {
-  description = "Directory path on Guardium server where CSV files will be stored. Defaults to /var/log/guardium if not specified."
+  description = "Directory path for SCP upload (may be chroot path for CLI user, e.g., /upload)"
+  type        = string
+  default     = ""
+}
+
+variable "profile_api_directory" {
+  description = "Full filesystem path for Guardium API to read CSV files (e.g., /var/IBM/Guardium/file-server/upload)"
   type        = string
   default     = ""
 }
