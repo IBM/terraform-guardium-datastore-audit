@@ -159,13 +159,13 @@ variable "existing_cloudwatch_log_group_name" {
 
 variable "profile_upload_directory" {
   type        = string
-  description = "Directory path for SFTP upload (may be chroot path for CLI user, e.g., /upload)"
-  default     = ""
+  description = "Directory path for SFTP upload (chroot path for CLI user)"
+  default     = "/upload"
 }
 
 variable "profile_api_directory" {
   type        = string
-  description = "Full filesystem path for Guardium API to read CSV files (e.g., /var/IBM/Guardium/file-server/upload)"
-  default     = ""
+  description = "Full filesystem path for Guardium API to read CSV files"
+  default     = "/var/IBM/Guardium/file-server/upload"
 }
 

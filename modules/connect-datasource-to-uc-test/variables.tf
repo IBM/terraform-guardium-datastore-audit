@@ -66,6 +66,12 @@ variable "udc_name" {
 
 variable "profile_upload_directory" {
   type        = string
-  description = "Directory on Guardium server where CSV configuration files will be stored"
+  description = "Directory path for SFTP upload (chroot path for CLI user)"
+  default     = "/upload"
+}
+
+variable "profile_api_directory" {
+  type        = string
+  description = "Full filesystem path for Guardium API to read CSV files"
   default     = "/var/IBM/Guardium/file-server/upload"
 }
