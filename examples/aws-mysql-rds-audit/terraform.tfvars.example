@@ -40,6 +40,11 @@ csv_start_position = "end"
 csv_interval = "5"
 csv_event_filter = ""
 
+# CSV Profile Upload Method
+# - true: Use multipart/form-data upload (recommended, no SFTP required)
+# - false: Use legacy SFTP method (requires SFTP access to Guardium)
+use_multipart_upload = true
+
 #----------------------------------------
 # Guardium Connection Details
 #----------------------------------------

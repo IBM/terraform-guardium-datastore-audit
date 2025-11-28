@@ -63,3 +63,8 @@ csv_event_filter = ""
 # - "SQS": Use Amazon SQS for log delivery (more real-time)
 # - "Cloudwatch": Use CloudWatch Logs for log delivery (more reliable)
 log_export_type = "Cloudwatch"
+
+# CSV Profile Upload Method
+# - true: Use multipart/form-data upload (recommended, no SFTP required)
+# - false: Use legacy SFTP method (requires SFTP access to Guardium)
+use_multipart_upload = true

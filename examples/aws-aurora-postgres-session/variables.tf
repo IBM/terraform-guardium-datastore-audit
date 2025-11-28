@@ -135,3 +135,9 @@ variable "log_export_type" {
     error_message = "log_export_type must be 'SQS' or 'Cloudwatch'"
   }
 }
+
+variable "use_multipart_upload" {
+  type        = bool
+  description = "Use multipart/form-data upload instead of SFTP (recommended). Set to false to use legacy SFTP method."
+  default     = true
+}
