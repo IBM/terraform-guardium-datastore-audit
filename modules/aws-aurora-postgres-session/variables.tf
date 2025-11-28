@@ -152,3 +152,9 @@ variable "profile_api_directory" {
   description = "Full filesystem path for Guardium API to read CSV files"
   default     = "/var/IBM/Guardium/file-server/upload"
 }
+
+variable "use_multipart_upload" {
+  type        = bool
+  description = "Use multipart/form-data upload instead of SFTP (recommended). Set to false to use legacy SFTP method."
+  default     = true
+}

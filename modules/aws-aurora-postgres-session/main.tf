@@ -46,6 +46,7 @@ module "aurora-postgres-sqs-registration" {
   csv_event_filter = var.csv_event_filter
   profile_upload_directory = var.profile_upload_directory
   profile_api_directory    = var.profile_api_directory
+  use_multipart_upload     = var.use_multipart_upload
 }
 
 module "aurora-postgres-cloudwatch-registration" {
@@ -70,4 +71,5 @@ module "aurora-postgres-cloudwatch-registration" {
   csv_event_filter = var.csv_event_filter
   profile_upload_directory = var.profile_upload_directory
   profile_api_directory    = var.profile_api_directory
+  use_multipart_upload     = var.use_multipart_upload
 }
