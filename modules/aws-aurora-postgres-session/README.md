@@ -77,6 +77,7 @@ module "aurora_postgresql_session_audit" {
 | csv_event_filter | UDC Event filters | string | "" |
 | log_export_type | The type of log exporting to be configured: "SQS" or "Cloudwatch" | string | "SQS" |
 | pg_audit_log | PGAudit log configuration | string | "all, -misc" |
+| use_multipart_upload | Use multipart/form-data upload instead of SFTP (recommended) | bool | true |
 
 ## Session Audit Configuration
 
@@ -110,6 +111,27 @@ To exclude specific types:
 ```hcl
 pg_audit_log = "all, -misc, -read"
 ```
+
+## CSV Profile Upload Methods
+
+The module supports two methods for uploading the Universal Connector CSV profile to Guardium:
+
+### Multipart Upload (Recommended - Default)
+When `use_multipart_upload = true` (default):
+- CSV file is created in your local workspace (`.terraform/` directory)
+- Provider uploads file content directly via HTTP multipart/form-data
+- No SFTP configuration required
+- More secure and easier to use
+- Works seamlessly when using modules from remote sources (Git/Terraform Registry)
+
+### Legacy SFTP Method
+When `use_multipart_upload = false`:
+- CSV file is uploaded to Guardium via SFTP first
+- Provider then sends the server path to Guardium API
+- Requires SFTP access to Guardium server
+- Maintains backward compatibility with existing deployments
+
+**Recommendation**: Use the default multipart upload method unless you have specific requirements for SFTP.
 
 ## Log Export Options
 

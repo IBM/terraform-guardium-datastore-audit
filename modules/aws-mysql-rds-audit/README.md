@@ -128,6 +128,27 @@ Valid audit event options:
 - QUERY_DML: Data Manipulation Language queries
 - QUERY_DCL: Data Control Language queries
 
+## CSV Profile Upload Methods
+
+The module supports two methods for uploading the Universal Connector CSV profile to Guardium:
+
+### Multipart Upload (Recommended - Default)
+When `use_multipart_upload = true` (default):
+- CSV file is created in your local workspace (`.terraform/` directory)
+- Provider uploads file content directly via HTTP multipart/form-data
+- No SFTP configuration required
+- More secure and easier to use
+- Works seamlessly when using modules from remote sources (Git/Terraform Registry)
+
+### Legacy SFTP Method
+When `use_multipart_upload = false`:
+- CSV file is uploaded to Guardium via SFTP first
+- Provider then sends the server path to Guardium API
+- Requires SFTP access to Guardium server
+- Maintains backward compatibility with existing deployments
+
+**Recommendation**: Use the default multipart upload method unless you have specific requirements for SFTP.
+
 ## CloudWatch Integration
 
 This module configures CloudWatch integration for MySQL RDS auditing. The audit logs are sent to a CloudWatch log group with the format:
@@ -169,6 +190,7 @@ Guardium is configured to collect and analyze these logs.
 | csv_start_position | Start position for UDC | string | `"end"` | no |
 | csv_interval | Polling interval for UDC | string | `"5"` | no |
 | csv_event_filter | UDC Event filters | string | `""` | no |
+| use_multipart_upload | Use multipart/form-data upload instead of SFTP (recommended) | bool | `true` | no |
 
 ## Outputs
 
