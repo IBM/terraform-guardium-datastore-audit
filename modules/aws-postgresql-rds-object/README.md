@@ -102,6 +102,9 @@ module "datastore-audit_aws-postgresql-rds-object" {
 | csv_start_position | Start position for UDC | string | "end" |
 | csv_interval | Polling interval for UDC | string | "5" |
 | csv_event_filter | UDC Event filters | string | "" |
+| use_multipart_upload | Whether to use multipart upload for CSV files (true) or SFTP (false). Multipart upload is recommended as it doesn't require SFTP access. | bool | true |
+| profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | string | "/upload" |
+| profile_api_directory | Full filesystem path for Guardium API to read CSV files | string | "/var/IBM/Guardium/file-server/upload" |
 | log_export_type | The type of log exporting to be configured: "SQS" or "Cloudwatch" | string | "object" |
 | tables | List of tables to monitor | list(object) | [] |
 

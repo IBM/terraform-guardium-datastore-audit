@@ -85,3 +85,8 @@ variable "csv_interval" {
   description = "Polling interval for UDC"
   default     = "30"
 }
+variable "use_multipart_upload" {
+  type        = bool
+  description = "Whether to use multipart upload for CSV files (true) or SFTP (false)"
+  default     = true
+}

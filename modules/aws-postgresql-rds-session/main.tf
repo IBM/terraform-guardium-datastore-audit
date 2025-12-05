@@ -39,6 +39,7 @@ module "common_rds-postgres-sqs-registration" {
   log_group = local.log_group
   profile_upload_directory = var.profile_upload_directory
   profile_api_directory    = var.profile_api_directory
+  use_multipart_upload     = var.use_multipart_upload
 }
 
 module "common_rds-postgres-cloudwatch-registration" {
@@ -58,4 +59,5 @@ module "common_rds-postgres-cloudwatch-registration" {
   log_group = local.log_group
   profile_upload_directory = var.profile_upload_directory
   profile_api_directory    = var.profile_api_directory
+  use_multipart_upload     = var.use_multipart_upload
 }

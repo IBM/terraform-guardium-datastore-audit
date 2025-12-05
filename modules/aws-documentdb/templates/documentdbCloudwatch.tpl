@@ -1,2 +1,2 @@
-profile_definition_name,name,description,credential_name,cluster_name,region,log_group,start_position,interval,event_filter,account_id,prefix
-DocumentDB over CloudWatch Logs,${udc_name},${description},${credential_name},${cluster_name},${aws_region},"${aws_log_group}",${start_position},${interval},${event_filter},${aws_account_id},false
+profile_definition_name,name,description,credential_name,cluster_name,region,log_group,start_position,interval,event_filter,account_id,prefix,codec_pattern,endpoint,use_aws_bundled_ca
+DocumentDB over CloudWatch Logs,${udc_name},${description},${credential_name},${cluster_name},${aws_region},"${aws_log_group}",${start_position},${interval},${event_filter},${aws_account_id},false,${codec_pattern},${cloudwatch_endpoint},${use_aws_bundled_ca}

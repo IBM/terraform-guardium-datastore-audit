@@ -54,5 +54,7 @@ module "aurora_postgres_session_audit" {
   csv_interval                   = var.csv_interval
   csv_event_filter               = var.csv_event_filter
   log_export_type                = var.log_export_type
+  profile_upload_directory       = var.profile_upload_directory
+  profile_api_directory          = var.profile_api_directory
   use_multipart_upload           = var.use_multipart_upload
 }

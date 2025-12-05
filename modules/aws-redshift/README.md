@@ -110,6 +110,7 @@ module "redshift_uc" {
 | csv_event_filter | Event filter for the Universal Connector | string | "*" | no |
 | csv_description | Description for the Universal Connector | string | "Redshift Universal Connector" | no |
 | csv_cluster_name | Cluster name for the Universal Connector | string | "default" | no |
+| use_multipart_upload | Whether to use multipart upload for CSV files (true) or SFTP (false). Multipart upload is recommended as it doesn't require SFTP access. | bool | true | no |
 | profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | string | "/upload" | no |
 | profile_api_directory | Full filesystem path for Guardium API to read CSV files | string | "/var/IBM/Guardium/file-server/upload" | no |
 

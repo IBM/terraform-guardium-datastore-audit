@@ -196,3 +196,8 @@ variable "profile_api_directory" {
   default     = "/var/IBM/Guardium/file-server/upload"
 }
 
+variable "use_multipart_upload" {
+  type        = bool
+  description = "Whether to use multipart upload for CSV files (true) or SFTP (false)"
+  default     = true
+}

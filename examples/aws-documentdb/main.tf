@@ -10,8 +10,9 @@ module "datastore-audit_aws-documentdb" {
   gdp_ssh_username              = var.gdp_ssh_username
   gdp_username                  = var.gdp_username
   udc_aws_credential            = var.udc_aws_credential
-  gdp_mu_host = var.gdp_mu_host
-  tags = var.tags
-  aws_region = var.aws_region
-  csv_interval = var.csv_interval
+  gdp_mu_host                   = var.gdp_mu_host
+  tags                          = var.tags
+  aws_region                    = var.aws_region
+  csv_interval                  = var.csv_interval
+  use_multipart_upload          = var.use_multipart_upload
 }

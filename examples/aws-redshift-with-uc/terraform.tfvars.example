@@ -61,4 +61,9 @@ csv_cluster_name          = "default"
 # See: https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md
 #----------------------------------------
 # profile_upload_directory = "/upload"  # Uncomment to override default
+
+# CSV Profile Upload Method
+# - true: Use multipart/form-data upload (recommended, no SFTP required)
+# - false: Use legacy SFTP method (requires SFTP access to Guardium)
+use_multipart_upload = true
 # profile_api_directory = "/var/IBM/Guardium/file-server/upload"  # Uncomment to override default
