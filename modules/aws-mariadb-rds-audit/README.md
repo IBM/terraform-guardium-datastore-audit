@@ -169,8 +169,6 @@ Guardium is configured to collect and analyze these logs.
 | csv_start_position | Start position for UDC | string | `"end"` | no |
 | csv_interval | Polling interval for UDC | string | `"5"` | no |
 | csv_event_filter | UDC Event filters | string | `""` | no |
-| profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | string | `"/upload"` | no |
-| profile_api_directory | Full filesystem path for Guardium API to read CSV files | string | `"/var/IBM/Guardium/file-server/upload"` | no |
 
 ## Outputs
 
