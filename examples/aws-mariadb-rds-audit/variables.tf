@@ -179,5 +179,3 @@ variable "log_export_type" {
     error_message = "log_export_type must be 'Cloudwatch'"
   }
 }
-
-

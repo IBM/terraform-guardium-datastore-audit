@@ -176,7 +176,7 @@ You can configure which events to audit using the `audit_events` variable:
 | csv_start_position | Start position for UDC | `string` | `"end"`              | no |
 | csv_interval | Polling interval for UDC | `string` | `"5"`                | no |
 | csv_event_filter | UDC Event filters | `string` | `""`                 | no |
-
+| tags | Map of tags to apply to resources | `map(string)` | `{}`                 | no |
 ## Outputs
 
 | Name | Description |
