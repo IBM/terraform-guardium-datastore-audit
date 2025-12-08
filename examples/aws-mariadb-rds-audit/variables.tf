@@ -179,6 +179,7 @@ variable "log_export_type" {
     error_message = "log_export_type must be 'Cloudwatch'"
   }
 }
+
 variable "codec_pattern" {
   type        = string
   description = "Codec pattern for RDS MariaDB CloudWatch logs"
