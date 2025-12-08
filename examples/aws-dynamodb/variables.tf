@@ -142,6 +142,12 @@ variable "csv_cluster_name" {
   description = "UDC Kafka Cluster name"
   type        = string
   default     = ""
+
+variable "use_multipart_upload" {
+  type        = bool
+  description = "Whether to use multipart upload for CSV files (true) or SFTP (false)"
+  default     = true
+}
 }
 
 #----------------------------------------

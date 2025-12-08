@@ -36,8 +36,9 @@ module "datastore-audit_aws-dynamodb" {
   gdp_mu_host            = var.gdp_mu_host
 
   # Universal Connector Configuration
-  udc_aws_credential     = var.udc_aws_credential
+  udc_aws_credential         = var.udc_aws_credential
   enable_universal_connector = var.enable_universal_connector
+  use_multipart_upload       = var.use_multipart_upload
 
   # CSV Configuration
   csv_start_position     = var.csv_start_position
