@@ -31,12 +31,6 @@ variable "force_failover" {
   description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
 }
 
-variable "mariadb_major_version" {
-  type        = string
-  description = "Major version of MariaDB (e.g., '10.6')"
-  default = "10.6"
-}
-
 variable "audit_events" {
   type        = string
   description = "Comma-separated list of events to audit (CONNECT,QUERY,TABLE,QUERY_DDL,QUERY_DML,QUERY_DCL)"
@@ -71,6 +65,12 @@ variable "audit_query_log_limit" {
   type        = string
   description = "Maximum query length to log in bytes (SERVER_AUDIT_QUERY_LOG_LIMIT). Queries longer than this will be truncated. Default is 1024 bytes."
   default     = "1024"
+}
+
+variable "cloudwatch_logs_exports" {
+  type        = list(string)
+  description = "List of log types to export to CloudWatch. Valid value for MariaDB: audit"
+  default     = ["audit"]
 }
 
 //////
@@ -172,6 +172,30 @@ variable "log_export_type" {
     condition = var.log_export_type == "Cloudwatch"
     error_message = "log_export_type must be 'Cloudwatch'"
   }
+}
+
+variable "codec_pattern" {
+  type = string
+  description = "Codec pattern for RDS MariaDB CloudWatch logs"
+  default = ""
+}
+
+variable "cloudwatch_endpoint" {
+  type = string
+  description = "Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint"
+  default = ""
+}
+
+variable "use_aws_bundled_ca" {
+  type = bool
+  description = "Whether to use the AWS bundled CA certificates for CloudWatch connection"
+  default = true
+}
+
+variable "use_multipart_upload" {
+  type        = bool
+  description = "Whether to use multipart upload for CSV files"
+  default     = true
 }
 
 variable "profile_upload_directory" {

@@ -12,10 +12,6 @@ aws_region = "us-east-1"
 # The identifier of the MariaDB RDS instance to be monitored
 mariadb_rds_cluster_identifier = "your-mariadb-instance"
 
-# Major version of MariaDB (e.g., '10.6')
-# This is required to select the appropriate parameter group family
-mariadb_major_version = "10.6"
-
 # Optional: Set to true to force a failover during parameter group update
 # Only applicable for multi-AZ deployments, will cause minimal downtime
 # force_failover = false
@@ -96,6 +92,10 @@ audit_excl_users = "rdsadmin"
 # Optional: Maximum query length in bytes (queries longer than this will be truncated)
 audit_query_log_limit = "1024"
 
+# Optional: List of log types to export to CloudWatch (default: ["audit"])
+# Valid value for MariaDB: audit
+# cloudwatch_logs_exports = ["audit"]
+
 #------------------------------------------------------------------------------
 # Universal Connector Configuration
 #------------------------------------------------------------------------------
@@ -117,3 +117,12 @@ audit_query_log_limit = "1024"
 
 # Optional: Event filters for Universal Data Connector
 # csv_event_filter = ""
+
+# Optional: Custom endpoint URL for AWS CloudWatch (leave empty to use default AWS endpoint)
+# cloudwatch_endpoint = ""
+
+# Optional: Whether to use the AWS bundled CA certificates for CloudWatch connection (default: true)
+# use_aws_bundled_ca = true
+
+# Optional: Whether to use multipart upload for CSV files (default: true)
+# use_multipart_upload = true

@@ -12,10 +12,6 @@ aws_region = "us-east-1"
 # The identifier of the MySQL RDS instance to be monitored
 mysql_rds_cluster_identifier = "your-mysql-instance"
 
-# Major version of MySQL (e.g., '5.7')
-# This is required to select the appropriate parameter group family
-mysql_major_version = "5.7"
-
 # Optional: Set to true to force a failover during parameter group update
 # Only applicable for multi-AZ deployments, will cause minimal downtime
 # force_failover = false
@@ -96,6 +92,11 @@ audit_excl_users = "rdsadmin"
 # Optional: Maximum query length in bytes (queries longer than this will be truncated)
 audit_query_log_limit = "1024"
 
+# List of log types to export to CloudWatch
+# Valid values for MySQL: audit, error
+# The Guardium plugin processes audit logs and "Login Failed" error logs
+cloudwatch_logs_exports = ["audit", "error"]
+
 #------------------------------------------------------------------------------
 # Universal Connector Configuration
 #------------------------------------------------------------------------------
@@ -117,3 +118,12 @@ audit_query_log_limit = "1024"
 
 # Optional: Event filters for Universal Data Connector
 # csv_event_filter = ""
+
+# Optional: Custom endpoint URL for AWS CloudWatch (leave empty to use default AWS endpoint)
+# cloudwatch_endpoint = ""
+
+# Optional: Whether to use the AWS bundled CA certificates for CloudWatch connection (default: true)
+# use_aws_bundled_ca = true
+
+# Optional: Whether to use multipart upload for CSV files (default: true)
+# use_multipart_upload = true

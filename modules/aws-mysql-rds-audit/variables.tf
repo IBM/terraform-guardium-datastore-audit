@@ -31,12 +31,6 @@ variable "force_failover" {
   description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
 }
 
-variable "mysql_major_version" {
-  type        = string
-  description = "Major version of MySQL (e.g., '5.7')"
-  default     = "5.7"
-}
-
 variable "audit_events" {
   type        = string
   description = "Comma-separated list of events to audit (CONNECT,QUERY,TABLE,QUERY_DDL,QUERY_DML,QUERY_DCL)"
@@ -71,6 +65,12 @@ variable "audit_query_log_limit" {
   type        = string
   description = "Maximum query length to log in bytes (SERVER_AUDIT_QUERY_LOG_LIMIT). Queries longer than this will be truncated. Default is 1024 bytes."
   default     = "1024"
+}
+
+variable "cloudwatch_logs_exports" {
+  type        = list(string)
+  description = "List of log types to export to CloudWatch. Valid values for MySQL: audit, error"
+  default     = ["audit"]
 }
 
 //////
@@ -174,6 +174,30 @@ variable "log_export_type" {
   }
 }
 
+variable "codec_pattern" {
+  type = string
+  description = "Codec pattern for RDS MySQL CloudWatch logs"
+  default = ""
+}
+
+variable "cloudwatch_endpoint" {
+  type = string
+  description = "Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint"
+  default = ""
+}
+
+variable "use_aws_bundled_ca" {
+  type = bool
+  description = "Whether to use the AWS bundled CA certificates for CloudWatch connection"
+  default = true
+}
+
+variable "use_multipart_upload" {
+  type        = bool
+  description = "Whether to use multipart upload for CSV files"
+  default     = true
+}
+
 variable "profile_upload_directory" {
   type        = string
   description = "Directory path for SFTP upload (chroot path for CLI user)"
@@ -186,8 +210,3 @@ variable "profile_api_directory" {
   default     = "/var/IBM/Guardium/file-server/upload"
 }
 
-variable "use_multipart_upload" {
-  type        = bool
-  description = "Whether to use multipart upload for CSV files (true) or SFTP (false)"
-  default     = true
-}

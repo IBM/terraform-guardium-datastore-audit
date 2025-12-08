@@ -165,13 +165,13 @@ Guardium is configured to collect and analyze these logs.
 |------|-------------|------|---------|:--------:|
 | aws_region | AWS region | string | `"us-east-2"` | no |
 | mysql_rds_cluster_identifier | MySQL RDS cluster identifier | string | `"guardium-mysql"` | no |
-| mysql_major_version | Major version of MySQL (e.g., '5.7') | string | `"5.7"` | no |
 | audit_events | Comma-separated list of events to audit | string | `"CONNECT,QUERY"` | no |
 | audit_file_rotations | Number of audit file rotations to keep | string | `"10"` | no |
 | audit_file_rotate_size | Size in bytes before rotating audit file | string | `"1000000"` | no |
 | audit_incl_users | Comma-separated list of users to include in audit logs (SERVER_AUDIT_INCL_USERS). If set, only these users will be audited. Leave empty to audit all users. | string | `""` | no |
 | audit_excl_users | Comma-separated list of users to exclude from audit logs (SERVER_AUDIT_EXCL_USERS). The rdsadmin user queries the database every second for health checks, which can cause log files to grow quickly. | string | `"rdsadmin"` | no |
 | audit_query_log_limit | Maximum query length to log in bytes (SERVER_AUDIT_QUERY_LOG_LIMIT). Queries longer than this will be truncated. | string | `"1024"` | no |
+| cloudwatch_logs_exports | List of log types to export to CloudWatch. Valid values for MySQL: audit, error | list(string) | `["audit"]` | no |
 | udc_aws_credential | Name of AWS credential defined in Guardium | string | n/a | yes |
 | gdp_client_secret | Client secret from Guardium | string | n/a | yes |
 | gdp_client_id | Client ID from Guardium | string | n/a | yes |
@@ -190,7 +190,9 @@ Guardium is configured to collect and analyze these logs.
 | csv_start_position | Start position for UDC | string | `"end"` | no |
 | csv_interval | Polling interval for UDC | string | `"5"` | no |
 | csv_event_filter | UDC Event filters | string | `""` | no |
-| use_multipart_upload | Use multipart/form-data upload instead of SFTP (recommended) | bool | `true` | no |
+| cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | `""` | no |
+| use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | `true` | no |
+| use_multipart_upload | Whether to use multipart upload for CSV files | bool | `true` | no |
 
 ## Outputs
 

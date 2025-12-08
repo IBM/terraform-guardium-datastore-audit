@@ -148,36 +148,39 @@ You can configure which events to audit using the `audit_events` variable:
 
 ## Input Variables
 
-| Name | Description | Type | Default            | Required |
-|------|-------------|------|--------------------|:--------:|
-| aws_region | AWS region where resources will be created | `string` | `"us-east-1"`      | no |
+| Name | Description | Type | Default           | Required |
+|------|-------------|------|-------------------|:--------:|
+| aws_region | AWS region where resources will be created | `string` | `"us-east-1"`     | no |
 | mysql_rds_cluster_identifier | MySQL RDS instance identifier to be monitored | `string` | `"guardium-mysql"` | no |
-| mysql_major_version | Major version of MySQL (e.g., '5.7') | `string` | `"5.7"`            | no |
-| audit_events | Comma-separated list of events to audit | `string` | `"CONNECT,QUERY"`  | no |
-| audit_file_rotations | Number of audit file rotations to keep | `string` | `"10"`             | no |
-| audit_file_rotate_size | Size in bytes before rotating audit file | `string` | `"1000000"`        | no |
-| audit_incl_users | Comma-separated list of users to include in audit logs (SERVER_AUDIT_INCL_USERS). If set, only these users will be audited. Leave empty to audit all users. | `string` | `""`               | no |
-| audit_excl_users | Comma-separated list of users to exclude from audit logs (SERVER_AUDIT_EXCL_USERS). The rdsadmin user queries the database every second for health checks, which can cause log files to grow quickly. | `string` | `"rdsadmin"`       | no |
-| audit_query_log_limit | Maximum query length to log in bytes (SERVER_AUDIT_QUERY_LOG_LIMIT). Queries longer than this will be truncated. | `string` | `"1024"`           | no |
-| udc_name | Name for universal connector (used for AWS objects) | `string` | `"mysql-gdp"`      | no |
-| udc_aws_credential | Name of AWS credential defined in Guardium | `string` | n/a                | yes |
-| gdp_client_id | Client ID used when running grdapi register_oauth_client | `string` | n/a                | yes |
-| gdp_client_secret | Client secret from output of grdapi register_oauth_client | `string` | n/a                | yes |
-| gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a                | yes |
-| gdp_port | Port of Guardium Central Manager | `string` | `"8443"`           | no |
-| gdp_username | Username of Guardium Web UI user | `string` | n/a                | yes |
-| gdp_password | Password of Guardium Web UI user | `string` | n/a                | yes |
-| gdp_ssh_username | Guardium OS user with SSH access | `string` | n/a                | yes |
-| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS | `string` | n/a                | yes |
-| gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""`               | no |
-| log_export_type | Type of log export (Cloudwatch) | `string` | `"Cloudwatch"`     | no |
-| force_failover | Whether to force failover during parameter group update | `bool` | `false`            | no |
-| enable_universal_connector | Whether to enable the universal connector | `bool` | `true`             | no |
-| csv_start_position | Start position for UDC | `string` | `"end"`            | no |
-| csv_interval | Polling interval for UDC | `string` | `"5"`              | no |
-| csv_event_filter | UDC Event filters | `string` | `""`               | no |
-| use_multipart_upload | Use multipart/form-data upload instead of SFTP (recommended) | `bool` | `true`             | no |
-| tags | Map of tags to apply to resources | `map(string)` | `{}`               | no |
+| audit_events | Comma-separated list of events to audit | `string` | `"CONNECT,QUERY"` | no |
+| audit_file_rotations | Number of audit file rotations to keep | `string` | `"10"`            | no |
+| audit_file_rotate_size | Size in bytes before rotating audit file | `string` | `"1000000"`       | no |
+| audit_incl_users | Comma-separated list of users to include in audit logs (SERVER_AUDIT_INCL_USERS). If set, only these users will be audited. Leave empty to audit all users. | `string` | `""`              | no |
+| audit_excl_users | Comma-separated list of users to exclude from audit logs (SERVER_AUDIT_EXCL_USERS). The rdsadmin user queries the database every second for health checks, which can cause log files to grow quickly. | `string` | `"rdsadmin"`      | no |
+| audit_query_log_limit | Maximum query length to log in bytes (SERVER_AUDIT_QUERY_LOG_LIMIT). Queries longer than this will be truncated. | `string` | `"1024"`          | no |
+| cloudwatch_logs_exports | List of log types to export to CloudWatch. Valid values for MySQL: audit, error | `list(string)` | `["audit"]` | no |
+| udc_name | Name for universal connector (used for AWS objects) | `string` | `"mysql-gdp"`     | no |
+| udc_aws_credential | Name of AWS credential defined in Guardium | `string` | n/a               | yes |
+| gdp_client_id | Client ID used when running grdapi register_oauth_client | `string` | n/a               | yes |
+| gdp_client_secret | Client secret from output of grdapi register_oauth_client | `string` | n/a               | yes |
+| gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a               | yes |
+| gdp_port | Port of Guardium Central Manager | `string` | `"8443"`          | no |
+| gdp_username | Username of Guardium Web UI user | `string` | n/a               | yes |
+| gdp_password | Password of Guardium Web UI user | `string` | n/a               | yes |
+| gdp_ssh_username | Guardium OS user with SSH access | `string` | n/a               | yes |
+| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS | `string` | n/a               | yes |
+| gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""`              | no |
+| log_export_type | Type of log export (Cloudwatch) | `string` | `"Cloudwatch"`    | no |
+| force_failover | Whether to force failover during parameter group update | `bool` | `false`           | no |
+| enable_universal_connector | Whether to enable the universal connector | `bool` | `true`            | no |
+| csv_start_position | Start position for UDC | `string` | `"end"`           | no |
+| csv_interval | Polling interval for UDC | `string` | `"5"`             | no |
+| csv_event_filter | UDC Event filters | `string` | `""`              | no |
+| codec_pattern | Codec pattern for RDS MySQL CloudWatch logs | `string` | `""` | no |
+| cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | `string` | `""` | no |
+| use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | `bool` | `true` | no |
+| use_multipart_upload | Whether to use multipart upload for CSV files | `bool` | `true` | no |
+| tags | Map of tags to apply to resources | `map(string)` | `{}`              | no |
 
 ## Outputs
 

@@ -15,7 +15,6 @@ module "datastore-audit_aws-mariadb-rds-audit" {
 
   # MariaDB RDS Configuration
   mariadb_rds_cluster_identifier = var.mariadb_rds_cluster_identifier
-  mariadb_major_version          = var.mariadb_major_version
   force_failover                 = var.force_failover
 
   # Audit Configuration
@@ -25,7 +24,12 @@ module "datastore-audit_aws-mariadb-rds-audit" {
   audit_incl_users               = var.audit_incl_users
   audit_excl_users               = var.audit_excl_users
   audit_query_log_limit          = var.audit_query_log_limit
+  cloudwatch_logs_exports        = var.cloudwatch_logs_exports
   log_export_type                = var.log_export_type
+  codec_pattern                  = var.codec_pattern
+  cloudwatch_endpoint            = var.cloudwatch_endpoint
+  use_aws_bundled_ca             = var.use_aws_bundled_ca
+  use_multipart_upload           = var.use_multipart_upload
 
   # Guardium Configuration
   udc_name                       = var.udc_name

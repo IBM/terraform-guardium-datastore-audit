@@ -230,7 +230,6 @@ module "mariadb_audit" {
   # AWS Configuration
   aws_region                     = "us-east-1"
   mariadb_rds_cluster_identifier = "my-mariadb-instance"
-  mariadb_major_version          = "10.6"
   
   # Audit Configuration
   audit_events          = "CONNECT,QUERY"
@@ -265,7 +264,6 @@ module "mysql_audit" {
   # AWS Configuration
   aws_region                   = "us-east-1"
   mysql_rds_cluster_identifier = "my-mysql-instance"
-  mysql_major_version          = "5.7"
   
   # Audit Configuration
   audit_events          = "CONNECT,QUERY"

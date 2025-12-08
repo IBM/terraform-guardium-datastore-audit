@@ -19,7 +19,6 @@ tags = {
 # MariaDB RDS Configuration
 #----------------------------------------
 mariadb_rds_cluster_identifier = "your-mariadb-instance"
-mariadb_major_version = "10.6"
 force_failover = false
 
 #----------------------------------------
@@ -31,7 +30,11 @@ audit_file_rotate_size = "1000000"
 audit_incl_users = ""  # Comma-separated list of users to include (empty = audit all users)
 audit_excl_users = "rdsadmin"  # Comma-separated list of users to exclude (rdsadmin recommended to reduce log volume)
 audit_query_log_limit = "1024"  # Maximum query length in bytes (queries longer than this will be truncated)
+cloudwatch_logs_exports = ["audit"]  # List of log types to export to CloudWatch. Valid value for MariaDB: audit
 log_export_type = "Cloudwatch"
+cloudwatch_endpoint = ""  # Custom endpoint URL for AWS CloudWatch (leave empty to use default AWS endpoint)
+use_aws_bundled_ca = true  # Whether to use the AWS bundled CA certificates for CloudWatch connection
+use_multipart_upload = true  # Whether to use multipart upload for CSV files
 
 #----------------------------------------
 # Universal Connector Configuration
