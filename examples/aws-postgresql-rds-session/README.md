@@ -32,7 +32,7 @@ This approach provides comprehensive coverage of database activity, ensuring tha
 
 3. Import the existing parameter group:
    ```
-   terraform import module.postgresql_audit_config.module.rds-postgres-parameter-group.aws_db_parameter_group.guardium <parameter group>
+   terraform import 'module.datastore-audit_aws-postgresql-rds-session.module.common_rds-postgres-parameter-group.aws_db_parameter_group.guardium' <parameter group>
    ```
    
    __NOTE__ To get the parameter group name, you can use the AWS CLI:

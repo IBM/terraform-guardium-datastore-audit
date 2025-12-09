@@ -14,5 +14,7 @@ module "datastore-audit_aws-documentdb" {
   tags                          = var.tags
   aws_region                    = var.aws_region
   csv_interval                  = var.csv_interval
+  profile_upload_directory      = var.profile_upload_directory
+  profile_api_directory         = var.profile_api_directory
   use_multipart_upload          = var.use_multipart_upload
 }

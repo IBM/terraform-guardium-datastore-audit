@@ -57,7 +57,7 @@ tags = {
 ```
 ### 3. Import the documentdb parameter group
 ```
-terraform import -var-file=terraform.tfvars   module.aws-documentdb.aws_docdb_cluster_parameter_group.guardium <parameter group name>
+terraform import -var-file=terraform.tfvars 'module.datastore-audit_aws-documentdb.aws_docdb_cluster_parameter_group.guardium' <parameter group name>
 ```
 
 ### 4. Initialize Terraform

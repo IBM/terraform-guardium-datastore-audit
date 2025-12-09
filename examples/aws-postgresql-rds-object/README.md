@@ -35,7 +35,7 @@ This approach allows you to focus auditing on specific tables and operations, re
 
 3. Import the existing parameter group:
    ```
-   terraform import module.postgresql_audit_config.module.rds-postgres-parameter-group.aws_db_parameter_group.guardium <parameter group name>
+   terraform import 'module.datastore-audit_aws-postgresql-rds-object.module.common_rds-postgres-parameter-group.aws_db_parameter_group.guardium' <parameter group name>
    ```
    
    __NOTE__ To get the parameter group name, you can use the AWS CLI:
