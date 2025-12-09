@@ -217,16 +217,18 @@ locals {
 
   # Generate the CSV content from the template
   udc_csv = templatefile("${path.module}/templates/dynamodbCloudwatch.tpl", {
-    udc_name        = local.udc_name_safe
-    credential_name = var.udc_aws_credential
-    aws_region      = var.aws_region
-    aws_log_group   = local.cloudwatch_log_group_name
-    aws_account_id  = module.common_aws-configuration.aws_account_id
-    start_position  = var.csv_start_position
-    interval        = var.csv_interval
-    event_filter    = var.csv_event_filter
-    description     = var.csv_description
-    cluster_name    = var.csv_cluster_name
+    udc_name           = local.udc_name_safe
+    credential_name    = var.udc_aws_credential
+    aws_region         = var.aws_region
+    aws_log_group      = local.cloudwatch_log_group_name
+    aws_account_id     = module.common_aws-configuration.aws_account_id
+    start_position     = var.csv_start_position
+    interval           = var.csv_interval
+    event_filter       = var.csv_event_filter
+    description        = var.csv_description
+    cluster_name       = var.csv_cluster_name
+    endpoint           = var.endpoint
+    use_aws_bundled_ca = var.use_aws_bundled_ca
   })
 }
 

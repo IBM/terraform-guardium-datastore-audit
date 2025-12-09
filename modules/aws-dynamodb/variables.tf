@@ -174,4 +174,15 @@ variable "use_multipart_upload" {
   description = "Whether to use multipart upload for CSV files (true) or SFTP (false)"
   default     = true
 }
+variable "endpoint" {
+  type        = string
+  description = "Custom endpoint URL for AWS CloudWatch"
+  default     = ""
+}
+
+variable "use_aws_bundled_ca" {
+  type        = bool
+  description = "Whether to use the AWS bundled CA certificates"
+  default     = true
+}
 
