@@ -82,12 +82,26 @@ csv_event_filter = ""
 # Log export type: "SQS" or "Cloudwatch"
 # - "SQS": Use Amazon SQS for log delivery (more real-time)
 # - "Cloudwatch": Use CloudWatch Logs for log delivery (more reliable)
+log_export_type = "Cloudwatch"
+
 
 # CSV Profile Upload Method
 # - true: Use multipart/form-data upload (recommended, no SFTP required)
 # - false: Use legacy SFTP method (requires SFTP access to Guardium)
 use_multipart_upload = true
-log_export_type = "Cloudwatch"
+
+
+# Optional: Custom endpoint URL for AWS CloudWatch (leave empty to use default AWS endpoint)
+# cloudwatch_endpoint = ""
+
+# Optional: Whether to use the AWS bundled CA certificates for CloudWatch connection (default: true)
+# use_aws_bundled_ca = true
+
+# Optional: Codec pattern for RDS PostgreSQL CloudWatch logs (default: "plain")
+# codec_pattern = "plain"
+
+
+
 
 # =====================================================================
 # TABLE GRANTS CONFIGURATION - OBJECT-LEVEL AUDITING

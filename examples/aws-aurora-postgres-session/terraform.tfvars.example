@@ -68,3 +68,9 @@ log_export_type = "Cloudwatch"
 # - true: Use multipart/form-data upload (recommended, no SFTP required)
 # - false: Use legacy SFTP method (requires SFTP access to Guardium)
 use_multipart_upload = true
+
+# Optional: Custom endpoint URL for AWS CloudWatch (leave empty to use default AWS endpoint)
+# cloudwatch_endpoint = ""
+
+# Optional: Whether to use the AWS bundled CA certificates for CloudWatch connection (default: true)
+# use_aws_bundled_ca = true

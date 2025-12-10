@@ -158,3 +158,21 @@ variable "use_multipart_upload" {
   description = "Use multipart/form-data upload instead of SFTP (recommended). Set to false to use legacy SFTP method."
   default     = true
 }
+variable "codec_pattern" {
+  type = string
+  description = "Codec pattern for Aurora PostgreSQL CloudWatch logs"
+  default = "plain"
+}
+
+variable "cloudwatch_endpoint" {
+  type        = string
+  description = "Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint"
+  default     = ""
+}
+
+variable "use_aws_bundled_ca" {
+  type        = bool
+  description = "Whether to use the AWS bundled CA certificates for CloudWatch connection"
+  default     = true
+}
+

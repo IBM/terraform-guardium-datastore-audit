@@ -111,6 +111,8 @@ terraform apply
 | `csv_interval` | Polling interval in seconds for the Universal Connector to check for new logs | `60` | No |
 | `csv_event_filter` | Optional filter for CloudWatch events (e.g., "eventName = 'PutItem'") to limit which events are processed | `""` | No |
 | `csv_description` | Description for the Universal Connector profile shown in Guardium UI | `"DynamoDB Monitoring"` | No |
+| `endpoint` | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | `""` | No |
+| `use_aws_bundled_ca` | Whether to use the AWS bundled CA certificates for CloudWatch connection | `true` | No |
 | `csv_cluster_name` | Cluster name for the Universal Connector (usually "default" unless you have a custom setup) | `"default"` | No |
 
 ### Guardium Integration Configuration

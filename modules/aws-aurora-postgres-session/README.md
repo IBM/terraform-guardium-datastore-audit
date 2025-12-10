@@ -77,6 +77,9 @@ module "aurora_postgresql_session_audit" {
 | csv_event_filter | UDC Event filters | string | "" |
 | log_export_type | The type of log exporting to be configured: "SQS" or "Cloudwatch" | string | "SQS" |
 | pg_audit_log | PGAudit log configuration | string | "all, -misc" |
+| codec_pattern | Codec pattern for Aurora PostgreSQL CloudWatch logs | string | "plain" |
+| cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | "" |
+| use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | true |
 | use_multipart_upload | Use multipart/form-data upload instead of SFTP (recommended) | bool | true |
 
 ## Session Audit Configuration

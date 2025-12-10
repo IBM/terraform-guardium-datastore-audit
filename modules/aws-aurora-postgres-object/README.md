@@ -102,6 +102,9 @@ module "aurora_postgresql_object_audit" {
 | csv_start_position | Start position for UDC | string | "end" |
 | csv_interval | Polling interval for UDC | string | "5" |
 | csv_event_filter | UDC Event filters | string | "" |
+| codec_pattern | Codec pattern for Aurora PostgreSQL CloudWatch logs | string | "plain" |
+| cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | "" |
+| use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | true |
 | use_multipart_upload | Whether to use multipart upload for CSV files (true) or SFTP (false). Multipart upload is recommended as it doesn't require SFTP access. | bool | true |
 | profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | string | "/upload" |
 | profile_api_directory | Full filesystem path for Guardium API to read CSV files | string | "/var/IBM/Guardium/file-server/upload" |

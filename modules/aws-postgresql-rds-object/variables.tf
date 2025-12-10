@@ -201,3 +201,21 @@ variable "use_multipart_upload" {
   description = "Whether to use multipart upload for CSV files (true) or SFTP (false)"
   default     = true
 }
+variable "codec_pattern" {
+  type = string
+  description = "Codec pattern for RDS PostgreSQL CloudWatch logs"
+  default = "plain"
+}
+
+variable "cloudwatch_endpoint" {
+  type        = string
+  description = "Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint"
+  default     = ""
+}
+
+variable "use_aws_bundled_ca" {
+  type        = bool
+  description = "Whether to use the AWS bundled CA certificates for CloudWatch connection"
+  default     = true
+}
+

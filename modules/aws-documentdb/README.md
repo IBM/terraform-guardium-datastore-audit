@@ -101,6 +101,9 @@ The module configures DocumentDB to send audit logs to CloudWatch Logs. The Univ
 | csv_start_position | Starting position for log reading (START_OF_FILE or END_OF_FILE) | `string` | `"END_OF_FILE"` | no |
 | csv_interval | Interval in seconds for checking new logs | `string` | `"60"` | no |
 | csv_event_filter | Filter expression for log events | `string` | `""` | no |
+| codec_pattern | Codec pattern for DocumentDB CloudWatch logs | `string` | `"plain"` | no |
+| cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | `string` | `""` | no |
+| use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | `bool` | `true` | no |
 | use_multipart_upload | Whether to use multipart upload for CSV files (true) or SFTP (false). Multipart upload is recommended as it doesn't require SFTP access. | `bool` | `true` | no |
 | profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | `string` | `"/upload"` | no |
 | profile_api_directory | Full filesystem path for Guardium API to read CSV files | `string` | `"/var/IBM/Guardium/file-server/upload"` | no |
