@@ -1,2 +1,2 @@
 profile_definition_name,name,description,credential_name,region,log_group,prefix,start_position,interval,codec_pattern,event_filter,cluster_name,account_id,endpoint,use_aws_bundled_ca
-Redshift over Cloudwatch Logs,${udc_name},${description},${credential_name},${aws_region},"${aws_log_group_connectionlog}",false,${start_position},${interval},false,,${cluster_name},${aws_account_id},,true
+Redshift over Cloudwatch Logs,${udc_name},${description},${credential_name},${aws_region},"${aws_log_group_connectionlog}",${prefix},${start_position},${interval},${codec_pattern},${event_filter},${cluster_name},${aws_account_id},${endpoint},${use_aws_bundled_ca}
