@@ -179,3 +179,40 @@ variable "log_export_type" {
     error_message = "log_export_type must be 'Cloudwatch'"
   }
 }
+
+
+variable "codec_pattern" {
+  type        = string
+  description = "Codec pattern for RDS MariaDB CloudWatch logs"
+  default     = ""
+}
+
+variable "cloudwatch_endpoint" {
+  type        = string
+  description = "Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint"
+  default     = ""
+}
+
+variable "use_aws_bundled_ca" {
+  type        = bool
+  description = "Whether to use the AWS bundled CA certificates for CloudWatch connection"
+  default     = true
+}
+
+variable "use_multipart_upload" {
+  type        = bool
+  description = "Whether to use multipart upload for CSV files"
+  default     = true
+}
+
+variable "profile_upload_directory" {
+  type        = string
+  description = "Directory path for SFTP upload (chroot path for CLI user)"
+  default     = "/upload"
+}
+
+variable "profile_api_directory" {
+  type        = string
+  description = "Full filesystem path for Guardium API to read CSV files"
+  default     = "/var/IBM/Guardium/file-server/upload"
+}
