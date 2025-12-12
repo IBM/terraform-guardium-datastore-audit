@@ -150,12 +150,22 @@ Before using this module, ensure you have:
 
 4. **AWS CLI**: Configured with appropriate credentials
 
+## Guardium Data Protection Version Compatibility
+
+**Important:** The upload method for Universal Connector profiles depends on your Guardium Data Protection (GDP) version:
+
+- **GDP 12.2.1 and above**: Use API-based upload by setting `use_multipart_upload = true` (default)
+- **GDP versions below 12.2.1**: Use SFTP-based upload by setting `use_multipart_upload = false`
+
+All modules that register datastores with Guardium Universal Connector support the `use_multipart_upload` variable to control the upload method. When using SFTP (`use_multipart_upload = false`), you must also provide `gdp_ssh_username` and `gdp_ssh_privatekeypath`.
+
 ## Usage
 
 ### AWS DynamoDB Audit Configuration
 
 Monitor DynamoDB tables with comprehensive API call tracking:
 
+**For GDP 12.2.1 and above (API upload - recommended):**
 ```hcl
 module "dynamodb_audit" {
   source = "IBM/datastore-audit/guardium//modules/aws-dynamodb"
@@ -170,14 +180,49 @@ module "dynamodb_audit" {
   gdp_port               = "8443"
   gdp_username           = "admin"
   gdp_password           = "password"
-  gdp_ssh_username       = "root"
-  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
   gdp_client_id          = "client1"
   gdp_client_secret      = "client-secret"
   
   # Universal Connector Configuration
   udc_aws_credential = "aws-credential-name"
   gdp_mu_host        = "guardium-mu.example.com"
+  
+  # API upload (default for GDP 12.2.1+)
+  use_multipart_upload = true
+
+  tags = {
+    Environment = "production"
+    Project     = "data-security"
+  }
+}
+```
+
+**For GDP versions below 12.2.1 (SFTP upload):**
+```hcl
+module "dynamodb_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-dynamodb"
+
+  # AWS Configuration
+  aws_region      = "us-east-1"
+  dynamodb_tables = "users-table,orders-table"
+  name_prefix     = "my-dynamodb-audit"
+
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  gdp_mu_host        = "guardium-mu.example.com"
+  
+  # SFTP upload for GDP < 12.2.1
+  use_multipart_upload   = false
+  gdp_ssh_username       = "root"
+  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
 
   tags = {
     Environment = "production"
@@ -324,14 +369,17 @@ module "postgres_object_audit" {
   gdp_server             = "guardium.example.com"
   gdp_username           = "admin"
   gdp_password           = "password"
-  gdp_ssh_username       = "root"
-  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
   gdp_client_id          = "client1"
   gdp_client_secret      = "client-secret"
   
   # Universal Connector Configuration
   udc_aws_credential = "aws-credential-name"
   log_export_type    = "Cloudwatch"
+  
+  # Upload method (API for GDP 12.2.1+, SFTP for older versions)
+  use_multipart_upload = true  # Set to false for GDP < 12.2.1
+  # gdp_ssh_username       = "root"  # Required when use_multipart_upload = false
+  # gdp_ssh_privatekeypath = "~/.ssh/guardium_key"  # Required when use_multipart_upload = false
 }
 ```
 
@@ -351,14 +399,17 @@ module "postgres_session_audit" {
   gdp_server             = "guardium.example.com"
   gdp_username           = "admin"
   gdp_password           = "password"
-  gdp_ssh_username       = "root"
-  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
   gdp_client_id          = "client1"
   gdp_client_secret      = "client-secret"
   
   # Universal Connector Configuration
   udc_aws_credential = "aws-credential-name"
   log_export_type    = "Cloudwatch"
+  
+  # Upload method (API for GDP 12.2.1+, SFTP for older versions)
+  use_multipart_upload = true  # Set to false for GDP < 12.2.1
+  # gdp_ssh_username       = "root"  # Required when use_multipart_upload = false
+  # gdp_ssh_privatekeypath = "~/.ssh/guardium_key"  # Required when use_multipart_upload = false
 }
 ```
 
@@ -399,14 +450,17 @@ module "aurora_postgres_object_audit" {
   gdp_server             = "guardium.example.com"
   gdp_username           = "admin"
   gdp_password           = "password"
-  gdp_ssh_username       = "root"
-  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
   gdp_client_id          = "client1"
   gdp_client_secret      = "client-secret"
   
   # Universal Connector Configuration
   udc_aws_credential = "aws-credential-name"
   log_export_type    = "Cloudwatch"
+  
+  # Upload method (API for GDP 12.2.1+, SFTP for older versions)
+  use_multipart_upload = true  # Set to false for GDP < 12.2.1
+  # gdp_ssh_username       = "root"  # Required when use_multipart_upload = false
+  # gdp_ssh_privatekeypath = "~/.ssh/guardium_key"  # Required when use_multipart_upload = false
   
   # Optional: Force cluster failover to apply parameter changes immediately
   force_failover = false
@@ -432,14 +486,17 @@ module "aurora_postgres_session_audit" {
   gdp_server             = "guardium.example.com"
   gdp_username           = "admin"
   gdp_password           = "password"
-  gdp_ssh_username       = "root"
-  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
   gdp_client_id          = "client1"
   gdp_client_secret      = "client-secret"
   
   # Universal Connector Configuration
   udc_aws_credential = "aws-credential-name"
   log_export_type    = "Cloudwatch"
+  
+  # Upload method (API for GDP 12.2.1+, SFTP for older versions)
+  use_multipart_upload = true  # Set to false for GDP < 12.2.1
+  # gdp_ssh_username       = "root"  # Required when use_multipart_upload = false
+  # gdp_ssh_privatekeypath = "~/.ssh/guardium_key"  # Required when use_multipart_upload = false
   
   # Optional: Force cluster failover to apply parameter changes immediately
   force_failover = false
