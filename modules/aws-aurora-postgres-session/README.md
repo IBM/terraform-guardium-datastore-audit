@@ -11,6 +11,15 @@ Session-level auditing in Aurora PostgreSQL logs all SQL statements of specified
 3. Configures either SQS or CloudWatch for log collection
 4. Integrates with Guardium Data Protection for log analysis and security monitoring
 
+## Guardium Data Protection Version Compatibility
+
+**Important:** The upload method for Universal Connector profiles depends on your Guardium Data Protection (GDP) version:
+
+- **GDP 12.2.1 and above**: Use API-based upload by setting `use_multipart_upload = true` (default and recommended)
+- **GDP versions below 12.2.1**: Use SFTP-based upload by setting `use_multipart_upload = false`
+
+When using SFTP (`use_multipart_upload = false`), you must also provide `gdp_ssh_username` and `gdp_ssh_privatekeypath` for authentication.
+
 ## How It Works
 
 The module uses PostgreSQL's pgAudit extension with session-level auditing mode. In this mode:
@@ -24,6 +33,33 @@ This approach provides comprehensive coverage of database activities, suitable f
 
 ## Usage
 
+**For GDP 12.2.1 and above (API upload - recommended):**
+```hcl
+module "aurora_postgresql_session_audit" {
+  source = "github.com/IBM/terraform-guardium-datastore-audit//modules/aws-aurora-postgres-session"
+
+  # AWS configuration
+  aws_region = "us-east-1"
+  aurora_postgres_cluster_identifier = "my-aurora-cluster"
+  
+  # Guardium configuration
+  udc_aws_credential = "aws-credential-name"
+  gdp_client_secret = "client-secret"
+  gdp_client_id = "client-id"
+  gdp_server = "guardium.example.com"
+  gdp_username = "guardium-user"
+  gdp_password = "guardium-password"
+  gdp_mu_host = "mu.guardium.example.com"
+  
+  # Log export configuration
+  log_export_type = "SQS"  # or "Cloudwatch"
+  
+  # API upload (default for GDP 12.2.1+)
+  use_multipart_upload = true
+}
+```
+
+**For GDP versions below 12.2.1 (SFTP upload):**
 ```hcl
 module "aurora_postgresql_session_audit" {
   source = "github.com/IBM/terraform-guardium-datastore-audit//modules/aws-aurora-postgres-session"
@@ -45,6 +81,9 @@ module "aurora_postgresql_session_audit" {
   
   # Log export configuration
   log_export_type = "SQS"  # or "Cloudwatch"
+  
+  # SFTP upload for GDP < 12.2.1
+  use_multipart_upload = false
 }
 ```
 
@@ -59,8 +98,8 @@ module "aurora_postgresql_session_audit" {
 | gdp_server | Hostname/IP address of Guardium Central Manager | string | - |
 | gdp_username | Username of Guardium Web UI user | string | - |
 | gdp_password | Password of Guardium Web UI user | string | - |
-| gdp_ssh_username | Guardium OS user with SSH access | string | - |
-| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS with ssh username | string | - |
+| gdp_ssh_username | Guardium OS user with SSH access (required when use_multipart_upload = false) | string | - |
+| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS (required when use_multipart_upload = false) | string | - |
 
 ## Optional Variables
 
@@ -80,7 +119,7 @@ module "aurora_postgresql_session_audit" {
 | codec_pattern | Codec pattern for Aurora PostgreSQL CloudWatch logs | string | "plain" |
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | "" |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | true |
-| use_multipart_upload | Use multipart/form-data upload instead of SFTP (recommended) | bool | true |
+| use_multipart_upload | Use API upload (true, for GDP 12.2.1+) or SFTP (false, for GDP < 12.2.1) | bool | true |
 
 ## Session Audit Configuration
 

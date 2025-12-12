@@ -64,6 +64,15 @@ Before using this module, you need to perform some one-time manual configuration
 
 For detailed instructions, please refer to the [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md).
 
+## Guardium Data Protection Version Compatibility
+
+**Important:** The upload method for Universal Connector profiles depends on your Guardium Data Protection (GDP) version:
+
+- **GDP 12.2.1 and above**: Use API-based upload by setting `use_multipart_upload = true` (default and recommended)
+- **GDP versions below 12.2.1**: Use SFTP-based upload by setting `use_multipart_upload = false`
+
+When using SFTP (`use_multipart_upload = false`), you must also provide `gdp_ssh_username` and `gdp_ssh_privatekeypath` for authentication.
+
 ## Quick Start
 
 1. Copy the `terraform.tfvars.example` file to `terraform.tfvars` and update it with your configuration:
@@ -121,13 +130,14 @@ terraform apply
 |-----------|-------------|---------|:--------:|
 | `gdp_server` | Hostname or IP address of your Guardium Central Manager | - | Yes, if integration enabled |
 | `gdp_port` | Port of the Guardium server (default is 8443 for HTTPS) | `"8443"` | No |
-| `gdp_ssh_username` | SSH username for connecting to Guardium server | - | Yes, if integration enabled |
-| `gdp_ssh_privatekeypath` | Path to SSH private key for Guardium server authentication | - | Yes, if integration enabled |
+| `gdp_ssh_username` | SSH username for connecting to Guardium server (required when `use_multipart_upload = false`) | - | Conditional |
+| `gdp_ssh_privatekeypath` | Path to SSH private key for Guardium server authentication (required when `use_multipart_upload = false`) | - | Conditional |
 | `gdp_username` | Username for Guardium web interface authentication | - | Yes, if integration enabled |
 | `gdp_password` | Password for Guardium web interface authentication | - | Yes, if integration enabled |
 | `gdp_mu_host` | Hostname or IP address of your Guardium Managed Unit where the connector will be deployed | - | Yes, if integration enabled |
 | `client_id` | Client ID for Guardium OAuth authentication (created using grdapi register_oauth_client) | `"client4"` | No |
 | `gdp_client_secret` | Client secret for Guardium OAuth authentication | - | Yes, if integration enabled |
+| `use_multipart_upload` | Use API upload (true, for GDP 12.2.1+) or SFTP (false, for GDP < 12.2.1) | `true` | No |
 
 ### Resource Naming
 

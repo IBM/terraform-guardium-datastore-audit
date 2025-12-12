@@ -13,13 +13,58 @@ The module performs two key functions:
 
 - An existing AWS DocumentDB cluster
 - Guardium Data Protection instance with:
-  - SSH access for file transfers
+  - SSH access for file transfers (required only for GDP < 12.2.1)
   - Web UI credentials with appropriate permissions
   - OAuth client registered via `grdapi register_oauth_client`
   - AWS credentials configured in Guardium for CloudWatch access
 
+## Guardium Data Protection Version Compatibility
+
+**Important:** The upload method for Universal Connector profiles depends on your Guardium Data Protection (GDP) version:
+
+- **GDP 12.2.1 and above**: Use API-based upload by setting `use_multipart_upload = true` (default and recommended)
+- **GDP versions below 12.2.1**: Use SFTP-based upload by setting `use_multipart_upload = false`
+
+When using SFTP (`use_multipart_upload = false`), you must also provide `gdp_ssh_username` and `gdp_ssh_privatekeypath` for authentication.
+
 ## Usage
 
+**For GDP 12.2.1 and above (API upload - recommended):**
+```hcl
+module "datastore-audit_aws-documentdb" {
+  source = "IBM/datastore-audit/guardium//modules/aws-documentdb"
+
+  # AWS DocumentDB details
+  documentdb_cluster_identifier = "my-docdb-cluster"
+  aws_region                    = "us-east-1"
+  
+  # Guardium connection details
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "guardium-user"
+  gdp_password           = "guardium-password"
+  
+  # Guardium OAuth details
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret-value"
+  
+  # Universal Connector configuration
+  udc_name               = "docdb-connector"
+  udc_aws_credential     = "aws-credential-name"
+  gdp_mu_host            = "mu1,mu2"
+  
+  # API upload (default for GDP 12.2.1+)
+  use_multipart_upload = true
+  
+  # Optional: Tags
+  tags = {
+    Environment = "Production"
+    Owner       = "Security Team"
+  }
+}
+```
+
+**For GDP versions below 12.2.1 (SFTP upload):**
 ```hcl
 module "datastore-audit_aws-documentdb" {
   source = "IBM/datastore-audit/guardium//modules/aws-documentdb"
@@ -43,7 +88,10 @@ module "datastore-audit_aws-documentdb" {
   # Universal Connector configuration
   udc_name               = "docdb-connector"
   udc_aws_credential     = "aws-credential-name"
-  gdp_mu_host            = "mu1,mu2"  
+  gdp_mu_host            = "mu1,mu2"
+  
+  # SFTP upload for GDP < 12.2.1
+  use_multipart_upload   = false
   
   # Optional: Tags
   tags = {
@@ -93,9 +141,10 @@ The module configures DocumentDB to send audit logs to CloudWatch Logs. The Univ
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
 | gdp_username | Username of Guardium Web UI user | `string` | n/a | yes |
 | gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
-| gdp_ssh_username | Guardium OS user with SSH access | `string` | n/a | yes |
-| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS | `string` | n/a | yes |
+| gdp_ssh_username | Guardium OS user with SSH access (required when use_multipart_upload = false) | `string` | n/a | conditional |
+| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS (required when use_multipart_upload = false) | `string` | n/a | conditional |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
+| use_multipart_upload | Use API upload (true, for GDP 12.2.1+) or SFTP (false, for GDP < 12.2.1) | `bool` | `true` | no |
 | enable_universal_connector | Whether to enable the universal connector module | `bool` | `true` | no |
 | create_parameter_group | Whether to create a new parameter group | `bool` | `false` | no |
 | csv_start_position | Starting position for log reading (START_OF_FILE or END_OF_FILE) | `string` | `"END_OF_FILE"` | no |

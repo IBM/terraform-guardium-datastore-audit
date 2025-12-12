@@ -10,6 +10,15 @@ Session-level auditing in PostgreSQL provides broad coverage of database activit
 2. Sets up either SQS or CloudWatch for log collection
 3. Configures Guardium Universal Connector to process these logs
 
+## Guardium Data Protection Version Compatibility
+
+**Important:** The upload method for Universal Connector profiles depends on your Guardium Data Protection (GDP) version:
+
+- **GDP 12.2.1 and above**: Use API-based upload by setting `use_multipart_upload = true` (default and recommended)
+- **GDP versions below 12.2.1**: Use SFTP-based upload by setting `use_multipart_upload = false`
+
+When using SFTP (`use_multipart_upload = false`), you must also provide `gdp_ssh_username` and `gdp_ssh_privatekeypath` for authentication.
+
 ## How It Works
 
 The module uses PostgreSQL's pgAudit extension with session-level auditing mode. In this mode:
@@ -23,6 +32,32 @@ This approach provides comprehensive coverage of database activity, ensuring tha
 
 ## Usage
 
+**For GDP 12.2.1 and above (API upload - recommended):**
+```hcl
+module "datastore-audit_aws-postgresql-rds-session" {
+  source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-session"
+
+  # AWS configuration
+  aws_region = "us-east-1"
+  postgres_rds_cluster_identifier = "my-postgres-db"
+  
+  # Guardium configuration
+  udc_aws_credential = "aws-credential-name"
+  gdp_client_secret = "client-secret"
+  gdp_client_id = "client-id"
+  gdp_server = "guardium.example.com"
+  gdp_username = "guardium-user"
+  gdp_password = "guardium-password"
+  
+  # Log export configuration
+  log_export_type = "Cloudwatch"  # or "SQS"
+  
+  # API upload (default for GDP 12.2.1+)
+  use_multipart_upload = true
+}
+```
+
+**For GDP versions below 12.2.1 (SFTP upload):**
 ```hcl
 module "datastore-audit_aws-postgresql-rds-session" {
   source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-session"
@@ -43,6 +78,9 @@ module "datastore-audit_aws-postgresql-rds-session" {
   
   # Log export configuration
   log_export_type = "Cloudwatch"  # or "SQS"
+  
+  # SFTP upload for GDP < 12.2.1
+  use_multipart_upload = false
 }
 ```
 
@@ -56,8 +94,8 @@ module "datastore-audit_aws-postgresql-rds-session" {
 | gdp_server | Hostname/IP address of Guardium Central Manager | string | - |
 | gdp_username | Username of Guardium Web UI user | string | - |
 | gdp_password | Password of Guardium Web UI user | string | - |
-| gdp_ssh_username | Guardium OS user with SSH access | string | - |
-| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS with ssh username | string | - |
+| gdp_ssh_username | Guardium OS user with SSH access (required when use_multipart_upload = false) | string | - |
+| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS (required when use_multipart_upload = false) | string | - |
 
 ## Optional Variables
 
@@ -76,7 +114,7 @@ module "datastore-audit_aws-postgresql-rds-session" {
 | codec_pattern | Codec pattern for RDS PostgreSQL CloudWatch logs | string | "plain" |
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | "" |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | true |
-| use_multipart_upload | Whether to use multipart upload for CSV files (true) or SFTP (false). Multipart upload is recommended as it doesn't require SFTP access. | bool | true |
+| use_multipart_upload | Use API upload (true, for GDP 12.2.1+) or SFTP (false, for GDP < 12.2.1) | bool | true |
 | profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | string | "/upload" |
 | profile_api_directory | Full filesystem path for Guardium API to read CSV files | string | "/var/IBM/Guardium/file-server/upload" |
 | log_export_type | The type of log exporting to be configured: "SQS" or "Cloudwatch" | string | "object" |
