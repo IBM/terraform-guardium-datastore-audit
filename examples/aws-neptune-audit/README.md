@@ -55,11 +55,10 @@ Before using this example, ensure you have:
    - An existing AWS Neptune cluster
 
 2. **Guardium Data Protection**:
-   - A running Guardium Data Protection instance
+   - A running Guardium Data Protection instance (version 12.2.1 or above)
    - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
       - OAuth client registered via `grdapi register_oauth_client`
       - AWS credentials configured in Guardium Data Protection
-      - SSH access configured for Terraform
 
 ## Usage
 
@@ -140,8 +139,6 @@ Neptune audit logging captures:
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
 | gdp_username | Username of Guardium Web UI user | `string` | n/a | yes |
 | gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
-| gdp_ssh_username | Guardium OS user with SSH access | `string` | n/a | yes |
-| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
 | enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
 | csv_start_position | Start position for UDC | `string` | `"end"` | no |
@@ -149,9 +146,6 @@ Neptune audit logging captures:
 | codec_pattern | Codec pattern for the Universal Connector | `string` | `""` | no |
 | csv_event_filter | UDC Event filters | `string` | `""` | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for Neptune connection | `bool` | `true` | no |
-| profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | `string` | `"/upload"` | no |
-| profile_api_directory | Full filesystem path for Guardium API to read CSV files | `string` | `"/var/IBM/Guardium/file-server/upload"` | no |
-| use_multipart_upload | Whether to use multipart upload for CSV files | `bool` | `false` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs

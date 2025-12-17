@@ -55,11 +55,10 @@ Before using this example, ensure you have:
   - An existing AWS MySQL RDS instance
 
 2. **Guardium Data Protection**:
-  - A running Guardium Data Protection instance
+  - A running Guardium Data Protection instance (version 12.2.1 or above)
   - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
     - OAuth client registered via `grdapi register_oauth_client`
     - AWS credentials configured in Guardium Data Protection
-    - SSH access configured for Terraform
 
 ## Usage
 
@@ -167,8 +166,6 @@ You can configure which events to audit using the `audit_events` variable:
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"`          | no |
 | gdp_username | Username of Guardium Web UI user | `string` | n/a               | yes |
 | gdp_password | Password of Guardium Web UI user | `string` | n/a               | yes |
-| gdp_ssh_username | Guardium OS user with SSH access | `string` | n/a               | yes |
-| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS | `string` | n/a               | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""`              | no |
 | log_export_type | Type of log export (Cloudwatch) | `string` | `"Cloudwatch"`    | no |
 | force_failover | Whether to force failover during parameter group update | `bool` | `false`           | no |
@@ -179,7 +176,6 @@ You can configure which events to audit using the `audit_events` variable:
 | codec_pattern | Codec pattern for RDS MySQL CloudWatch logs | `string` | `""` | no |
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | `string` | `""` | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | `bool` | `true` | no |
-| use_multipart_upload | Whether to use multipart upload for CSV files | `bool` | `true` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}`              | no |
 
 ## Outputs

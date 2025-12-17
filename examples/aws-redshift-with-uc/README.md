@@ -15,9 +15,8 @@ This example demonstrates how to configure AWS Redshift to send audit logs to Gu
 ## Prerequisites
 
 - AWS Redshift cluster
-- Guardium Data Protection server with Universal Connector support
+- Guardium Data Protection server (version 12.2.1 or above) with Universal Connector support
 - AWS credentials with appropriate permissions
-- SSH access to the Guardium Data Protection server
 
 ## Usage
 
@@ -47,8 +46,6 @@ gdp_username           = "guardium_admin"
 gdp_password           = "your-password"
 gdp_client_id          = "your-client-id"
 gdp_client_secret      = "your-client-secret"
-gdp_ssh_username       = "ec2-user"
-gdp_ssh_privatekeypath = "~/.ssh/id_rsa"
 
 # Universal Connector Configuration
 udc_aws_credential     = "aws-credential-name"

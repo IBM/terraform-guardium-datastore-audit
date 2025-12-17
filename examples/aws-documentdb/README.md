@@ -18,11 +18,10 @@ Before using this example, ensure you have:
    - An existing AWS DocumentDB cluster
 
 2. **Guardium Data Protection**:
-   - A running Guardium Data Protection instance
+   - A running Guardium Data Protection instance (version 12.2.1 or above)
    - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
      - OAuth client registered via `grdapi register_oauth_client`
      - AWS credentials configured in Guardium Data Protection
-     - SSH access configured for Terraform
 
 ## Usage
 
@@ -39,8 +38,6 @@ documentdb_cluster_identifier = "your-documentdb-cluster-id"
 gdp_server = "guardium.example.com"
 gdp_username = "guardium-user"
 gdp_password = "guardium-password"
-gdp_ssh_username = "guardium-ssh-user"
-gdp_ssh_privatekeypath = "/path/to/private/key"
 gdp_client_id = "client1"
 gdp_client_secret = "client-secret-value"
 udc_aws_credential = "aws-credential-name"
@@ -114,8 +111,6 @@ The module configures DocumentDB to send audit logs to CloudWatch Logs. The Univ
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
 | gdp_username | Username of Guardium Web UI user | `string` | n/a | yes |
 | gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
-| gdp_ssh_username | Guardium OS user with SSH access | `string` | n/a | yes |
-| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | n/a | yes |
 | csv_interval | Polling interval in seconds for checking new logs | `string` | `"30"` | no |
 | tags | Map of tags to apply to resources | `map(string)` | n/a | yes |

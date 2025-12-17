@@ -308,11 +308,9 @@ module "neptune_audit" {
   gdp_port               = "8443"
   gdp_username           = "admin"
   gdp_password           = "password"
-  gdp_ssh_username       = "root"
-  gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
   gdp_client_id          = "client1"
   gdp_client_secret      = "client-secret"
-  gdp_mu_host            = ""
+  gdp_mu_host            = "guardium-mu.example.com"
   
   # Universal Connector Configuration
   udc_aws_credential = "aws-credential-name"
@@ -327,11 +325,6 @@ module "neptune_audit" {
   # Optional: Neptune Configuration
   # neptune_endpoint = ""
   # use_aws_bundled_ca = true
-  
-  # Optional: CSV Profile Upload Configuration
-  # use_multipart_upload = false
-  # profile_upload_directory = "/upload"
-  # profile_api_directory = "/var/IBM/Guardium/file-server/upload"
 
   tags = {
     Environment = "production"
@@ -382,11 +375,6 @@ module "postgres_object_audit" {
   # Universal Connector Configuration
   udc_aws_credential = "aws-credential-name"
   log_export_type    = "Cloudwatch"
-  
-  # Upload method (API for GDP 12.2.1+, SFTP for older versions)
-  use_multipart_upload = true  # Set to false for GDP < 12.2.1
-  # gdp_ssh_username       = "root"  # Required when use_multipart_upload = false
-  # gdp_ssh_privatekeypath = "~/.ssh/guardium_key"  # Required when use_multipart_upload = false
 }
 ```
 

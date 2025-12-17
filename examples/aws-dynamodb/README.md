@@ -42,7 +42,7 @@ This example demonstrates how to configure audit logging for AWS DynamoDB using 
 ## Prerequisites
 
 - AWS account with DynamoDB tables
-- Guardium Data Protection instance
+- Guardium Data Protection instance (version 12.2.1 or above)
 - AWS credentials with permissions to create CloudTrail, CloudWatch Logs, S3 buckets, and IAM roles
 - Terraform >= 1.0.0
 
@@ -92,8 +92,6 @@ gdp_username = "apiuser"
 gdp_password = "password"
 gdp_client_id = "client4"
 gdp_client_secret = "client_secret123"
-gdp_ssh_username = "root"
-gdp_ssh_privatekeypath = "~/.ssh/id_rsa"
 
 # Universal Connector Configuration
 enable_universal_connector = true
@@ -141,8 +139,6 @@ terraform apply --var-file terraform.tfvars
 | gdp_password | Password for Guardium API authentication | `string` | n/a | yes |
 | gdp_client_id | The client ID used to create the GDP register_oauth_client client_secret | `string` | `"client4"` | no |
 | gdp_client_secret | The client secret output from grdapi register_oauth_client | `string` | n/a | yes |
-| gdp_ssh_username | The SSH user for logging in to Guardium | `string` | n/a | yes |
-| gdp_ssh_privatekeypath | The path to the SSH private key for logging in to Guardium | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
 | udc_aws_credential | The name of the AWS credential stored in Guardium Central Manager | `string` | n/a | yes |
 | enable_universal_connector | Whether to enable the universal connector module | `bool` | `true` | no |
