@@ -2,6 +2,8 @@
 
 This module configures audit logging for MySQL RDS instances with IBM Guardium Data Protection. It enables the MariaDB Audit Plugin through an option group and configures log collection via CloudWatch.
 
+**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
+
 ## Prerequisites
 
 Before using this module, you need to:
@@ -9,15 +11,6 @@ Before using this module, you need to:
 1. Have an existing MySQL RDS instance
 2. Have Guardium set up with appropriate credentials
 3. **Important**: You must initialize Terraform and import the existing parameter and option group before applying this module
-
-## Guardium Data Protection Version Compatibility
-
-**Important:** The upload method for Universal Connector profiles depends on your Guardium Data Protection (GDP) version:
-
-- **GDP 12.2.1 and above**: Use API-based upload by setting `use_multipart_upload = true` (default and recommended)
-- **GDP versions below 12.2.1**: Use SFTP-based upload by setting `use_multipart_upload = false`
-
-When using SFTP (`use_multipart_upload = false`), you must also provide `gdp_ssh_username` and `gdp_ssh_privatekeypath` for authentication.
 
 ## Requirements
 
@@ -137,29 +130,6 @@ Valid audit event options:
 - QUERY_DML: Data Manipulation Language queries
 - QUERY_DCL: Data Control Language queries
 
-## CSV Profile Upload Methods
-
-The module supports two methods for uploading the Universal Connector CSV profile to Guardium:
-
-### API Upload (Recommended - Default) - For GDP 12.2.1 and above
-When `use_multipart_upload = true` (default):
-- CSV file is created in your local workspace (`.terraform/` directory)
-- Provider uploads file content directly via HTTP multipart/form-data
-- No SFTP configuration required
-- More secure and easier to use
-- Works seamlessly when using modules from remote sources (Git/Terraform Registry)
-- **Required for GDP version 12.2.1 and above**
-
-### SFTP Method - For GDP versions below 12.2.1
-When `use_multipart_upload = false`:
-- CSV file is uploaded to Guardium via SFTP first
-- Provider then sends the server path to Guardium API
-- Requires SFTP access to Guardium server (`gdp_ssh_username` and `gdp_ssh_privatekeypath`)
-- Maintains backward compatibility with existing deployments
-- **Required for GDP versions below 12.2.1**
-
-**Recommendation**: Use API upload (default) for GDP 12.2.1+, or SFTP for older GDP versions.
-
 ## CloudWatch Integration
 
 This module configures CloudWatch integration for MySQL RDS auditing. The audit logs are sent to a CloudWatch log group with the format:
@@ -190,8 +160,6 @@ Guardium is configured to collect and analyze these logs.
 | gdp_port | Port of Guardium Central Manager | string | `"8443"` | no |
 | gdp_username | Guardium username | string | n/a | yes |
 | gdp_password | Guardium password | string | n/a | yes |
-| gdp_ssh_username | Guardium SSH username (required when use_multipart_upload = false) | string | n/a | conditional |
-| gdp_ssh_privatekeypath | Path to SSH private key (required when use_multipart_upload = false) | string | n/a | conditional |
 | gdp_mu_host | Comma separated list of Guardium Managed Units | string | `""` | no |
 | log_export_type | Log export type (Cloudwatch) | string | `"Cloudwatch"` | no |
 | force_failover | Whether to force failover during option group update | bool | `false` | no |
@@ -203,7 +171,6 @@ Guardium is configured to collect and analyze these logs.
 | csv_event_filter | UDC Event filters | string | `""` | no |
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | `""` | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | `true` | no |
-| use_multipart_upload | Use API upload (true, for GDP 12.2.1+) or SFTP (false, for GDP < 12.2.1) | bool | `true` | no |
 
 ## Outputs
 

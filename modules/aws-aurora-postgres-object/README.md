@@ -2,6 +2,8 @@
 
 This module configures object-level auditing for Aurora PostgreSQL clusters using the pgAudit extension. It allows you to monitor specific tables and operations by creating a dedicated audit role and granting it permissions on selected tables.
 
+**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
+
 ## Overview
 
 Object-level auditing in Aurora PostgreSQL provides granular control over what database operations are audited. This module:
@@ -11,15 +13,6 @@ Object-level auditing in Aurora PostgreSQL provides granular control over what d
 3. Configures pgAudit to log operations performed by this role
 4. Sets up either SQS or CloudWatch for log collection
 5. Configures Guardium Universal Connector to process these logs
-
-## Guardium Data Protection Version Compatibility
-
-**Important:** The upload method for Universal Connector profiles depends on your Guardium Data Protection (GDP) version:
-
-- **GDP 12.2.1 and above**: Use API-based upload by setting `use_multipart_upload = true` (default and recommended)
-- **GDP versions below 12.2.1**: Use SFTP-based upload by setting `use_multipart_upload = false`
-
-When using SFTP (`use_multipart_upload = false`), you must also provide `gdp_ssh_username` and `gdp_ssh_privatekeypath` for authentication.
 
 ## How It Works
 
@@ -35,7 +28,6 @@ This approach allows you to focus auditing on specific tables and operations, re
 
 ## Usage
 
-**For GDP 12.2.1 and above (API upload - recommended):**
 ```hcl
 module "aurora_postgresql_object_audit" {
   source = "github.com/IBM/terraform-guardium-datastore-audit//modules/aws-aurora-postgres-object"
@@ -61,58 +53,6 @@ module "aurora_postgresql_object_audit" {
   
   # Log export configuration
   log_export_type = "Cloudwatch"  # or "SQS"
-  
-  # API upload (default for GDP 12.2.1+)
-  use_multipart_upload = true
-  
-  # Tables to monitor
-  tables = [
-    {
-      schema = "public"
-      table = "users"
-      grants = ["SELECT", "INSERT", "UPDATE", "DELETE"]
-    },
-    {
-      schema = "public"
-      table = "orders"
-      grants = ["SELECT", "INSERT"]
-    }
-  ]
-}
-```
-
-**For GDP versions below 12.2.1 (SFTP upload):**
-```hcl
-module "aurora_postgresql_object_audit" {
-  source = "github.com/IBM/terraform-guardium-datastore-audit//modules/aws-aurora-postgres-object"
-
-  # AWS configuration
-  aws_region = "us-east-1"
-  aurora_postgres_cluster_identifier = "my-aurora-cluster"
-  
-  # Database connection details
-  db_host = "my-aurora-cluster.cluster-endpoint.region.rds.amazonaws.com"
-  db_port = 5432
-  db_username = "admin"
-  db_password = "password"
-  db_name = "postgres"
-  
-  # Guardium configuration
-  udc_aws_credential = "aws-credential-name"
-  gdp_client_secret = "client-secret"
-  gdp_client_id = "client-id"
-  gdp_server = "guardium.example.com"
-  gdp_username = "guardium-user"
-  gdp_password = "guardium-password"
-  gdp_ssh_username = "guardium-ssh-user"
-  gdp_ssh_privatekeypath = "/path/to/private/key"
-  
-  # Log export configuration
-  log_export_type = "Cloudwatch"  # or "SQS"
-  
-  # SFTP upload for GDP < 12.2.1
-  use_multipart_upload = false
-
   
   # Tables to monitor
   tables = [
@@ -143,8 +83,6 @@ module "aurora_postgresql_object_audit" {
 | gdp_server | Hostname/IP address of Guardium Central Manager | string | - |
 | gdp_username | Username of Guardium Web UI user | string | - |
 | gdp_password | Password of Guardium Web UI user | string | - |
-| gdp_ssh_username | Guardium OS user with SSH access (required when use_multipart_upload = false) | string | - |
-| gdp_ssh_privatekeypath | Private SSH key to connect to Guardium OS (required when use_multipart_upload = false) | string | - |
 
 ## Optional Variables
 
@@ -165,9 +103,6 @@ module "aurora_postgresql_object_audit" {
 | codec_pattern | Codec pattern for Aurora PostgreSQL CloudWatch logs | string | "plain" |
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | "" |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | true |
-| use_multipart_upload | Use API upload (true, for GDP 12.2.1+) or SFTP (false, for GDP < 12.2.1) | bool | true |
-| profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | string | "/upload" |
-| profile_api_directory | Full filesystem path for Guardium API to read CSV files | string | "/var/IBM/Guardium/file-server/upload" |
 | log_export_type | The type of log exporting to be configured: "SQS" or "Cloudwatch" | string | "SQS" |
 | tables | List of tables to monitor | list(object) | [] |
 

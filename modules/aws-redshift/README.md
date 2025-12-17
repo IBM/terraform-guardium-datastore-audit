@@ -2,6 +2,8 @@
 
 This module configures AWS Redshift to send audit logs to Guardium Data Protection using the Universal Connector.
 
+**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
+
 ## Features
 
 - Configures Redshift to send audit logs to CloudWatch Logs or S3
@@ -43,22 +45,11 @@ The module will automatically append `/connectionlog` and `/useractivitylog` to 
 ## Prerequisites
 
 - AWS Redshift cluster
-- Guardium Data Protection server with Universal Connector support
+- Guardium Data Protection server (version 12.2.1 or above) with Universal Connector support
 - AWS credentials with appropriate permissions
-- SSH access to the Guardium Data Protection server (required only for GDP < 12.2.1)
-
-## Guardium Data Protection Version Compatibility
-
-**Important:** The upload method for Universal Connector profiles depends on your Guardium Data Protection (GDP) version:
-
-- **GDP 12.2.1 and above**: Use API-based upload by setting `use_multipart_upload = true` (default and recommended)
-- **GDP versions below 12.2.1**: Use SFTP-based upload by setting `use_multipart_upload = false`
-
-When using SFTP (`use_multipart_upload = false`), you must also provide `gdp_ssh_username` and `gdp_ssh_privatekeypath` for authentication.
 
 ## Usage
 
-**For GDP 12.2.1 and above (API upload - recommended):**
 ```hcl
 module "redshift_uc" {
   source = "../../modules/datastore-audit-config/aws-redshift"
@@ -84,43 +75,6 @@ module "redshift_uc" {
   # Universal Connector Configuration
   enable_universal_connector = true
   udc_aws_credential        = "aws-credential-name"
-  
-  # API upload (default for GDP 12.2.1+)
-  use_multipart_upload = true
-}
-```
-
-**For GDP versions below 12.2.1 (SFTP upload):**
-```hcl
-module "redshift_uc" {
-  source = "../../modules/datastore-audit-config/aws-redshift"
-
-  # General Configuration
-  name_prefix = "guardium"
-  aws_region  = "us-east-1"
-  
-  # Redshift Configuration
-  redshift_cluster_identifier = "my-redshift-cluster"
-  
-  # Input Configuration (CloudWatch or S3)
-  input_type = "cloudwatch"  # Options: "cloudwatch" or "s3"
-  
-  # Guardium Data Protection Configuration
-  gdp_server             = "guardium.example.com"
-  gdp_port               = 8443
-  gdp_username           = "guardium_admin"
-  gdp_password           = "your-password"
-  gdp_client_id          = "your-client-id"
-  gdp_client_secret      = "your-client-secret"
-  gdp_ssh_username       = "ec2-user"
-  gdp_ssh_privatekeypath = "~/.ssh/id_rsa"
-  
-  # Universal Connector Configuration
-  enable_universal_connector = true
-  udc_aws_credential        = "aws-credential-name"
-  
-  # SFTP upload for GDP < 12.2.1
-  use_multipart_upload   = false
 }
 ```
 
@@ -145,8 +99,6 @@ module "redshift_uc" {
 | gdp_password | Password for the Guardium Data Protection server | string | - | yes |
 | gdp_client_id | Client ID for the Guardium Data Protection server | string | - | yes |
 | gdp_client_secret | Client secret for the Guardium Data Protection server | string | - | yes |
-| gdp_ssh_username | SSH username for the Guardium Data Protection server (required when use_multipart_upload = false) | string | - | conditional |
-| gdp_ssh_privatekeypath | Path to the SSH private key for the Guardium Data Protection server (required when use_multipart_upload = false) | string | - | conditional |
 | gdp_mu_host | Management Unit host for the Guardium Data Protection server | string | "default" | no |
 | enable_universal_connector | Whether to enable the Universal Connector | bool | true | no |
 | udc_aws_credential | AWS credential name for the Universal Connector | string | - | yes |
@@ -158,9 +110,6 @@ module "redshift_uc" {
 | codec_pattern | Codec pattern for Redshift CloudWatch logs | string | Complex regex pattern | no |
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | "" | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | true | no |
-| use_multipart_upload | Use API upload (true, for GDP 12.2.1+) or SFTP (false, for GDP < 12.2.1) | bool | true | no |
-| profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | string | "/upload" | no |
-| profile_api_directory | Full filesystem path for Guardium API to read CSV files | string | "/var/IBM/Guardium/file-server/upload" | no |
 
 ## Output Variables
 

@@ -2,6 +2,8 @@
 
 This module configures audit logging for AWS Neptune clusters with IBM Guardium Data Protection. It enables Neptune audit logging through cluster parameter groups and configures log collection via CloudWatch.
 
+**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
+
 ## Prerequisites
 
 Before using this module, you need to:
@@ -109,26 +111,14 @@ Neptune audit logging captures:
 - **SPARQL queries**: W3C SPARQL queries for RDF data
 - Connection events and authentication attempts
 
-## CSV Profile Upload Methods
+## CSV Profile Upload
 
-The module supports two methods for uploading the Universal Connector CSV profile to Guardium:
-
-### Multipart Upload (Recommended - Default)
-When `use_multipart_upload = true` (default):
+The module uploads the Universal Connector CSV profile to Guardium via API:
 - CSV file is created in your local workspace (`.terraform/` directory)
 - Provider uploads file content directly via HTTP multipart/form-data
-- No SFTP configuration required
-- More secure and easier to use
+- No additional configuration required
+- Secure and easy to use
 - Works seamlessly when using modules from remote sources (Git/Terraform Registry)
-
-### Legacy SFTP Method
-When `use_multipart_upload = false`:
-- CSV file is uploaded to Guardium via SFTP first
-- Provider then sends the server path to Guardium API
-- Requires SFTP access to Guardium server
-- Maintains backward compatibility with existing deployments
-
-**Recommendation**: Use the default multipart upload method unless you have specific requirements for SFTP.
 
 ## CloudWatch Integration
 
@@ -154,8 +144,6 @@ Guardium is configured to collect and analyze these logs through the Universal C
 | gdp_port | Port of Guardium Central Manager | string | `"8443"` | no |
 | gdp_username | Guardium username | string | n/a | yes |
 | gdp_password | Guardium password | string | n/a | yes |
-| gdp_ssh_username | Guardium SSH username | string | n/a | yes |
-| gdp_ssh_privatekeypath | Path to SSH private key | string | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units | string | n/a | yes |
 | enable_universal_connector | Whether to enable the universal connector | bool | `true` | no |
 | csv_start_position | Start position for UDC | string | `"end"` | no |
@@ -164,9 +152,6 @@ Guardium is configured to collect and analyze these logs through the Universal C
 | csv_event_filter | UDC Event filters | string | `""` | no |
 | neptune_endpoint | Neptune cluster endpoint (optional - will be fetched automatically if not provided) | string | `""` | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for Neptune connection | bool | `true` | no |
-| profile_upload_directory | Directory path for SFTP upload (chroot path for CLI user) | string | `"/upload"` | no |
-| profile_api_directory | Full filesystem path for Guardium API to read CSV files | string | `"/var/IBM/Guardium/file-server/upload"` | no |
-| use_multipart_upload | Whether to use multipart upload for CSV files | bool | `false` | no |
 
 ## Outputs
 

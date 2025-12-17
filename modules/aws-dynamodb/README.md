@@ -2,6 +2,8 @@
 
 This module enables monitoring of existing AWS DynamoDB tables with IBM Guardium Data Protection. It sets up the necessary AWS infrastructure and integrates with Guardium to provide comprehensive database activity monitoring and security for your DynamoDB tables.
 
+**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
+
 ## Architecture Overview
 
 The solution works by leveraging AWS CloudTrail to capture DynamoDB API calls, which are then processed through CloudWatch Logs, EventBridge, Lambda, and SQS before being sent to Guardium for analysis and monitoring.
@@ -50,7 +52,7 @@ The monitoring solution consists of these primary components:
 
 - Existing AWS DynamoDB tables
 - AWS account with permissions to create CloudTrail, CloudWatch, IAM roles, and S3 buckets
-- Guardium Data Protection instance
+- Guardium Data Protection instance (version 12.2.1 or above)
 - Terraform 1.0.0 or later
 - AWS CLI configured with appropriate credentials
 
@@ -58,20 +60,10 @@ The monitoring solution consists of these primary components:
 
 Before using this module, you need to perform some one-time manual configurations on your Guardium Data Protection instance. These configurations include:
 
-1. Enabling OAuth client for REST API access
+1. Enabling OAuth client for REST API access (via `grdapi register_oauth_client`)
 2. Configuring AWS credentials in Universal Connector
-3. Setting up SSH access for Terraform
 
 For detailed instructions, please refer to the [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md).
-
-## Guardium Data Protection Version Compatibility
-
-**Important:** The upload method for Universal Connector profiles depends on your Guardium Data Protection (GDP) version:
-
-- **GDP 12.2.1 and above**: Use API-based upload by setting `use_multipart_upload = true` (default and recommended)
-- **GDP versions below 12.2.1**: Use SFTP-based upload by setting `use_multipart_upload = false`
-
-When using SFTP (`use_multipart_upload = false`), you must also provide `gdp_ssh_username` and `gdp_ssh_privatekeypath` for authentication.
 
 ## Quick Start
 
@@ -130,14 +122,11 @@ terraform apply
 |-----------|-------------|---------|:--------:|
 | `gdp_server` | Hostname or IP address of your Guardium Central Manager | - | Yes, if integration enabled |
 | `gdp_port` | Port of the Guardium server (default is 8443 for HTTPS) | `"8443"` | No |
-| `gdp_ssh_username` | SSH username for connecting to Guardium server (required when `use_multipart_upload = false`) | - | Conditional |
-| `gdp_ssh_privatekeypath` | Path to SSH private key for Guardium server authentication (required when `use_multipart_upload = false`) | - | Conditional |
 | `gdp_username` | Username for Guardium web interface authentication | - | Yes, if integration enabled |
 | `gdp_password` | Password for Guardium web interface authentication | - | Yes, if integration enabled |
 | `gdp_mu_host` | Hostname or IP address of your Guardium Managed Unit where the connector will be deployed | - | Yes, if integration enabled |
 | `client_id` | Client ID for Guardium OAuth authentication (created using grdapi register_oauth_client) | `"client4"` | No |
 | `gdp_client_secret` | Client secret for Guardium OAuth authentication | - | Yes, if integration enabled |
-| `use_multipart_upload` | Use API upload (true, for GDP 12.2.1+) or SFTP (false, for GDP < 12.2.1) | `true` | No |
 
 ### Resource Naming
 
@@ -183,8 +172,6 @@ csv_cluster_name = "default"
 
 # Guardium Integration Configuration
 gdp_server = "guardium.example.com"
-gdp_ssh_username = "root"
-gdp_ssh_privatekeypath = "~/.ssh/guardium_key"
 gdp_username = "admin"
 gdp_password = "password"
 gdp_mu_host = "guardium-mu.example.com"
@@ -278,9 +265,9 @@ With this setup, Guardium can monitor the following DynamoDB operations:
 
 If you encounter authentication issues with the Guardium Data Protection provider, ensure that:
 
-1. You have the correct client ID and secret
+1. You have the correct client ID and secret (from `grdapi register_oauth_client`)
 2. The Guardium server is accessible from your Terraform environment
-3. SSH access to the Guardium server is properly configured
+3. The OAuth client is properly registered in Guardium
 
 ### CloudTrail Setup Issues
 
