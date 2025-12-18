@@ -20,12 +20,8 @@ Before using this module, you need to:
 | aws | >= 4.0.0 |
 | guardium-data-protection | >= 1.0.0 |
 
+
 ### Parameter Group Import Process
-
-This module automatically detects whether your Neptune cluster uses a default or custom parameter group:
-
-- **Default Parameter Group**: If your cluster uses the default parameter group (e.g., `default.neptune1`), the module creates a new custom parameter group
-- **Custom Parameter Group**: If your cluster already uses a custom parameter group, the module modifies it to enable audit logging
 
 To ensure Terraform manages your Neptune cluster correctly when using a custom parameter group:
 
@@ -33,7 +29,7 @@ To ensure Terraform manages your Neptune cluster correctly when using a custom p
    ```bash
    terraform init
    ```
-   
+
 2. Identify your current parameter group:
    ```bash
    aws neptune describe-db-clusters \
@@ -43,12 +39,12 @@ To ensure Terraform manages your Neptune cluster correctly when using a custom p
    --output text
    ```
 
-3. Import your current parameter group (only if it's a custom parameter group):
+3. Import existing parameter group (only if it's a custom parameter group):
    ```bash
    terraform import module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_parameter_group.guardium <your-parameter-group-name>
    ```
 
-**Note**: Skipping the import step for custom parameter groups will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
+**Note**: Skipping the import step will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
 
 ## Features
 
@@ -157,6 +153,7 @@ Guardium is configured to collect and analyze these logs through the Universal C
 
 | Name | Description |
 |------|-------------|
+| profile_csv | Content of the profile CSV |
 | udc_name | Name of the Universal Connector |
 | cloudwatch_log_group | Name of the CloudWatch Log Group for audit logs |
 | parameter_group_name | Name of the Neptune cluster parameter group |
