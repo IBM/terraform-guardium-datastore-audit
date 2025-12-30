@@ -57,16 +57,6 @@ variable "gdp_client_secret" {
   type        = string
 }
 
-variable "gdp_ssh_username" {
-  description = "The SSH user for logging in to Guardium"
-  type        = string
-}
-
-variable "gdp_ssh_privatekeypath" {
-  description = "The path to the SSH private key for logging in to Guardium"
-  type        = string
-}
-
 variable "gdp_mu_host" {
   description = "Comma separated list of Guardium Managed Units to deploy profile"
   type        = string
@@ -143,25 +133,6 @@ variable "csv_cluster_name" {
   type        = string
   default     = ""
 } 
-
-variable "profile_upload_directory" {
-  type        = string
-  description = "Directory path for SFTP upload (chroot path for CLI user)"
-  default     = "/upload"
-}
-
-variable "profile_api_directory" {
-  type        = string
-  description = "Full filesystem path for Guardium API to read CSV files"
-  default     = "/var/IBM/Guardium/file-server/upload"
-}
-
-variable "use_multipart_upload" {
-  type        = bool
-  description = "Whether to use multipart upload for CSV files (true) or SFTP (false)"
-  default     = true
-}
-
 
 #----------------------------------------
 # Tags

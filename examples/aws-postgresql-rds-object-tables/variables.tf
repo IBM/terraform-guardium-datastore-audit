@@ -107,16 +107,6 @@ variable "gdp_password" {
   sensitive   = true
 }
 
-variable "gdp_ssh_username" {
-  type        = string
-  description = "Guardium OS user with SSH access"
-}
-
-variable "gdp_ssh_privatekeypath" {
-  type        = string
-  description = "Private SSH key to connect to Guardium OS with ssh username"
-}
-
 variable "gdp_mu_host" {
   type        = string
   description = "Comma separated list of Guardium Managed Units to deploy profile"

@@ -46,16 +46,4 @@ csv_event_filter          = "*"
 csv_description           = "Redshift Universal Connector"
 csv_cluster_name          = "default"
 
-# CSV Profile Directory Configuration
-#----------------------------------------
-# These paths are used for uploading CSV profile files to Guardium
-#
-# DEFAULT (CLI user with chroot - RECOMMENDED):
-#   profile_upload_directory = "/upload"  # Chroot path for CLI user SFTP
-#   profile_api_directory = "/var/IBM/Guardium/file-server/upload"  # Full path for API
-#
-# The defaults work with CLI user + SFTP chroot configuration
-# See: https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md
-#----------------------------------------
-# profile_upload_directory = "/upload"  # Uncomment to override default
-# profile_api_directory = "/var/IBM/Guardium/file-server/upload"  # Uncomment to override default
+

@@ -33,13 +33,8 @@ module "common_rds-postgres-sqs-registration" {
   gdp_username = var.gdp_username
   gdp_server = var.gdp_server
   gdp_mu_host = var.gdp_mu_host
-  gdp_ssh_privatekeypath = var.gdp_ssh_privatekeypath
-  gdp_ssh_username = var.gdp_ssh_username
   udc_aws_credential = var.udc_aws_credential
   log_group = local.log_group
-  profile_upload_directory = var.profile_upload_directory
-  profile_api_directory    = var.profile_api_directory
-  use_multipart_upload     = var.use_multipart_upload
 }
 
 module "common_rds-postgres-cloudwatch-registration" {
@@ -53,13 +48,8 @@ module "common_rds-postgres-cloudwatch-registration" {
   gdp_username = var.gdp_username
   gdp_server = var.gdp_server
   gdp_mu_host = var.gdp_mu_host
-  gdp_ssh_privatekeypath = var.gdp_ssh_privatekeypath
-  gdp_ssh_username = var.gdp_ssh_username
   udc_aws_credential = var.udc_aws_credential
   log_group = local.log_group
-  profile_upload_directory = var.profile_upload_directory
-  profile_api_directory    = var.profile_api_directory
-  use_multipart_upload     = var.use_multipart_upload
   cloudwatch_endpoint      = var.cloudwatch_endpoint
   codec_pattern            = var.codec_pattern
   use_aws_bundled_ca       = var.use_aws_bundled_ca

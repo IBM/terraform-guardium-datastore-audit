@@ -34,8 +34,6 @@ gdp_username           = "admin"                 # Replace with your Guardium us
 gdp_password           = "password"              # Replace with your Guardium password
 gdp_client_id          = "client4"               # Replace with your client ID
 gdp_client_secret      = "client-secret"         # Replace with your client secret
-gdp_ssh_username       = "cli"                   # Use "cli" for secure CLI user (recommended) or "root"
-gdp_ssh_privatekeypath = "~/.ssh/id_rsa"         # Replace with your SSH private key path
 gdp_mu_host            = ""                      # Comma separated list of Guardium Managed Units
 udc_aws_credential = "guardium-aws"  # Name of the AWS credential stored in Guardium Central Manager
 
@@ -48,25 +46,6 @@ csv_interval              = "60"
 csv_event_filter          = "*"
 csv_description           = "Redshift Universal Connector"
 csv_cluster_name          = "default"
-
-# CSV Profile Directory Configuration
-#----------------------------------------
-# These paths are used for uploading CSV profile files to Guardium
-#
-# DEFAULT (CLI user with chroot - RECOMMENDED):
-#   profile_upload_directory = "/upload"  # Chroot path for CLI user SFTP
-#   profile_api_directory = "/var/IBM/Guardium/file-server/upload"  # Full path for API
-#
-# The defaults work with CLI user + SFTP chroot configuration
-# See: https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md
-#----------------------------------------
-# profile_upload_directory = "/upload"  # Uncomment to override default
-# profile_api_directory = "/var/IBM/Guardium/file-server/upload"  # Uncomment to override default
-
-# CSV Profile Upload Method
-# - true: Use multipart/form-data upload (recommended, no SFTP required)
-# - false: Use legacy SFTP method (requires SFTP access to Guardium)
-use_multipart_upload = true
 
 # Optional: Codec pattern for Redshift CloudWatch logs 
 # codec_pattern = ""

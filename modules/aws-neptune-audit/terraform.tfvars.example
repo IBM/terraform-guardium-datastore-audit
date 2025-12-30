@@ -73,18 +73,3 @@ gdp_ssh_privatekeypath = "/path/to/private/key"
 # Optional: Event filters for Universal Data Connector
 # csv_event_filter = ""
 
-#------------------------------------------------------------------------------
-# SFTP and Multipart Upload Configuration
-#------------------------------------------------------------------------------
-
-# Optional: Directory path for SFTP upload (chroot path for CLI user)
-# This is the directory where CSV files are uploaded via SFTP
-# profile_upload_directory = "/upload"
-
-# Optional: Full filesystem path for Guardium API to read CSV files
-# This is the actual filesystem path where Guardium reads the uploaded files
-# profile_api_directory = "/var/IBM/Guardium/file-server/upload"
-
-# Optional: Whether to use multipart upload for CSV files (default: false)
-# Enable this for large CSV files to improve upload reliability
-# use_multipart_upload = false

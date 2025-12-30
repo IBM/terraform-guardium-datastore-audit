@@ -25,8 +25,6 @@ module "datastore-audit_aws-neptune-audit" {
   gdp_port                     = var.gdp_port
   gdp_username                 = var.gdp_username
   gdp_password                 = var.gdp_password
-  gdp_ssh_username             = var.gdp_ssh_username
-  gdp_ssh_privatekeypath       = var.gdp_ssh_privatekeypath
   gdp_mu_host                  = var.gdp_mu_host
 
   # Universal Connector Configuration
@@ -37,10 +35,6 @@ module "datastore-audit_aws-neptune-audit" {
   csv_event_filter             = var.csv_event_filter
   use_aws_bundled_ca           = var.use_aws_bundled_ca
 
-  # SFTP and Multipart Upload Configuration
-  profile_upload_directory     = var.profile_upload_directory
-  profile_api_directory        = var.profile_api_directory
-  use_multipart_upload         = var.use_multipart_upload
 
   # Tags
   tags                         = var.tags

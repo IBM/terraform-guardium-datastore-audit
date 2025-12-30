@@ -35,18 +35,4 @@ gdp_username           = "admin"                 # Replace with your Guardium us
 gdp_password           = "password"              # Replace with your Guardium password
 gdp_client_id          = "client4"               # Replace with your client ID
 gdp_client_secret      = "client-secret"         # Replace with your client secret
-gdp_ssh_username       = "root"                  # Replace with your SSH username
-gdp_ssh_privatekeypath = "~/.ssh/id_rsa"         # Replace with your SSH private key path
 gdp_mu_host            = ""                      # Comma separated list of Guardium Managed Units
-
-#----------------------------------------
-# SFTP and Multipart Upload Configuration
-#----------------------------------------
-# Optional: Uncomment to customize SFTP upload directory (default: /upload)
-# profile_upload_directory = "/upload"
-
-# Optional: Uncomment to customize Guardium API directory (default: /var/IBM/Guardium/file-server/upload)
-# profile_api_directory = "/var/IBM/Guardium/file-server/upload"
-
-# Optional: Enable multipart upload for large CSV files (default: false)
-# use_multipart_upload = false

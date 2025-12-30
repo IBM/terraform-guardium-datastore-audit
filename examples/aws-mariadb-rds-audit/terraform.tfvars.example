@@ -34,7 +34,6 @@ cloudwatch_logs_exports = ["audit"]  # List of log types to export to CloudWatch
 log_export_type = "Cloudwatch"
 cloudwatch_endpoint = ""  # Custom endpoint URL for AWS CloudWatch (leave empty to use default AWS endpoint)
 use_aws_bundled_ca = true  # Whether to use the AWS bundled CA certificates for CloudWatch connection
-use_multipart_upload = true  # Whether to use multipart upload for CSV files
 
 #----------------------------------------
 # Universal Connector Configuration
@@ -57,6 +56,4 @@ gdp_username           = "admin"                 # Replace with your Guardium us
 gdp_password           = "password"              # Replace with your Guardium password
 gdp_client_id          = "client4"               # Replace with your client ID
 gdp_client_secret      = "client-secret"         # Replace with your client secret
-gdp_ssh_username       = "root"                  # Replace with your SSH username
-gdp_ssh_privatekeypath = "~/.ssh/id_rsa"         # Replace with your SSH private key path
 gdp_mu_host            = ""                      # Comma separated list of Guardium Managed Units

@@ -46,8 +46,6 @@ module "datastore-audit_aws-redshift" {
   gdp_password           = var.gdp_password
   gdp_client_id          = var.gdp_client_id
   gdp_client_secret      = var.gdp_client_secret
-  gdp_ssh_username       = var.gdp_ssh_username
-  gdp_ssh_privatekeypath = var.gdp_ssh_privatekeypath
   gdp_mu_host            = var.gdp_mu_host
 
   # Universal Connector Configuration
@@ -59,9 +57,4 @@ module "datastore-audit_aws-redshift" {
   csv_event_filter          = var.csv_event_filter
   csv_description           = var.csv_description
   csv_cluster_name          = var.csv_cluster_name
-  
-  # Directory Configuration
-  profile_upload_directory = var.profile_upload_directory
-  profile_api_directory    = var.profile_api_directory
-  use_multipart_upload     = var.use_multipart_upload
 }

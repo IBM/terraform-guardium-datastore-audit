@@ -52,8 +52,6 @@ module "aurora_postgres_object_audit" {
   gdp_password           = var.gdp_password
   gdp_client_id          = var.gdp_client_id
   gdp_client_secret      = var.gdp_client_secret
-  gdp_ssh_username       = var.gdp_ssh_username
-  gdp_ssh_privatekeypath = var.gdp_ssh_privatekeypath
   gdp_mu_host            = var.gdp_mu_host
   
   # Universal Connector Configuration
@@ -67,7 +65,4 @@ module "aurora_postgres_object_audit" {
   csv_start_position     = var.csv_start_position
   csv_interval           = var.csv_interval
   csv_event_filter       = var.csv_event_filter
-  profile_upload_directory = var.profile_upload_directory
-  profile_api_directory    = var.profile_api_directory
-  use_multipart_upload     = var.use_multipart_upload
 }

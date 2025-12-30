@@ -21,13 +21,6 @@ module "datastore-audit_aws-postgresql-rds-object" {
   gdp_server         = "guardium-server.example.com"
   gdp_username       = "guardium-user"
   gdp_password       = "guardium-password"
-  gdp_ssh_username   = "guardium-ssh-user"
-  gdp_ssh_privatekeypath = "/path/to/private/key"
-
-  # Universal Connector Configuration
-  profile_upload_directory = "/upload"
-  profile_api_directory    = "/var/IBM/Guardium/file-server/upload"
-  use_multipart_upload     = true
 
   # Audit configuration
   auditing_type = "object"

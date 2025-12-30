@@ -49,8 +49,6 @@ module "common_rds-mariadb-mysql-cloudwatch-registration" {
   gdp_server = var.gdp_server
   gdp_port = var.gdp_port
   gdp_mu_host = var.gdp_mu_host
-  gdp_ssh_privatekeypath = var.gdp_ssh_privatekeypath
-  gdp_ssh_username = var.gdp_ssh_username
   udc_name = var.udc_name
   udc_aws_credential = var.udc_aws_credential
   log_group = local.log_group
@@ -61,7 +59,4 @@ module "common_rds-mariadb-mysql-cloudwatch-registration" {
   codec_pattern = var.codec_pattern
   cloudwatch_endpoint = var.cloudwatch_endpoint
   use_aws_bundled_ca = var.use_aws_bundled_ca
-  use_multipart_upload     = var.use_multipart_upload
-  profile_upload_directory = var.profile_upload_directory
-  profile_api_directory    = var.profile_api_directory
 }

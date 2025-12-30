@@ -29,7 +29,6 @@ module "datastore-audit_aws-mariadb-rds-audit" {
   codec_pattern                  = var.codec_pattern
   cloudwatch_endpoint            = var.cloudwatch_endpoint
   use_aws_bundled_ca             = var.use_aws_bundled_ca
-  use_multipart_upload           = var.use_multipart_upload
 
   # Guardium Configuration
   udc_name                       = var.udc_name
@@ -40,8 +39,6 @@ module "datastore-audit_aws-mariadb-rds-audit" {
   gdp_port                       = var.gdp_port
   gdp_username                   = var.gdp_username
   gdp_password                   = var.gdp_password
-  gdp_ssh_username               = var.gdp_ssh_username
-  gdp_ssh_privatekeypath         = var.gdp_ssh_privatekeypath
   gdp_mu_host                    = var.gdp_mu_host
 
   # Universal Connector Configuration

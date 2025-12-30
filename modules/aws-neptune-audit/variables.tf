@@ -63,15 +63,7 @@ variable "gdp_password" {
   sensitive   = true
 }
 
-variable "gdp_ssh_username" {
-  type        = string
-  description = "Guardium OS user with SSH access"
-}
 
-variable "gdp_ssh_privatekeypath" {
-  type        = string
-  description = "Private SSH key to connect to Guardium OS with ssh username"
-}
 
 variable "gdp_mu_host" {
   type        = string
@@ -128,20 +120,5 @@ variable "use_aws_bundled_ca" {
 // SFTP and Multipart Upload Configuration
 //////
 
-variable "profile_upload_directory" {
-  type        = string
-  description = "Directory path for SFTP upload (chroot path for CLI user)"
-  default     = "/upload"
-}
 
-variable "profile_api_directory" {
-  type        = string
-  description = "Full filesystem path for Guardium API to read CSV files"
-  default     = "/var/IBM/Guardium/file-server/upload"
-}
 
-variable "use_multipart_upload" {
-  type        = bool
-  description = "Whether to use multipart upload for CSV files"
-  default     = false
-}

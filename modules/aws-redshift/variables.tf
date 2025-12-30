@@ -116,15 +116,7 @@ variable "gdp_client_secret" {
   sensitive   = true
 }
 
-variable "gdp_ssh_username" {
-  description = "SSH username for the Guardium Data Protection server"
-  type        = string
-}
 
-variable "gdp_ssh_privatekeypath" {
-  description = "Path to the SSH private key for the Guardium Data Protection server"
-  type        = string
-}
 
 variable "gdp_mu_host" {
   description = "Management Unit host for the Guardium Data Protection server"
@@ -180,23 +172,8 @@ variable "csv_cluster_name" {
   default     = "default"
 }
 
-variable "profile_upload_directory" {
-  type        = string
-  description = "Directory path for SFTP upload (chroot path for CLI user)"
-  default     = "/upload"
-}
 
-variable "profile_api_directory" {
-  type        = string
-  description = "Full filesystem path for Guardium API to read CSV files"
-  default     = "/var/IBM/Guardium/file-server/upload"
-}
 
-variable "use_multipart_upload" {
-  type        = bool
-  description = "Whether to use multipart upload for CSV files (true) or SFTP (false)"
-  default     = true
-}
 variable "cloudwatch_endpoint" {
   type        = string
   description = "Custom endpoint URL for AWS CloudWatch"

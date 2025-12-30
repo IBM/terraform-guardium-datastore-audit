@@ -54,10 +54,6 @@ gdp_password = "password"              # Replace with your Guardium password
 gdp_client_id = "client4"              # Replace with your client ID
 gdp_client_secret = "client-secret"    # Replace with your client secret
 
-# REQUIRED: SSH access details for Guardium
-gdp_ssh_username = "root"              # Replace with your SSH username
-gdp_ssh_privatekeypath = "~/.ssh/id_rsa" # Full path to SSH private key file
-
 # Comma-separated list of Guardium Managed Units to deploy the profile to
 gdp_mu_host = "mu1.guardium.example.com,mu2.guardium.example.com"
 
@@ -83,11 +79,6 @@ csv_event_filter = ""
 # - "SQS": Use Amazon SQS for log delivery (more real-time)
 # - "Cloudwatch": Use CloudWatch Logs for log delivery (more reliable)
 log_export_type = "Cloudwatch"
-
-# CSV Profile Upload Method
-# - true: Use multipart/form-data upload (recommended, no SFTP required)
-# - false: Use legacy SFTP method (requires SFTP access to Guardium)
-use_multipart_upload = true
 
 # Optional: Custom endpoint URL for AWS CloudWatch (leave empty to use default AWS endpoint)
 # cloudwatch_endpoint = ""

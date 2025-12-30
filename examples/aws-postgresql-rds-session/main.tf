@@ -33,8 +33,6 @@ module "datastore-audit_aws-postgresql-rds-session" {
   gdp_port                       = var.gdp_port
   gdp_username                   = var.gdp_username
   gdp_password                   = var.gdp_password
-  gdp_ssh_username               = var.gdp_ssh_username
-  gdp_ssh_privatekeypath         = var.gdp_ssh_privatekeypath
   gdp_mu_host                    = var.gdp_mu_host
 
   # Universal Connector configuration
@@ -43,7 +41,4 @@ module "datastore-audit_aws-postgresql-rds-session" {
   csv_interval                   = var.csv_interval
   csv_event_filter               = var.csv_event_filter
   log_export_type                = var.log_export_type
-  profile_upload_directory       = var.profile_upload_directory
-  profile_api_directory          = var.profile_api_directory
-  use_multipart_upload           = var.use_multipart_upload
 }

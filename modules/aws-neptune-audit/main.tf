@@ -105,11 +105,8 @@ module "gdp_connect-datasource-to-uc" {
   udc_csv_parsed = local.neptune_csv
   
   # Directory configuration - SFTP support
-  profile_upload_directory = var.profile_upload_directory
-  profile_api_directory    = var.profile_api_directory
   
   # Multipart upload support
-  use_multipart_upload = var.use_multipart_upload
   
   client_id              = var.gdp_client_id
   client_secret          = var.gdp_client_secret
@@ -117,7 +114,5 @@ module "gdp_connect-datasource-to-uc" {
   gdp_port               = var.gdp_port
   gdp_username           = var.gdp_username
   gdp_password           = var.gdp_password
-  gdp_ssh_username       = var.gdp_ssh_username
-  gdp_ssh_privatekeypath = var.gdp_ssh_privatekeypath
   gdp_mu_host            = var.gdp_mu_host
 }

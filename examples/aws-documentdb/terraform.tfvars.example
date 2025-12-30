@@ -7,8 +7,6 @@ gdp_server = "guardium.example.com"
 gdp_port = "8443"  # Default port is 8443
 gdp_username = "guardium-user"
 gdp_password = "guardium-password"
-gdp_ssh_username = "cli"  # Use "cli" for secure CLI user (recommended) or "root"
-gdp_ssh_privatekeypath = "/path/to/private/key"
 gdp_client_id = "client1"
 gdp_client_secret = "client-secret-value"
 udc_aws_credential = "aws-credential-name"
@@ -17,26 +15,6 @@ gdp_mu_host = "mu1,mu2"  # Comma-separated list of Managed Units
 # Universal Connector Configuration
 udc_name = "documentdb-gdp"  # Default name for the connector
 csv_interval = "30"  # Polling interval in seconds
-
-# CSV Profile Directory Configuration
-#----------------------------------------
-# These paths are used for uploading CSV profile files to Guardium
-#
-# DEFAULT (CLI user with chroot - RECOMMENDED):
-#   profile_upload_directory = "/upload"  # Chroot path for CLI user SFTP
-#   profile_api_directory = "/var/IBM/Guardium/file-server/upload"  # Full path for API
-#
-# The defaults work with CLI user + SFTP chroot configuration
-# See: https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md
-#----------------------------------------
-# profile_upload_directory = "/upload"  # Uncomment to override default
-# profile_api_directory = "/var/IBM/Guardium/file-server/upload"  # Uncomment to override default
-
-
-# CSV Profile Upload Method
-# - true: Use multipart/form-data upload (recommended, no SFTP required)
-# - false: Use legacy SFTP method (requires SFTP access to Guardium)
-use_multipart_upload = true
 
 # Optional: Codec pattern for DocumentDB CloudWatch logs (default: "plain")
 # codec_pattern = "plain"

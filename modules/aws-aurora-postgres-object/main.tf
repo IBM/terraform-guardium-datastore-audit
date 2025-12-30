@@ -69,8 +69,6 @@ module "aurora-postgres-sqs-registration" {
   gdp_username = var.gdp_username
   gdp_server = var.gdp_server
   gdp_mu_host = var.gdp_mu_host
-  gdp_ssh_privatekeypath = var.gdp_ssh_privatekeypath
-  gdp_ssh_username = var.gdp_ssh_username
   udc_aws_credential = var.udc_aws_credential
   log_group = local.log_group
   aurora_postgres_cluster_identifier = var.aurora_postgres_cluster_identifier
@@ -78,9 +76,6 @@ module "aurora-postgres-sqs-registration" {
   csv_start_position = var.csv_start_position
   csv_interval = var.csv_interval
   csv_event_filter = var.csv_event_filter
-  profile_upload_directory = var.profile_upload_directory
-  profile_api_directory    = var.profile_api_directory
-  use_multipart_upload     = var.use_multipart_upload
 }
 
 module "aurora-postgres-cloudwatch-registration" {
@@ -94,8 +89,6 @@ module "aurora-postgres-cloudwatch-registration" {
   gdp_username = var.gdp_username
   gdp_server = var.gdp_server
   gdp_mu_host = var.gdp_mu_host
-  gdp_ssh_privatekeypath = var.gdp_ssh_privatekeypath
-  gdp_ssh_username = var.gdp_ssh_username
   udc_aws_credential = var.udc_aws_credential
   log_group = local.log_group
   aurora_postgres_cluster_identifier = var.aurora_postgres_cluster_identifier
@@ -103,9 +96,6 @@ module "aurora-postgres-cloudwatch-registration" {
   csv_start_position = var.csv_start_position
   csv_interval = var.csv_interval
   csv_event_filter = var.csv_event_filter
-  profile_upload_directory = var.profile_upload_directory
-  profile_api_directory    = var.profile_api_directory
-  use_multipart_upload     = var.use_multipart_upload
   cloudwatch_endpoint      = var.cloudwatch_endpoint
   codec_pattern            = var.codec_pattern
   use_aws_bundled_ca       = var.use_aws_bundled_ca
