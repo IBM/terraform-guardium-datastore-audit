@@ -8,17 +8,17 @@ terraform {
       source = "hashicorp/archive"
     }
     postgresql = {
-      source = "cyrilgdn/postgresql"
+      source  = "cyrilgdn/postgresql"
       version = "1.26.0"
     }
 
     guardium-data-protection = {
-      source = "IBM/guardium-data-protection"
+      source  = "IBM/guardium-data-protection"
       version = ">= 1.0.0"
     }
 
     gdp-middleware-helper = {
-      source = "IBM/gdp-middleware-helper"
+      source  = "IBM/gdp-middleware-helper"
       version = ">= 1.0.0"
     }
 

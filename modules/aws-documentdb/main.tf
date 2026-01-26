@@ -70,15 +70,15 @@ locals {
     # the aws log group here gets automatically created for us when we enable auditing on the document db
     #   /aws/docdb/guardium-docdb/audit
     # Using only audit log group to avoid comma-separated values issue
-    aws_log_group   = format("/aws/docdb/%s/audit", var.documentdb_cluster_identifier)
-    start_position  = var.csv_start_position
-    interval        = var.csv_interval
-    event_filter    = var.csv_event_filter
-    description     = "GDP AWS DocumentDB connector for ${var.documentdb_cluster_identifier}"
+    aws_log_group       = format("/aws/docdb/%s/audit", var.documentdb_cluster_identifier)
+    start_position      = var.csv_start_position
+    interval            = var.csv_interval
+    event_filter        = var.csv_event_filter
+    description         = "GDP AWS DocumentDB connector for ${var.documentdb_cluster_identifier}"
     codec_pattern       = var.codec_pattern
     cloudwatch_endpoint = var.cloudwatch_endpoint
     use_aws_bundled_ca  = var.use_aws_bundled_ca
-    cluster_name    = var.documentdb_cluster_identifier
+    cluster_name        = var.documentdb_cluster_identifier
   })
 }
 module "gdp_connect-datasource-to-uc" {
@@ -89,13 +89,13 @@ module "gdp_connect-datasource-to-uc" {
 
   # Directory configuration - pass through to child module
 
-  client_id              = var.gdp_client_id
-  client_secret          = var.gdp_client_secret
-  gdp_server             = var.gdp_server
-  gdp_port               = var.gdp_port
-  gdp_username           = var.gdp_username
-  gdp_password           = var.gdp_password
-  gdp_mu_host            = var.gdp_mu_host
+  client_id     = var.gdp_client_id
+  client_secret = var.gdp_client_secret
+  gdp_server    = var.gdp_server
+  gdp_port      = var.gdp_port
+  gdp_username  = var.gdp_username
+  gdp_password  = var.gdp_password
+  gdp_mu_host   = var.gdp_mu_host
 }
 
 output "profile_csv" {

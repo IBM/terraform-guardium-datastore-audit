@@ -17,7 +17,7 @@ resource "null_resource" "import_parameter_group" {
 
   triggers = {
     parameter_group_name = data.aws_db_instance.existing.db_parameter_groups[0].db_parameter_group_name
-    instance_id = var.mysql_rds_cluster_identifier
+    instance_id          = var.mysql_rds_cluster_identifier
   }
 
   provisioner "local-exec" {
@@ -30,7 +30,7 @@ resource "null_resource" "import_parameter_group" {
         echo "Parameter group already in state, skipping import"
       fi
     EOT
-    
+
     on_failure = continue
   }
 }
@@ -41,7 +41,7 @@ resource "null_resource" "import_option_group" {
 
   triggers = {
     option_group_name = data.aws_db_instance.existing.option_group_memberships[0].option_group_name
-    instance_id = var.mysql_rds_cluster_identifier
+    instance_id       = var.mysql_rds_cluster_identifier
   }
 
   provisioner "local-exec" {
@@ -54,7 +54,7 @@ resource "null_resource" "import_option_group" {
         echo "Option group already in state, skipping import"
       fi
     EOT
-    
+
     on_failure = continue
   }
 }

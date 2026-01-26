@@ -17,7 +17,7 @@ resource "null_resource" "import_redshift_parameter_group" {
 
   triggers = {
     parameter_group_name = data.aws_redshift_cluster.existing.cluster_parameter_group_name
-    cluster_id = var.redshift_cluster_identifier
+    cluster_id           = var.redshift_cluster_identifier
   }
 
   provisioner "local-exec" {
@@ -30,7 +30,7 @@ resource "null_resource" "import_redshift_parameter_group" {
         echo "Redshift parameter group already in state, skipping import"
       fi
     EOT
-    
+
     on_failure = continue
   }
 }

@@ -21,13 +21,13 @@ variable "tags" {
 
 variable "aurora_postgres_cluster_identifier" {
   type        = string
-  default = "guardium-aurora-postgres"
+  default     = "guardium-aurora-postgres"
   description = "Aurora PostgreSQL cluster identifier to be monitored"
 }
 
 variable "force_failover" {
   type        = bool
-  default = false
+  default     = false
   description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
 }
 
@@ -150,10 +150,10 @@ variable "csv_event_filter" {
 
 variable "log_export_type" {
   description = "The type of log exporting to be configured. Options SQS, Cloudwatch"
-  default = "SQS"
+  default     = "SQS"
 
   validation {
-    condition = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
+    condition     = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
     error_message = "log_export_type must be 'SQS' or 'Cloudwatch'"
   }
 }
@@ -181,9 +181,9 @@ variable "tables" {
 
 
 variable "codec_pattern" {
-  type = string
+  type        = string
   description = "Codec pattern for Aurora PostgreSQL CloudWatch logs"
-  default = "plain"
+  default     = "plain"
 }
 
 variable "cloudwatch_endpoint" {

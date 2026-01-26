@@ -17,7 +17,7 @@ resource "null_resource" "import_cluster_parameter_group" {
 
   triggers = {
     parameter_group_name = data.aws_rds_cluster.existing.db_cluster_parameter_group_name
-    cluster_id = var.aurora_postgres_cluster_identifier
+    cluster_id           = var.aurora_postgres_cluster_identifier
   }
 
   provisioner "local-exec" {
@@ -30,7 +30,7 @@ resource "null_resource" "import_cluster_parameter_group" {
         echo "Aurora PostgreSQL cluster parameter group already in state, skipping import"
       fi
     EOT
-    
+
     on_failure = continue
   }
 }

@@ -17,7 +17,7 @@ resource "null_resource" "import_parameter_group" {
 
   triggers = {
     parameter_group_name = data.aws_db_instance.existing.db_parameter_groups[0].db_parameter_group_name
-    instance_id = var.postgres_rds_cluster_identifier
+    instance_id          = var.postgres_rds_cluster_identifier
   }
 
   provisioner "local-exec" {
@@ -30,7 +30,7 @@ resource "null_resource" "import_parameter_group" {
         echo "PostgreSQL parameter group already in state, skipping import"
       fi
     EOT
-    
+
     on_failure = continue
   }
 }

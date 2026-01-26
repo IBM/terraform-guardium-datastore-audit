@@ -29,7 +29,7 @@ locals {
   parameter_group_name = data.external.docdb_cluster_info.result.parameter_group
   # Check if parameter group is default (starts with "default.")
   is_default_param_group = can(regex("^default\\.", local.parameter_group_name))
-  should_import = local.parameter_group_name != "" && !local.is_default_param_group
+  should_import          = local.parameter_group_name != "" && !local.is_default_param_group
 }
 
 # Null resource to perform import if needed (only for custom parameter groups)
@@ -38,7 +38,7 @@ resource "null_resource" "import_docdb_parameter_group" {
 
   triggers = {
     parameter_group_name = local.parameter_group_name
-    cluster_id = var.documentdb_cluster_identifier
+    cluster_id           = var.documentdb_cluster_identifier
   }
 
   provisioner "local-exec" {
@@ -51,7 +51,7 @@ resource "null_resource" "import_docdb_parameter_group" {
         echo "DocumentDB parameter group already in state, skipping import"
       fi
     EOT
-    
+
     on_failure = continue
   }
 }
