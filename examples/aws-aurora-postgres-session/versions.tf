@@ -9,11 +9,9 @@ terraform {
   required_providers {
     guardium-data-protection = {
       source = "IBM/guardium-data-protection"
-      version = "1.2.0"
     }
     gdp-middleware-helper = {
-      source  = "IBM/gdp-middleware-helper"
-      version = "1.2.0"
+      source = "IBM/gdp-middleware-helper"
     }
     aws = {
       source  = "hashicorp/aws"
