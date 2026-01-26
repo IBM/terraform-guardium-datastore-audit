@@ -26,18 +26,18 @@ data "external" "docdb_cluster_info" {
 }
 
 locals {
-  parameter_group_name = data.external.docdb_cluster_info.result.parameter_group
+  existing_parameter_group_name = data.external.docdb_cluster_info.result.parameter_group
   # Check if parameter group is default (starts with "default.")
-  is_default_param_group = can(regex("^default\\.", local.parameter_group_name))
-  should_import          = local.parameter_group_name != "" && !local.is_default_param_group
+  is_default_param_group_import = can(regex("^default\\.", local.existing_parameter_group_name))
+  should_import_param_group     = local.existing_parameter_group_name != "" && !local.is_default_param_group_import
 }
 
 # Null resource to perform import if needed (only for custom parameter groups)
 resource "null_resource" "import_docdb_parameter_group" {
-  count = local.should_import ? 1 : 0
+  count = local.should_import_param_group ? 1 : 0
 
   triggers = {
-    parameter_group_name = local.parameter_group_name
+    parameter_group_name = local.existing_parameter_group_name
     cluster_id           = var.documentdb_cluster_identifier
   }
 
@@ -45,8 +45,8 @@ resource "null_resource" "import_docdb_parameter_group" {
     command = <<-EOT
       # Check if resource exists in state
       if ! terraform state show 'aws_docdb_cluster_parameter_group.guardium' >/dev/null 2>&1; then
-        echo "Importing DocumentDB parameter group: ${local.parameter_group_name}"
-        terraform import 'aws_docdb_cluster_parameter_group.guardium' '${local.parameter_group_name}' || true
+        echo "Importing DocumentDB parameter group: ${local.existing_parameter_group_name}"
+        terraform import 'aws_docdb_cluster_parameter_group.guardium' '${local.existing_parameter_group_name}' || true
       else
         echo "DocumentDB parameter group already in state, skipping import"
       fi
