@@ -6,45 +6,32 @@
 # Automatic import of existing DocumentDB parameter group
 # This prevents errors when the parameter group already exists in AWS
 
-# Data source to check if parameter group exists and if it's custom
-data "external" "check_docdb_parameter_group" {
-  program = ["bash", "-c", <<-EOT
-    set -e
-    PARAM_GROUP=$(aws docdb describe-db-clusters \
-      --db-cluster-identifier ${var.documentdb_cluster_identifier} \
-      --region ${var.aws_region} \
-      --query "DBClusters[0].DBClusterParameterGroup" \
-      --output text 2>/dev/null || echo "")
-    
-    if [ -z "$PARAM_GROUP" ] || [ "$PARAM_GROUP" = "None" ]; then
-      echo '{"exists":"false","name":"","is_default":"true"}'
-    else
-      # Check if it's a default parameter group (starts with "default.")
-      if [[ "$PARAM_GROUP" == default.* ]]; then
-        echo "{\"exists\":\"true\",\"name\":\"$PARAM_GROUP\",\"is_default\":\"true\"}"
-      else
-        echo "{\"exists\":\"true\",\"name\":\"$PARAM_GROUP\",\"is_default\":\"false\"}"
-      fi
-    fi
-  EOT
-  ]
+# Use native Terraform data source to get DocumentDB cluster information
+data "aws_docdb_cluster" "existing" {
+  cluster_identifier = var.documentdb_cluster_identifier
+}
+
+locals {
+  # Check if parameter group is default (starts with "default.")
+  is_default_param_group = can(regex("^default\\.", data.aws_docdb_cluster.existing.db_cluster_parameter_group_name))
+  should_import = data.aws_docdb_cluster.existing.db_cluster_parameter_group_name != null && !local.is_default_param_group
 }
 
 # Null resource to perform import if needed (only for custom parameter groups)
 resource "null_resource" "import_docdb_parameter_group" {
-  count = data.external.check_docdb_parameter_group.result.exists == "true" && data.external.check_docdb_parameter_group.result.is_default == "false" ? 1 : 0
+  count = local.should_import ? 1 : 0
 
   triggers = {
-    parameter_group_name = data.external.check_docdb_parameter_group.result.name
-    always_run = timestamp()
+    parameter_group_name = data.aws_docdb_cluster.existing.db_cluster_parameter_group_name
+    cluster_id = var.documentdb_cluster_identifier
   }
 
   provisioner "local-exec" {
     command = <<-EOT
       # Check if resource exists in state
       if ! terraform state show 'aws_docdb_cluster_parameter_group.guardium' >/dev/null 2>&1; then
-        echo "Importing DocumentDB parameter group: ${data.external.check_docdb_parameter_group.result.name}"
-        terraform import 'aws_docdb_cluster_parameter_group.guardium' '${data.external.check_docdb_parameter_group.result.name}' || true
+        echo "Importing DocumentDB parameter group: ${data.aws_docdb_cluster.existing.db_cluster_parameter_group_name}"
+        terraform import 'aws_docdb_cluster_parameter_group.guardium' '${data.aws_docdb_cluster.existing.db_cluster_parameter_group_name}' || true
       else
         echo "DocumentDB parameter group already in state, skipping import"
       fi
