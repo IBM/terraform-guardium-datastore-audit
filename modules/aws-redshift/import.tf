@@ -13,10 +13,10 @@ data "aws_redshift_cluster" "existing" {
 
 # Null resource to perform import if needed
 resource "null_resource" "import_redshift_parameter_group" {
-  count = var.create_parameter_group && length(data.aws_redshift_cluster.existing.cluster_parameter_groups) > 0 ? 1 : 0
+  count = var.create_parameter_group && data.aws_redshift_cluster.existing.cluster_parameter_group_name != null ? 1 : 0
 
   triggers = {
-    parameter_group_name = data.aws_redshift_cluster.existing.cluster_parameter_groups[0].parameter_group_name
+    parameter_group_name = data.aws_redshift_cluster.existing.cluster_parameter_group_name
     cluster_id = var.redshift_cluster_identifier
   }
 
@@ -24,8 +24,8 @@ resource "null_resource" "import_redshift_parameter_group" {
     command = <<-EOT
       # Check if resource exists in state
       if ! terraform state show 'aws_redshift_parameter_group.redshift_logging[0]' >/dev/null 2>&1; then
-        echo "Importing Redshift parameter group: ${data.aws_redshift_cluster.existing.cluster_parameter_groups[0].parameter_group_name}"
-        terraform import 'aws_redshift_parameter_group.redshift_logging[0]' '${data.aws_redshift_cluster.existing.cluster_parameter_groups[0].parameter_group_name}' || true
+        echo "Importing Redshift parameter group: ${data.aws_redshift_cluster.existing.cluster_parameter_group_name}"
+        terraform import 'aws_redshift_parameter_group.redshift_logging[0]' '${data.aws_redshift_cluster.existing.cluster_parameter_group_name}' || true
       else
         echo "Redshift parameter group already in state, skipping import"
       fi
