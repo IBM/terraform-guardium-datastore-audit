@@ -16,7 +16,7 @@ resource "null_resource" "import_parameter_group" {
   count = length(data.aws_db_instance.existing.db_parameter_groups) > 0 ? 1 : 0
 
   triggers = {
-    parameter_group_name = data.aws_db_instance.existing.db_parameter_groups[0].db_parameter_group_name
+    parameter_group_name = data.aws_db_instance.existing.db_parameter_groups[0]
     instance_id          = var.postgres_rds_cluster_identifier
   }
 
@@ -24,8 +24,8 @@ resource "null_resource" "import_parameter_group" {
     command = <<-EOT
       # Check if resource exists in state
       if ! terraform state show 'module.common_rds-postgres-parameter-group.aws_db_parameter_group.db_param_group' >/dev/null 2>&1; then
-        echo "Importing PostgreSQL parameter group: ${data.aws_db_instance.existing.db_parameter_groups[0].db_parameter_group_name}"
-        terraform import 'module.common_rds-postgres-parameter-group.aws_db_parameter_group.db_param_group' '${data.aws_db_instance.existing.db_parameter_groups[0].db_parameter_group_name}' || true
+        echo "Importing PostgreSQL parameter group: ${data.aws_db_instance.existing.db_parameter_groups[0]}"
+        terraform import 'module.common_rds-postgres-parameter-group.aws_db_parameter_group.db_param_group' '${data.aws_db_instance.existing.db_parameter_groups[0]}' || true
       else
         echo "PostgreSQL parameter group already in state, skipping import"
       fi
