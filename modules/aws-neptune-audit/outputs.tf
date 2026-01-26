@@ -5,7 +5,7 @@
 
 output "profile_csv" {
   description = "Universal Connector profile CSV"
-  value = var.enable_universal_connector ? module.gdp_connect-datasource-to-uc[0].profile_csv : "Universal connector disabled"
+  value       = var.enable_universal_connector ? module.gdp_connect-datasource-to-uc[0].profile_csv : "Universal connector disabled"
 }
 
 output "udc_name" {

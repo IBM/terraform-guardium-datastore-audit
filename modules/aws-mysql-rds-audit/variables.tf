@@ -158,30 +158,30 @@ variable "csv_event_filter" {
 
 variable "log_export_type" {
   description = "The type of log exporting to be configured. Option: Cloudwatch"
-  default = "Cloudwatch"
+  default     = "Cloudwatch"
 
   validation {
-    condition = var.log_export_type == "Cloudwatch"
+    condition     = var.log_export_type == "Cloudwatch"
     error_message = "log_export_type must be 'Cloudwatch'"
   }
 }
 
 variable "codec_pattern" {
-  type = string
+  type        = string
   description = "Codec pattern for RDS MySQL CloudWatch logs"
-  default = ""
+  default     = ""
 }
 
 variable "cloudwatch_endpoint" {
-  type = string
+  type        = string
   description = "Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint"
-  default = ""
+  default     = ""
 }
 
 variable "use_aws_bundled_ca" {
-  type = bool
+  type        = bool
   description = "Whether to use the AWS bundled CA certificates for CloudWatch connection"
-  default = true
+  default     = true
 }
 
 

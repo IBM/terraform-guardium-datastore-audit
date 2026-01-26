@@ -16,14 +16,14 @@ locals {
   cloudtrail_s3_bucket      = "${var.name_prefix}-cloudtrail"
 
   # Determine if we're using existing resources
-  use_existing_cloudtrail = var.existing_cloudtrail_name != ""
+  use_existing_cloudtrail           = var.existing_cloudtrail_name != ""
   use_existing_cloudwatch_log_group = var.existing_cloudwatch_log_group_name != ""
 
   ct_bucket = aws_s3_bucket.dynamodb_monitoring.bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring.arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] : ["${aws_s3_bucket.dynamodb_monitoring.arn}/${aws_s3_bucket.dynamodb_monitoring.bucket_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
 
   # Format CloudWatch Logs Group ARN for CloudTrail
   formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "${data.aws_cloudwatch_log_group.existing[0].arn}:*" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
-  dynamodb_monitoring_role = replace("${var.name_prefix}_role", "-", "_")
+  dynamodb_monitoring_role            = replace("${var.name_prefix}_role", "-", "_")
 }
 
 # Data source for existing CloudWatch Log Group
@@ -212,7 +212,7 @@ resource "aws_cloudtrail" "dynamodb_monitoring" {
 
 locals {
   # Create a sanitized version of the UDC name for file paths
-  udc_name = format("%s-%s-%s", var.aws_region, local.cloudwatch_log_group_name, module.common_aws-configuration.aws_account_id)
+  udc_name      = format("%s-%s-%s", var.aws_region, local.cloudwatch_log_group_name, module.common_aws-configuration.aws_account_id)
   udc_name_safe = replace(local.udc_name, "/", "-")
 
   # Generate the CSV content from the template
@@ -233,18 +233,18 @@ locals {
 }
 
 module "gdp_connect-datasource-to-uc" {
-  source = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  count  = var.enable_universal_connector ? 1 : 0  # Skip creation when disabled
-  udc_name = local.udc_name_safe
+  source         = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
+  count          = var.enable_universal_connector ? 1 : 0 # Skip creation when disabled
+  udc_name       = local.udc_name_safe
   udc_csv_parsed = local.udc_csv
-  
+
   # Directory configuration - pass through to child module
-  
-  client_id              = var.gdp_client_id
-  client_secret          = var.gdp_client_secret
-  gdp_server             = var.gdp_server
-  gdp_port               = var.gdp_port
-  gdp_username           = var.gdp_username
-  gdp_password           = var.gdp_password
-  gdp_mu_host            = var.gdp_mu_host
+
+  client_id     = var.gdp_client_id
+  client_secret = var.gdp_client_secret
+  gdp_server    = var.gdp_server
+  gdp_port      = var.gdp_port
+  gdp_username  = var.gdp_username
+  gdp_password  = var.gdp_password
+  gdp_mu_host   = var.gdp_mu_host
 }
