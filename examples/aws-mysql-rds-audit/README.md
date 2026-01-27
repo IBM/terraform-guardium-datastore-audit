@@ -74,6 +74,19 @@ Create a `defaults.tfvars` file with your configuration. See [terraform.tfvars.e
 
 ### 3. Import the MySQL Parameter Group and Option Group
 
+**Option A: Automated Import (Recommended)**
+
+The module includes automated parameter group detection. When you run `terraform plan`, the module will:
+- Query your existing MySQL RDS instance to discover the current parameter group and option group
+- Automatically handle the import if they exist
+- Prevent "parameter group already exists" errors
+
+The automation uses Terraform data sources to fetch your RDS instance configuration and extract the parameter/option group names.
+
+**Option B: Manual Import**
+
+If you prefer to import manually or encounter issues with automated import:
+
 Identify existing parameter group name:
 
   ```bash
@@ -106,7 +119,7 @@ Import existing option group:
    terraform import module.datastore-audit_aws-mysql-rds-audit.module.common_rds-mariadb-mysql-parameter-group.aws_db_option_group.audit <your-option-group-name>
    ```
 
-**Note**: Skipping the import steps will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
+**Note**: The automated approach is recommended. Manual import is only needed if you encounter specific issues or prefer explicit control.
 
 ### 4. Apply the Configuration
 

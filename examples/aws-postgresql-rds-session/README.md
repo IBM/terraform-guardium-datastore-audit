@@ -31,6 +31,20 @@ This approach provides comprehensive coverage of database activity, ensuring tha
    ```
 
 3. Import the existing parameter group:
+
+   **Option A: Automated Import (Recommended)**
+   
+   The module includes automated parameter group detection. When you run `terraform plan`, the module will:
+   - Query your existing PostgreSQL RDS instance to discover the current parameter group
+   - Automatically handle the import if it exists
+   - Prevent "parameter group already exists" errors
+   
+   The automation uses Terraform data sources to fetch your RDS instance configuration and extract the parameter group name.
+
+   **Option B: Manual Import**
+   
+   If you prefer to import manually or encounter issues with automated import:
+
    ```
    terraform import 'module.datastore-audit_aws-postgresql-rds-session.module.common_rds-postgres-parameter-group.aws_db_parameter_group.guardium' <parameter group>
    ```
@@ -58,6 +72,8 @@ This approach provides comprehensive coverage of database activity, ensuring tha
    ```
    aws rds describe-db-instances --query "DBInstances[*].[DBInstanceIdentifier,DbiResourceId]" --output table
    ```
+
+   **Note**: The automated approach is recommended. Manual import is only needed if you encounter specific issues or prefer explicit control.
 
 4. Apply the configuration:
    ```

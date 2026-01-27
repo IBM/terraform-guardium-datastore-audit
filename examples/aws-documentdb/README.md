@@ -52,10 +52,26 @@ tags = {
   Owner       = "Security Team"
 }
 ```
-### 3. Import the documentdb parameter group
+### 3. Import the DocumentDB Parameter Group
+
+**Option A: Automated Import (Recommended)**
+
+The module includes automated parameter group detection. When you run `terraform plan`, the module will:
+- Query your existing DocumentDB cluster to discover the current cluster parameter group
+- Automatically handle the import if it exists
+- Prevent "parameter group already exists" errors
+
+The automation uses external data sources with AWS CLI to fetch your DocumentDB cluster configuration and extract the parameter group name.
+
+**Option B: Manual Import**
+
+If you prefer to import manually or encounter issues with automated import:
+
 ```
 terraform import -var-file=terraform.tfvars 'module.datastore-audit_aws-documentdb.aws_docdb_cluster_parameter_group.guardium' <parameter group name>
 ```
+
+**Note**: The automated approach is recommended. Manual import is only needed if you encounter specific issues or prefer explicit control.
 
 ### 4. Initialize Terraform
 

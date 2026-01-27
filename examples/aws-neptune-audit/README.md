@@ -74,23 +74,38 @@ Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.
 
 ### 3. Import the Neptune Parameter Group (if using custom parameter group)
 
+**Option A: Automated Import (Recommended)**
+
+The module includes automated parameter group detection. When you run `terraform plan`, the module will:
+- Query your existing Neptune cluster to discover the current cluster parameter group
+- Automatically handle the import if it exists and is a custom parameter group
+- Skip default parameter groups (e.g., `default.neptune1`)
+- Prevent "parameter group already exists" errors
+
+The automation uses external data sources with AWS CLI to fetch your Neptune cluster configuration and extract the parameter group name.
+
+**Option B: Manual Import**
+
+If you prefer to import manually or encounter issues with automated import:
+
 Identify existing parameter group name:
 
-  ```bash
-  # Get current parameter group name
-  aws neptune describe-db-clusters \
-    --db-cluster-identifier your-neptune-cluster \
-    --region your-region \
-    --query "DBClusters[0].DBClusterParameterGroup" \
-    --output text
-  ```
+```bash
+# Get current parameter group name
+aws neptune describe-db-clusters \
+  --db-cluster-identifier your-neptune-cluster \
+  --region your-region \
+  --query "DBClusters[0].DBClusterParameterGroup" \
+  --output text
+```
 
 Import existing parameter group (only if it's a custom parameter group):
-   ```bash
-   terraform import module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_parameter_group.guardium <your-parameter-group-name>
-   ```
 
-**Note**: Skipping the import step for custom parameter groups will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
+```bash
+terraform import module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_parameter_group.guardium <your-parameter-group-name>
+```
+
+**Note**: The automated approach is recommended. Manual import is only needed if you encounter specific issues or prefer explicit control. Skipping the import step will cause Terraform to attempt creating a new parameter group, which may fail.
 
 ### 4. Apply the Configuration
 
