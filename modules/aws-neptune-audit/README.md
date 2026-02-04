@@ -46,7 +46,7 @@ To ensure Terraform manages your Neptune cluster correctly when using a custom p
    --output text
    ```
 
-3. Import existing parameter group (only if it's a custom parameter group):
+3. Import existing parameter group:
    ```bash
    terraform import module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_parameter_group.guardium <your-parameter-group-name>
    ```
