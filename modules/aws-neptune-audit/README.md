@@ -20,6 +20,13 @@ Before using this module, you need to:
 | aws | >= 4.0.0 |
 | guardium-data-protection | >= 1.0.0 |
 
+## Features
+
+- Configures Neptune cluster for audit logging
+- Enables `neptune_enable_audit_log` parameter
+- Supports both Gremlin and SPARQL query logging
+- Integrates with Guardium for audit data collection via CloudWatch
+- Automatic parameter group detection and management
 
 ### Parameter Group Import Process
 
@@ -45,14 +52,6 @@ To ensure Terraform manages your Neptune cluster correctly when using a custom p
    ```
 
 **Note**: Skipping the import step will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
-
-## Features
-
-- Configures Neptune cluster for audit logging
-- Enables `neptune_enable_audit_log` parameter
-- Supports both Gremlin and SPARQL query logging
-- Integrates with Guardium for audit data collection via CloudWatch
-- Automatic parameter group detection and management
 
 ## Usage
 
