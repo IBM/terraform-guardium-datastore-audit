@@ -28,7 +28,7 @@ Before using this module, you need to:
 - Integrates with Guardium for audit data collection via CloudWatch
 - Automatic parameter group detection and management
 
-### Parameter Group Import Process
+## Parameter Group Import Process
 
 To ensure Terraform manages your Neptune cluster correctly when using a custom parameter group:
 

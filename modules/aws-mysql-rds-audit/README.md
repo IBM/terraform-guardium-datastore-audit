@@ -26,7 +26,7 @@ Before using this module, you need to:
 - Configures audit events to capture (CONNECT, QUERY, etc.)
 - Integrates with Guardium for audit data collection via CloudWatch
 
-### Option Group and Parameter Group Import Process
+## Option Group and Parameter Group Import Process
 
 This module uses existing option group to enable the `MariaDB Audit Plugin` and existing parameter group.
 To ensure Terraform manages your RDS instance correctly:
