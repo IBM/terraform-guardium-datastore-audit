@@ -20,7 +20,13 @@ Before using this module, you need to:
 | aws | >= 4.0.0 |
 | guardium-data-protection | >= 1.0.0 |
 
-### Option Group and Parameter Group Import Process
+## Features
+
+- Configures MySQL RDS for audit logging
+- Configures audit events to capture (CONNECT, QUERY, etc.)
+- Integrates with Guardium for audit data collection via CloudWatch
+
+## Option Group and Parameter Group Import Process
 
 This module uses existing option group to enable the `MariaDB Audit Plugin` and existing parameter group.
 To ensure Terraform manages your RDS instance correctly:
@@ -59,12 +65,6 @@ To ensure Terraform manages your RDS instance correctly:
    ```
 
 **Note**: Skipping the import step will cause Terraform to attempt creating a new parameter group, which may fail or cause unexpected behavior.
-
-## Features
-
-- Configures MySQL RDS for audit logging
-- Configures audit events to capture (CONNECT, QUERY, etc.)
-- Integrates with Guardium for audit data collection via CloudWatch
 
 ## Usage
 

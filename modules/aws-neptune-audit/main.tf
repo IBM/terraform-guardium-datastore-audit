@@ -4,7 +4,7 @@
 #
 
 locals {
-  udc_name       = format("%s%s-%s", var.aws_region, var.neptune_cluster_identifier, local.aws_account_id)
+  udc_name       = format("%s-%s-%s", var.aws_region, var.neptune_cluster_identifier, local.aws_account_id)
   aws_partition  = data.aws_partition.current.partition
   aws_region     = data.aws_region.current.id
   aws_account_id = data.aws_caller_identity.current.account_id
@@ -48,6 +48,14 @@ resource "aws_neptune_cluster_parameter_group" "guardium" {
   }
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      description,  # Ignore description changes to prevent replacement
+      tags,         # Ignore tag changes
+      tags_all      # Ignore tags_all changes
+    ]
+  }
 }
 
 # Use the GDP middleware helper to modify the Neptune cluster and enable audit log exports

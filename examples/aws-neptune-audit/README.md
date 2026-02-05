@@ -99,7 +99,7 @@ aws neptune describe-db-clusters \
   --output text
 ```
 
-Import existing parameter group (only if it's a custom parameter group):
+Import existing parameter group:
 
 ```bash
 terraform import module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_parameter_group.guardium <your-parameter-group-name>
