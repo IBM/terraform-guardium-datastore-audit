@@ -91,6 +91,7 @@ variable "udc_aws_credential" {
 variable "gdp_client_secret" {
   type        = string
   description = "Client secret from output of grdapi register_oauth_client"
+  sensitive   = true
 }
 
 variable "gdp_client_id" {
