@@ -113,7 +113,7 @@ variable "csv_event_filter" {
 
 variable "neptune_endpoint" {
   type        = string
-  description = "Neptune cluster endpoint (optional - will be fetched automatically if not provided)"
+  description = "Neptune cluster endpoint"
   default     = ""
 }
 
