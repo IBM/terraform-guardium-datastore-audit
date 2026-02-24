@@ -49,12 +49,6 @@ gdp_username = "guardium-user"
 # Password for Guardium Web UI access
 gdp_password = "guardium-password"
 
-# Guardium OS user with SSH access
-gdp_ssh_username = "guardium-ssh-user"
-
-# Path to the private SSH key for connecting to Guardium OS
-gdp_ssh_privatekeypath = "/path/to/private/key"
-
 # Optional: Comma-separated list of Guardium Managed Units to deploy profile
 # Leave empty to use the default Managed Unit
 # gdp_mu_host = ""
@@ -124,6 +118,3 @@ cloudwatch_logs_exports = ["audit", "error"]
 
 # Optional: Whether to use the AWS bundled CA certificates for CloudWatch connection (default: true)
 # use_aws_bundled_ca = true
-
-# Optional: Whether to use multipart upload for CSV files (default: true)
-# use_multipart_upload = true

@@ -12,6 +12,9 @@ aws_region = "us-east-1"
 # The identifier of the Neptune cluster to be monitored
 neptune_cluster_identifier = "your-neptune-cluster"
 
+# Optional: Neptune cluster endpoint
+# neptune_endpoint = ""
+
 # Optional: Add tags to resources created by this module
 # tags = {
 #   Environment = "Production"
@@ -45,12 +48,6 @@ gdp_username = "guardium-user"
 # Password for Guardium Web UI access
 gdp_password = "guardium-password"
 
-# Guardium OS user with SSH access
-gdp_ssh_username = "guardium-ssh-user"
-
-# Path to the private SSH key for connecting to Guardium OS
-gdp_ssh_privatekeypath = "/path/to/private/key"
-
 # Optional: Comma-separated list of Guardium Managed Units to deploy profile
 # Leave empty to use the default Managed Unit
 # gdp_mu_host = ""
@@ -72,4 +69,7 @@ gdp_ssh_privatekeypath = "/path/to/private/key"
 
 # Optional: Event filters for Universal Data Connector
 # csv_event_filter = ""
+
+# Optional: Whether to use AWS bundled CA certificates for Neptune connections (default: true)
+# use_aws_bundled_ca = true
 
