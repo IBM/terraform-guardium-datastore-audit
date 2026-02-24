@@ -32,8 +32,9 @@ locals {
   should_import_param_group = local.existing_parameter_group_name != "" && !local.is_default_param_group
 }
 
-# Import existing Neptune parameter group if it's not a default one
+# Import existing Neptune parameter group only if it's not a default one
 import {
+  for_each = local.should_import_param_group ? toset(["import"]) : toset([])
   to = module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_parameter_group.guardium
-  id = local.should_import_param_group ? local.existing_parameter_group_name : null
+  id = local.existing_parameter_group_name
 }

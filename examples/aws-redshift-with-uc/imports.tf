@@ -28,20 +28,23 @@ locals {
 # Get AWS account ID
 data "aws_caller_identity" "current" {}
 
-# Import existing CloudWatch Log Group for connectionlog if it exists
+# Import existing CloudWatch Log Group for connectionlog only if it should be imported
 import {
+  for_each = local.should_import_cloudwatch_connectionlog ? toset(["import"]) : toset([])
   to = module.datastore-audit_aws-redshift.aws_cloudwatch_log_group.redshift_connectionlog[0]
-  id = local.should_import_cloudwatch_connectionlog ? local.cloudwatch_log_group_connectionlog : null
+  id = local.cloudwatch_log_group_connectionlog
 }
 
-# Import existing CloudWatch Log Group for useractivitylog if it exists
+# Import existing CloudWatch Log Group for useractivitylog only if it should be imported
 import {
+  for_each = local.should_import_cloudwatch_useractivitylog ? toset(["import"]) : toset([])
   to = module.datastore-audit_aws-redshift.aws_cloudwatch_log_group.redshift_useractivitylog[0]
-  id = local.should_import_cloudwatch_useractivitylog ? local.cloudwatch_log_group_useractivitylog : null
+  id = local.cloudwatch_log_group_useractivitylog
 }
 
-# Import existing S3 bucket if it exists
+# Import existing S3 bucket only if it should be imported
 import {
+  for_each = local.should_import_s3_bucket ? toset(["import"]) : toset([])
   to = module.datastore-audit_aws-redshift.aws_s3_bucket.redshift_logs[0]
-  id = local.should_import_s3_bucket ? local.s3_bucket_name : null
+  id = local.s3_bucket_name
 }
