@@ -77,7 +77,24 @@ jobs:
       - name: Find and validate all examples
         run: |
           echo "Finding all example directories with Terraform files..."
+          # Skip examples with import blocks (not supported in validation without apply)
+          SKIP_EXAMPLES=("examples/aws-aurora-postgres-object/" "examples/aws-aurora-postgres-session/" "examples/aws-postgresql-rds-object/" "examples/aws-postgresql-rds-object-tables/" "examples/aws-postgresql-rds-session/")
+          
           for dir in examples/*/; do
+            # Check if example should be skipped
+            skip=false
+            for skip_example in "${SKIP_EXAMPLES[@]}"; do
+              if [ "$dir" == "$skip_example" ]; then
+                skip=true
+                echo "  ⊘ Skipping $dir (contains import blocks)"
+                break
+              fi
+            done
+            
+            if [ "$skip" = true ]; then
+              continue
+            fi
+            
             if [ -f "${dir}main.tf" ] || [ -f "${dir}versions.tf" ]; then
               echo "Validating example: $dir"
               cd "$dir"
