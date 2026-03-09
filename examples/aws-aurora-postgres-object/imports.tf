@@ -15,12 +15,12 @@ data "aws_rds_cluster" "existing" {
 locals {
   is_default_pg = can(regex("^default\\.", data.aws_rds_cluster.existing.db_cluster_parameter_group_name))
   should_import = !local.is_default_pg
-  pg_name = data.aws_rds_cluster.existing.db_cluster_parameter_group_name
+  pg_name       = data.aws_rds_cluster.existing.db_cluster_parameter_group_name
 }
 
 # Import existing cluster parameter group only if it's not a default one
 import {
   for_each = local.should_import ? toset(["import"]) : toset([])
-  to = module.datastore-audit_aws-aurora-postgres-object.module.common_aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium
-  id = local.pg_name
+  to       = module.datastore-audit_aws-aurora-postgres-object.module.common_aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium
+  id       = local.pg_name
 }

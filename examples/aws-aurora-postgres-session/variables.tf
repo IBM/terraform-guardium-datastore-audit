@@ -118,10 +118,10 @@ variable "csv_event_filter" {
 
 variable "log_export_type" {
   description = "The type of log exporting to be configured. Options SQS, Cloudwatch"
-  default = "Cloudwatch"
+  default     = "Cloudwatch"
 
   validation {
-    condition = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
+    condition     = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
     error_message = "log_export_type must be 'SQS' or 'Cloudwatch'"
   }
 }

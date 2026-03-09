@@ -23,7 +23,7 @@ variable "aurora_postgres_cluster_identifier" {
 
 variable "force_failover" {
   type        = bool
-  default = true
+  default     = true
   description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
 }
 variable "db_host" {
@@ -141,10 +141,10 @@ variable "csv_event_filter" {
 
 variable "log_export_type" {
   description = "The type of log exporting to be configured. Options SQS, Cloudwatch"
-  default = "Cloudwatch"
+  default     = "Cloudwatch"
 
   validation {
-    condition = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
+    condition     = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
     error_message = "log_export_type must be 'SQS' or 'Cloudwatch'"
   }
 }

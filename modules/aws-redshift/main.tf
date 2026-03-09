@@ -15,7 +15,7 @@ module "common_aws-configuration" {
 locals {
   # Use provided AWS account ID or get it automatically
   aws_account_id = module.common_aws-configuration.aws_account_id
-  
+
   # Sanitize name_prefix for AWS resources (replace underscores with hyphens)
   sanitized_name_prefix = replace(var.name_prefix, "_", "-")
 

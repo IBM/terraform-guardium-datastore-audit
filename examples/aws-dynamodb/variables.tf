@@ -132,7 +132,7 @@ variable "csv_cluster_name" {
   description = "UDC Kafka Cluster name"
   type        = string
   default     = ""
-} 
+}
 
 #----------------------------------------
 # Tags
