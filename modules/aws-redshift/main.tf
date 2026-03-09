@@ -15,12 +15,15 @@ module "common_aws-configuration" {
 locals {
   # Use provided AWS account ID or get it automatically
   aws_account_id = module.common_aws-configuration.aws_account_id
+  
+  # Sanitize name_prefix for AWS resources (replace underscores with hyphens)
+  sanitized_name_prefix = replace(var.name_prefix, "_", "-")
 
   # CloudWatch and S3 configuration
   cloudwatch_log_group_base            = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/redshift/cluster/${var.redshift_cluster_identifier}"
   cloudwatch_log_group_connectionlog   = "${local.cloudwatch_log_group_base}/connectionlog"
   cloudwatch_log_group_useractivitylog = "${local.cloudwatch_log_group_base}/useractivitylog"
-  s3_bucket_name                       = var.existing_s3_bucket_name != "" ? var.existing_s3_bucket_name : "${var.name_prefix}-redshift-logs"
+  s3_bucket_name                       = var.existing_s3_bucket_name != "" ? var.existing_s3_bucket_name : "${local.sanitized_name_prefix}-redshift-logs"
   s3_prefix                            = var.s3_prefix != "" ? var.s3_prefix : "AWSLogs/${local.aws_account_id}/redshift/${var.aws_region}/"
 
   # Determine if we're using existing resources
@@ -101,7 +104,7 @@ resource "aws_cloudwatch_log_group" "redshift_useractivitylog" {
 # Configure Redshift to export logs to CloudWatch or S3
 resource "aws_redshift_parameter_group" "redshift_logging" {
   count  = var.create_parameter_group && var.enable_logging ? 1 : 0
-  name   = "${var.name_prefix}-redshift-logging"
+  name   = "${local.sanitized_name_prefix}-redshift-logging"
   family = "redshift-1.0"
 
   parameter {

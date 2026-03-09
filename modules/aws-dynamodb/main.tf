@@ -13,7 +13,9 @@ locals {
   dynamodb_tables           = var.dynamodb_tables == "all" ? data.aws_dynamodb_tables.all.names : split(",", var.dynamodb_tables)
   cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/cloudtrail/${var.name_prefix}"
   cloudtrail_name           = var.existing_cloudtrail_name != "" ? var.existing_cloudtrail_name : var.name_prefix
-  cloudtrail_s3_bucket      = "${var.name_prefix}-cloudtrail"
+  # Sanitize name_prefix for S3 bucket (replace underscores with hyphens)
+  sanitized_name_prefix     = replace(var.name_prefix, "_", "-")
+  cloudtrail_s3_bucket      = "${local.sanitized_name_prefix}-cloudtrail"
 
   # Determine if we're using existing resources
   use_existing_cloudtrail           = var.existing_cloudtrail_name != ""
