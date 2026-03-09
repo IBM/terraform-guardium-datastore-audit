@@ -19,7 +19,6 @@ terraform {
 
     guardium-data-protection = {
       source  = "IBM/guardium-data-protection"
-      version = ">= 1.2.1"
     }
 
     gdp-middleware-helper = {
