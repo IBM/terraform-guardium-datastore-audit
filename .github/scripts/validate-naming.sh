@@ -141,7 +141,7 @@ check_file_for_sanitization() {
     local file=$1
     local module_name=$2
     
-    if grep -q "sanitized_name_prefix.*replace.*_.*-" "$file"; then
+    if grep -q 'sanitized_name_prefix.*=.*replace.*var\.name_prefix.*"_".*"-"' "$file"; then
         echo -e "${GREEN}✓ PASS${NC}: $module_name has sanitization logic"
         ((PASSED++))
         return 0
