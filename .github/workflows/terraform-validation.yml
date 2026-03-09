@@ -62,7 +62,18 @@ jobs:
         run: |
           echo "Finding all example directories with Terraform files..."
           # Skip examples with import blocks (not supported in validation without apply)
-          SKIP_EXAMPLES=("examples/aws-aurora-postgres-object/" "examples/aws-aurora-postgres-session/" "examples/aws-postgresql-rds-object/" "examples/aws-postgresql-rds-object-tables/" "examples/aws-postgresql-rds-session/")
+          SKIP_EXAMPLES=(
+            "examples/aws-aurora-postgres-object/"
+            "examples/aws-aurora-postgres-session/"
+            "examples/aws-documentdb/"
+            "examples/aws-mariadb-rds-audit/"
+            "examples/aws-mysql-rds-audit/"
+            "examples/aws-neptune-audit/"
+            "examples/aws-postgresql-rds-object/"
+            "examples/aws-postgresql-rds-object-tables/"
+            "examples/aws-postgresql-rds-session/"
+            "examples/aws-redshift-with-uc/"
+          )
           
           for dir in examples/*/; do
             # Check if example should be skipped (import blocks only)
