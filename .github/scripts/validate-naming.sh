@@ -2,7 +2,7 @@
 # Copyright 2026 IBM Corp.
 # SPDX-License-Identifier: Apache-2.0
 
-set -e
+# Note: Not using set -e to allow all tests to run and report results
 
 echo "=========================================="
 echo "AWS Resource Naming Validation Test"
