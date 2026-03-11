@@ -109,12 +109,12 @@ variable "csv_description" {
 
 variable "csv_query_interval" {
   type        = string
-  description = "??"
+  description = "Query interval"
   default     = "3600"
 }
 
 variable "csv_query_length" {
   type        = string
-  description = "??"
+  description = "Query length"
   default     = "3600"
 }
