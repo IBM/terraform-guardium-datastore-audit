@@ -1,0 +1,182 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
+##############################
+# MySQL Instance Configuration
+##############################
+
+# Unique identifier for your MySQL instance
+mysql_instance_identifier = "prod-mysql-01"
+
+# Hostname or IP address of your MySQL server
+mysql_host = "192.168.1.100"
+
+# MySQL server port (default: 3306)
+mysql_port = "3306"
+
+##############################
+# Audit Configuration
+##############################
+
+# Enable MySQL audit logging configuration
+# Set to true to install and configure MySQL audit plugin
+# Set to false to skip audit setup (only configure Guardium connector)
+enable_audit_log = true
+
+##############################
+# Server Connection Configuration
+# (Required only when enable_audit_log = true)
+##############################
+
+# Platform: REQUIRED when enable_audit_log = true
+# Set to true for Windows Server, false for Linux
+# This determines which commands will be executed (PowerShell vs Bash)
+is_windows = false
+
+# Server IP address or hostname for SSH/WinRM connection
+# REQUIRED when enable_audit_log = true
+server_ip = "192.168.1.100"
+
+# Username for SSH (Linux) or WinRM (Windows) connection
+# REQUIRED when enable_audit_log = true
+# Use "ubuntu" or similar for Linux, "Administrator" for Windows
+server_username = "ubuntu"
+
+# Password for SSH/WinRM connection
+# REQUIRED when enable_audit_log = true
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_server_password="your-secure-password"
+server_password = "your-secure-password"
+
+# MySQL root password for database operations
+# REQUIRED when enable_audit_log = true
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_mysql_root_password="your-mysql-root-password"
+mysql_root_password = "your-mysql-root-password"
+
+##############################
+# Windows-Specific Configuration
+# (Only required when enable_audit_log = true AND is_windows = true)
+##############################
+
+# Path to MySQL configuration file (my.ini)
+# REQUIRED for Windows when enable_audit_log = true
+# Default: "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini"
+mysql_config_path = "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini"
+
+# Name of the MySQL Windows service
+# REQUIRED for Windows when enable_audit_log = true
+# Default: "MySQL80"
+mysql_service_name = "MySQL80"
+
+# Path to MySQL bin directory
+# REQUIRED for Windows when enable_audit_log = true
+# Default: "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin"
+mysql_bin_path = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin"
+
+##############################
+# Guardium Configuration
+##############################
+
+# Guardium Central Manager hostname or IP address
+gdp_server = "guardium.example.com"
+
+# Guardium Central Manager port (default: 8443)
+gdp_port = "8443"
+
+# Guardium Web UI username
+gdp_username = "admin"
+
+# Guardium Web UI password
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_gdp_password="your-secure-password"
+gdp_password = "your-secure-password"
+
+# OAuth client ID from Guardium
+# Obtain this by running: grdapi register_oauth_client
+gdp_client_id = "your-client-id"
+
+# OAuth client secret from Guardium
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_gdp_client_secret="your-client-secret"
+gdp_client_secret = "your-client-secret"
+
+# Comma-separated list of Guardium Managed Units to deploy the profile
+# Leave empty to deploy to all managed units
+gdp_mu_host = "guardium-mu-01"
+
+##############################
+# Universal Connector Configuration
+##############################
+
+# Name for the Universal Connector
+# If not provided, will be auto-generated as: mysql-syslog-<instance_identifier>
+udc_name = "mysql-prod-syslog"
+
+# Enable or disable the Universal Connector
+# Set to false to skip connector creation
+enable_universal_connector = true
+
+##############################
+# Syslog Configuration
+##############################
+
+# Port number for Logstash to listen for syslog messages
+# Default: 5000
+syslog_port = "5000"
+
+# Syslog protocol: TCP or UDP
+# TCP: Reliable, connection-oriented (recommended for production)
+# UDP: Faster but may lose messages under high load
+syslog_protocol = "TCP"
+
+# Syslog message format: RFC3164 or RFC5424
+# RFC5424: Modern format with structured data (recommended)
+# RFC3164: Legacy BSD syslog format (use if MySQL only supports this)
+syslog_format = "RFC5424"
+
+##############################
+# SSL/TLS Configuration
+##############################
+
+# Enable SSL/TLS for secure syslog communication
+ssl_enable = true
+
+# Path to SSL certificate file on Guardium server
+# This certificate will be used for TLS encryption
+ssl_cert_path = "/service/certs/external/tls-syslog.crt"
+
+# Path to SSL private key file on Guardium server
+ssl_key_path = "/service/certs/external/tls-syslog.key"
+
+# Enable SSL certificate verification
+# Set to false only for testing with self-signed certificates
+ssl_verify = true
+
+##############################
+# Logstash Configuration
+##############################
+
+# Enable DNS reverse lookup for incoming connections
+# Disabled by default for better performance
+dns_reverse_lookup_enabled = false
+
+# Custom Grok pattern for parsing MySQL syslog messages
+# Leave empty to use the default pattern:
+# %{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:server_hostname} %{SYSLOGPROG:source_program}(?:[%{POSINT:syslog_pid}])?: %{GREEDYDATA:mysql_message}
+logstash_grok_pattern = ""
+
+##############################
+# Tags
+##############################
+
+# Tags to apply to resources
+# Useful for organization, cost tracking, and automation
+tags = {
+  Environment = "production"
+  Application = "mysql-audit"
+  ManagedBy   = "terraform"
+  Owner       = "database-team"
+}
