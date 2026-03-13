@@ -1,0 +1,2 @@
+profile_definition_name,name,description,credential_name,cluster_name,region,log_group,start_position,interval,codec_pattern,event_filter,account_id,prefix,endpoint,use_aws_bundled_ca,unmask
+OpenSearch over CloudWatch filter,${udc_name},${description},${credential_name},${cluster_name},${aws_region},"${aws_log_group}",${start_position},${interval},"${codec_pattern}",${event_filter},${aws_account_id},${log_group_prefix},${opensearch_endpoint},${use_aws_bundled_ca},${unmask}
