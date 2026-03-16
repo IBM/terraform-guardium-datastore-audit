@@ -4,9 +4,9 @@
 #
 
 locals {
-  udc_name          = format("%s-%s-%s", var.azure_region, var.cosmos_account_name, local.subscription_id)
-  subscription_id   = data.azurerm_client_config.current.subscription_id
-  azure_region      = var.azure_region
+  udc_name        = format("%s-%s-%s", var.azure_region, var.cosmos_account_name, local.subscription_id)
+  subscription_id = data.azurerm_client_config.current.subscription_id
+  azure_region    = var.azure_region
 }
 
 data "azurerm_client_config" "current" {}
@@ -28,18 +28,18 @@ data "azurerm_storage_account" "checkpoint" {
 module "common_azure-cosmos-diagnostic-settings" {
   source = "../../../terraform-guardium-common/modules/azure-cosmos-diagnostic-settings"
 
-  cosmos_account_name                = var.cosmos_account_name
-  resource_group_name                = var.resource_group_name
-  eventhub_namespace_name            = var.eventhub_namespace_name
-  eventhub_name                      = var.eventhub_name
-  storage_account_name               = var.storage_account_name
-  eventhub_authorization_rule_name   = var.eventhub_authorization_rule_name
-  diagnostic_setting_name            = var.diagnostic_setting_name
-  enable_data_plane_logs             = var.enable_data_plane_logs
-  enable_query_runtime_logs          = var.enable_query_runtime_logs
-  enable_control_plane_logs          = var.enable_control_plane_logs
-  enable_partition_key_logs          = var.enable_partition_key_logs
-  enable_partition_ru_logs           = var.enable_partition_ru_logs
+  cosmos_account_name              = var.cosmos_account_name
+  resource_group_name              = var.resource_group_name
+  eventhub_namespace_name          = var.eventhub_namespace_name
+  eventhub_name                    = var.eventhub_name
+  storage_account_name             = var.storage_account_name
+  eventhub_authorization_rule_name = var.eventhub_authorization_rule_name
+  diagnostic_setting_name          = var.diagnostic_setting_name
+  enable_data_plane_logs           = var.enable_data_plane_logs
+  enable_query_runtime_logs        = var.enable_query_runtime_logs
+  enable_control_plane_logs        = var.enable_control_plane_logs
+  enable_partition_key_logs        = var.enable_partition_key_logs
+  enable_partition_ru_logs         = var.enable_partition_ru_logs
 }
 
 //////
@@ -54,7 +54,7 @@ locals {
     data.azurerm_eventhub_namespace_authorization_rule.eventhub_auth.primary_key,
     var.eventhub_name
   )
-  
+
   # Build Storage connection string
   storage_connection = format("DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;EndpointSuffix=core.windows.net",
     var.storage_account_name,

@@ -11,9 +11,9 @@ module "datastore-audit_azure-cosmos-audit" {
   source = "../../modules/azure-cosmos-audit"
 
   # Azure Configuration
-  azure_region            = var.azure_region
-  resource_group_name     = var.resource_group_name
-  cosmos_account_name     = var.cosmos_account_name
+  azure_region        = var.azure_region
+  resource_group_name = var.resource_group_name
+  cosmos_account_name = var.cosmos_account_name
 
   # Event Hub Configuration
   eventhub_namespace_name          = var.eventhub_namespace_name
@@ -23,22 +23,22 @@ module "datastore-audit_azure-cosmos-audit" {
   consumer_group                   = var.consumer_group
 
   # Diagnostic Settings Configuration
-  diagnostic_setting_name    = var.diagnostic_setting_name
-  enable_data_plane_logs     = var.enable_data_plane_logs
-  enable_query_runtime_logs  = var.enable_query_runtime_logs
-  enable_control_plane_logs  = var.enable_control_plane_logs
-  enable_partition_key_logs  = var.enable_partition_key_logs
-  enable_partition_ru_logs   = var.enable_partition_ru_logs
+  diagnostic_setting_name   = var.diagnostic_setting_name
+  enable_data_plane_logs    = var.enable_data_plane_logs
+  enable_query_runtime_logs = var.enable_query_runtime_logs
+  enable_control_plane_logs = var.enable_control_plane_logs
+  enable_partition_key_logs = var.enable_partition_key_logs
+  enable_partition_ru_logs  = var.enable_partition_ru_logs
 
   # Guardium Configuration
-  udc_azure_credential       = var.udc_azure_credential
-  gdp_client_id              = var.gdp_client_id
-  gdp_client_secret          = var.gdp_client_secret
-  gdp_server                 = var.gdp_server
-  gdp_port                   = var.gdp_port
-  gdp_username               = var.gdp_username
-  gdp_password               = var.gdp_password
-  gdp_mu_host                = var.gdp_mu_host
+  udc_azure_credential = var.udc_azure_credential
+  gdp_client_id        = var.gdp_client_id
+  gdp_client_secret    = var.gdp_client_secret
+  gdp_server           = var.gdp_server
+  gdp_port             = var.gdp_port
+  gdp_username         = var.gdp_username
+  gdp_password         = var.gdp_password
+  gdp_mu_host          = var.gdp_mu_host
 
   # Universal Connector Configuration
   enable_universal_connector = var.enable_universal_connector
@@ -48,5 +48,5 @@ module "datastore-audit_azure-cosmos-audit" {
   csv_event_filter           = var.csv_event_filter
 
   # Tags
-  tags                       = var.tags
+  tags = var.tags
 }
