@@ -1,10 +1,10 @@
 # Guardium Datastore Audit Configuration Terraform Module
 
-Terraform module which configures AWS datastores for audit logging and integrates them with IBM Guardium Data Protection via Universal Connector.
+Terraform module which configures AWS and Azure datastores for audit logging and integrates them with IBM Guardium Data Protection via Universal Connector.
 
 ## Scope
 
-This module automates the configuration of audit logging for various AWS datastores (DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, PostgreSQL RDS, Aurora PostgreSQL) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
+This module automates the configuration of audit logging for various AWS and Azure datastores (AWS: DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, PostgreSQL RDS, Aurora PostgreSQL; Azure: Cosmos DB) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
 
 ## High-Level Architecture
 
@@ -121,7 +121,9 @@ The following diagram illustrates how this module orchestrates the configuration
 
 ## Supported Datastores
 
-This module provides audit configuration for the following AWS datastores:
+This module provides audit configuration for the following AWS and Azure datastores:
+
+### AWS Datastores
 
 | Datastore | Module Path | Audit Method | Log Destination |
 |-----------|-------------|--------------|-----------------|
@@ -135,6 +137,12 @@ This module provides audit configuration for the following AWS datastores:
 | AWS Aurora PostgreSQL (Object) | `modules/aws-aurora-postgres-object` | pgAudit (Object-Level) | CloudWatch/SQS |
 | AWS Aurora PostgreSQL (Session) | `modules/aws-aurora-postgres-session` | pgAudit (Session-Level) | CloudWatch/SQS |
 | AWS Redshift | `modules/aws-redshift` | Connection & User Activity Logs | CloudWatch Logs/S3 |
+
+### Azure Datastores
+
+| Datastore | Module Path | Audit Method | Log Destination |
+|-----------|-------------|--------------|-----------------|
+| Azure Cosmos DB | `modules/azure-cosmos-audit` | Diagnostic Settings | Azure Event Hub |
 
 ## Prerequisites
 
@@ -621,3 +629,50 @@ Module is maintained by IBM with help from [these awesome contributors](https://
 - [AWS CloudTrail Documentation](https://docs.aws.amazon.com/cloudtrail/)
 - [AWS CloudWatch Logs Documentation](https://docs.aws.amazon.com/cloudwatch/latest/logs/)
 - [Terraform AWS Provider Documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+
+
+### Azure Cosmos DB Audit Configuration
+
+Enable comprehensive audit logging for Azure Cosmos DB with Event Hub streaming:
+
+```hcl
+module "azure_cosmos_audit" {
+  source = "IBM/datastore-audit/guardium//modules/azure-cosmos-audit"
+
+  # Azure Configuration
+  azure_region        = "eastus"
+  resource_group_name = "rg-guardium-cosmos"
+  cosmos_account_name = "cosmos-guardium-test"
+  
+  # Event Hub Configuration
+  event_hub_namespace_name = "eh-guardium-cosmos"
+  event_hub_name          = "cosmos-audit-logs"
+  
+  # Diagnostic Settings Configuration
+  enable_data_plane_logs       = true
+  enable_query_runtime_logs    = true
+  enable_partition_key_logs    = true
+  enable_control_plane_logs    = true
+  
+  # Storage Account (for long-term retention)
+  storage_account_name = "stguardiumcosmos"
+  
+  # Guardium Configuration
+  gdp_server        = "guardium.example.com"
+  gdp_port          = "8443"
+  gdp_username      = "admin"
+  gdp_password      = "password"
+  gdp_client_id     = "client1"
+  gdp_client_secret = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_name                 = "cosmos-connector"
+  event_hub_connections    = "Endpoint=sb://eh-guardium-cosmos.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=..."
+  gdp_mu_host             = "guardium-mu.example.com"
+  
+  tags = {
+    Environment = "production"
+    Project     = "data-security"
+  }
+}
+```
