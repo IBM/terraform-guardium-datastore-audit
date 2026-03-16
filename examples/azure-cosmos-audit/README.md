@@ -33,8 +33,8 @@ This example demonstrates how to configure Azure Cosmos DB with IBM Guardium Dat
 
 ## Data Flow
 
-1. Cosmos DB database activity is captured by Azure diagnostic settings
-2. Audit logs are streamed to Azure Event Hub in real-time
+1. Cosmos DB database activity is captured by diagnostic settings
+2. Audit logs are streamed to Event Hub in real-time
 3. Guardium Universal Connector reads from Event Hub
 4. Guardium processes and analyzes the Cosmos DB activity
 5. Security teams can view and alert on Cosmos DB activity in Guardium
@@ -43,10 +43,9 @@ This example demonstrates how to configure Azure Cosmos DB with IBM Guardium Dat
 
 This Terraform configuration:
 
-1. Configures diagnostic settings for an existing Azure Cosmos DB account
-2. Streams audit logs to Azure Event Hub
-3. Sets up a Universal Data Connector in Guardium to collect and analyze Cosmos DB audit logs from Event Hub
-4. Enables comprehensive monitoring of database operations, user activity, and access patterns
+1. Configures an existing Azure Cosmos DB account for audit logging via diagnostic settings
+2. Sets up a Universal Data Connector in Guardium to collect and analyze Cosmos DB audit logs from Event Hub
+3. Enables comprehensive monitoring of database operations, user activity, and access patterns
 
 ## Prerequisites
 
@@ -55,8 +54,8 @@ Before using this example, ensure you have:
 1. **Azure Resources**:
    - An existing Azure Cosmos DB account
    - An existing Event Hub namespace and Event Hub
-   - An existing Storage Account for Event Hub checkpointing
-   - All resources in the same Azure subscription and resource group
+   - An existing Storage Account (for Event Hub checkpointing)
+   - Resource group containing these resources
 
 2. **Guardium Data Protection**:
    - A running Guardium Data Protection instance (version 12.2.1 or above)
@@ -66,297 +65,121 @@ Before using this example, ensure you have:
 
 ## Usage
 
-### 1. Create Infrastructure
+### 1. Create a terraform.tfvars File
 
-First, create the required Azure infrastructure using the setup-middleware module from the guardium-terraform repository:
+Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.example](./terraform.tfvars.example) for an example with available options and detailed comments.
 
-```bash
-# Navigate to the guardium-terraform repository
-cd /path/to/guardium-terraform/setup-middleware/azure-cosmos
+### 2. Initialize Terraform
 
-# Copy and edit the terraform.tfvars file
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your configuration
+  ```bash
+  terraform init
+  ```
 
-# Initialize and apply
-terraform init
-terraform apply
-```
-
-This will create:
-- Azure Cosmos DB account
-- Event Hub namespace and Event Hub
-- Storage Account for checkpointing
-- Diagnostic settings configured
-
-### 2. Configure Audit Settings
-
-After the infrastructure is created, use this example to configure audit logging and Guardium integration:
-
-```bash
-# Navigate to this example directory
-cd /path/to/terraform-guardium-datastore-audit/examples/azure-cosmos-audit
-
-# Create a terraform.tfvars file
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your configuration
-```
-
-### 3. Initialize Terraform
-
-```bash
-terraform init
-```
-
-### 4. Import the Diagnostic Setting
+### 3. Import the Diagnostic Setting (if already exists)
 
 **Option A: Automated Import (Recommended)**
 
 The module includes automated diagnostic setting detection. When you run `terraform plan`, the module will:
-- Query your existing Cosmos DB account to discover the current diagnostic settings
-- Automatically handle the import if they exist
+- Query your existing Cosmos DB account to discover any existing diagnostic settings
+- Automatically handle the import if a diagnostic setting exists
 - Prevent "diagnostic setting already exists" errors
+- Skip if no diagnostic setting exists (will create new one)
 
-The automation uses Terraform data sources to fetch your Cosmos DB configuration and extract the diagnostic setting names.
+The automation uses external data sources with Azure CLI to fetch your Cosmos DB diagnostic settings.
 
 **Option B: Manual Import**
 
 If you prefer to import manually or encounter issues with automated import:
 
-First, identify the existing diagnostic setting name:
+Identify existing diagnostic setting name:
 
 ```bash
 # Get current diagnostic setting name
 az monitor diagnostic-settings list \
-  --resource /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account> \
-  --query "[].name" -o tsv
+  --resource /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account-name> \
+  --query "[].name" \
+  --output tsv
 ```
 
-If you see a diagnostic setting name (e.g., `glenn-nexus-cosmos-diagnostics`), import it:
+Import existing diagnostic setting:
 
 ```bash
-terraform import \
-  'module.datastore-audit_azure-cosmos-audit.azurerm_monitor_diagnostic_setting.cosmos_audit' \
-  '/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account>|<diagnostic-setting-name>'
+terraform import 'module.datastore-audit_azure-cosmos-audit.module.common_azure-cosmos-diagnostic-settings.azurerm_monitor_diagnostic_setting.cosmos_audit' \
+  '/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account-name>|<diagnostic-setting-name>'
 ```
 
-**Example**:
-```bash
-terraform import \
-  'module.datastore-audit_azure-cosmos-audit.azurerm_monitor_diagnostic_setting.cosmos_audit' \
-  '/subscriptions/0d7348f2-27a0-4fd2-8a5e-d9b7df304533/resourceGroups/SystemTestResourceGroup/providers/Microsoft.DocumentDB/databaseAccounts/glenn-nexus-cosmos-guardium|glenn-nexus-cosmos-diagnostics'
-```
+**Note**: The automated approach is recommended. Manual import is only needed if you encounter specific issues or prefer explicit control. Skipping the import step will cause Terraform to attempt creating a new diagnostic setting, which may fail if one already exists.
 
-**Note**: Replace the values with your actual:
-- `<subscription-id>`: Your Azure subscription ID
-- `<resource-group>`: Your resource group name
-- `<cosmos-account>`: Your Cosmos DB account name
-- `<diagnostic-setting-name>`: The name of the existing diagnostic setting
+### 4. Apply the Configuration
 
-After importing, run `terraform plan` to verify that Terraform recognizes the existing resource and won't try to recreate it.
+  ```bash
+  terraform apply
+  ```
 
-### 5. Review the Plan
+Review the planned changes and type `yes` to apply them.
 
-```bash
-terraform plan
-```
+### 5. Verify the Configuration
 
-### 6. Apply the Configuration
+After successful application:
 
-```bash
-terraform apply
-```
+1. Log in to your Guardium Data Protection web interface
+2. Navigate to **Universal Connector** → **Datasource Profile Management**
+3. Verify that the Cosmos DB profile has been created and is active
+4. Navigate to **Event Hubs** on the Azure Portal and verify that your Event Hub is receiving messages
+5. Navigate to the managed unit (collector) the UC is deployed on and ensure the STAP status is green/active
 
-## Configuration
+## Event Hub Integration
 
-### Required Variables
+The module configures Cosmos DB to send audit logs to Event Hub. The Universal Connector then:
 
-The following variables must be set in your `terraform.tfvars` file:
+1. Reads these logs from Event Hub using the configured Azure credentials
+2. Parses and normalizes the log data
+3. Forwards the processed audit events to Guardium for analysis
 
-```hcl
-# Azure Configuration
-azure_region            = "eastus"
-resource_group_name     = "my-resource-group"
-cosmos_account_name     = "my-cosmos-account"
+## Cosmos DB Audit Logging
 
-# Event Hub Configuration
-eventhub_namespace_name = "my-eventhub-namespace"
-eventhub_name           = "cosmos-audit-logs"
-storage_account_name    = "mystorageaccount"
+Cosmos DB diagnostic settings capture:
+- **DataPlaneRequests**: All data operations (queries, CRUD operations)
+- **QueryRuntimeStatistics**: Query performance metrics and execution details
+- **ControlPlaneRequests**: Management operations (account configuration changes)
 
-# Guardium Configuration
-gdp_server             = "guardium.example.com"
-gdp_username           = "admin"
-gdp_password           = "your-password"
-gdp_client_id          = "client1"
-gdp_client_secret      = "your-client-secret"
-gdp_mu_host            = "guardium-mu.example.com"
-udc_azure_credential   = "azure-credential-name"
-```
+## Input Variables
 
-### Optional Variables
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| azure_region | Azure region where resources are located | `string` | `"eastus"` | no |
+| resource_group_name | Name of the Azure resource group | `string` | n/a | yes |
+| cosmos_account_name | Name of the Cosmos DB account to be monitored | `string` | n/a | yes |
+| event_hub_namespace | Name of the Event Hub namespace | `string` | n/a | yes |
+| event_hub_name | Name of the Event Hub | `string` | n/a | yes |
+| event_hub_authorization_rule_id | Resource ID of the Event Hub authorization rule | `string` | n/a | yes |
+| storage_account_name | Name of the storage account for Event Hub checkpointing | `string` | n/a | yes |
+| storage_container_name | Name of the storage container for Event Hub checkpointing | `string` | `"eventhub-checkpoint"` | no |
+| enable_data_plane_logs | Enable DataPlaneRequests logs | `bool` | `true` | no |
+| enable_query_runtime_logs | Enable QueryRuntimeStatistics logs | `bool` | `true` | no |
+| enable_control_plane_logs | Enable ControlPlaneRequests logs | `bool` | `true` | no |
+| udc_azure_credential | Name of Azure credential defined in Guardium | `string` | n/a | yes |
+| gdp_client_id | Client ID used when running grdapi register_oauth_client | `string` | n/a | yes |
+| gdp_client_secret | Client secret from output of grdapi register_oauth_client | `string` | n/a | yes |
+| gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a | yes |
+| gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
+| gdp_username | Username of Guardium Web UI user | `string` | n/a | yes |
+| gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
+| gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
+| enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
+| csv_start_position | Start position for UDC (beginning/end) | `string` | `"end"` | no |
+| csv_interval | Polling interval for UDC in seconds | `string` | `"5"` | no |
+| consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
+| tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
-You can customize the audit logging behavior:
+## Outputs
 
-```hcl
-# Enable/disable specific log categories
-enable_data_plane_logs     = true   # CRUD operations
-enable_query_runtime_logs  = true   # Query performance
-enable_control_plane_logs  = true   # Management operations
-enable_partition_key_logs  = false  # Partition statistics
-enable_partition_ru_logs   = false  # RU consumption
-
-# Universal Connector settings
-csv_start_position = "end"
-csv_interval       = "5"
-```
-
-## Verification
-
-After applying the configuration, verify the setup:
-
-### 1. Check Diagnostic Settings
-
-```bash
-az monitor diagnostic-settings show \
-  --resource /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account> \
-  --name cosmos-audit-to-eventhub
-```
-
-### 2. Check Event Hub Messages
-
-```bash
-# View Event Hub metrics in Azure Portal
-# Navigate to: Event Hub Namespace > Event Hub > Metrics
-# Check "Incoming Messages" metric
-```
-
-### 3. Verify Guardium Universal Connector
-
-1. Log in to Guardium Web UI
-2. Navigate to: Setup > Tools and Views > Configure Universal Connector
-3. Verify the connector is listed and active
-4. Check the connector logs for any errors
-
-### 4. Test Data Operations
-
-Perform some operations on your Cosmos DB account:
-
-```bash
-# Using Azure Portal Data Explorer or Azure CLI
-az cosmosdb sql container create \
-  --account-name <cosmos-account> \
-  --database-name <database-name> \
-  --name test-container \
-  --partition-key-path "/id"
-```
-
-Then verify the audit logs appear in Guardium.
-
-## Log Categories
-
-This example enables the following log categories by default:
-
-- **DataPlaneRequests**: CRUD operations on documents
-- **QueryRuntimeStatistics**: Query performance metrics
-- **ControlPlaneRequests**: Management operations
-
-Optional categories (disabled by default):
-- **PartitionKeyStatistics**: Partition-level statistics
-- **PartitionKeyRUConsumption**: RU consumption per partition
-
-### Profile Not Appearing in CM or MU
-
-The Terraform Guardium provider resources (`import_profiles` and `install_connector`) only execute when Terraform detects changes. If you run `terraform apply` multiple times with the same configuration, these resources may be skipped even though the profile isn't in CM/MU.
-
-**Solution: Clean State for Fresh Deployment**
-
-When the profile doesn't appear in CM or isn't installed on MU, remove the Terraform state to force a fresh deployment:
-
-```bash
-# Remove Terraform state and generated files
-rm -rf terraform.tfstate* .terraform/*.csv
-
-# Re-apply to create everything fresh
-terraform apply -var="udc_azure_credential=" -auto-approve
-```
-
-**Why This Happens:**
-- The provider resources don't have built-in change detection for external state (CM/MU)
-- Terraform sees no changes to the CSV file content, so skips execution
-- Removing state forces Terraform to recreate all resources, triggering the actual API calls
-
-**Note:** This approach is safe because:
-- Azure resources (Cosmos DB, Event Hub, Storage) are managed separately by the infrastructure module
-- Only the diagnostic settings and Guardium profile/connector resources are recreated
-- No data loss occurs as Azure resources remain intact
-
-**Verification Steps:**
-
-1. **Check profile in CM**:
-   - Navigate to Guardium UI → Datasource Profile Management
-   - Look for profile with name matching your `udc_name` output
-   - Profile definition should be: `Azure Cosmos over Event Hub`
-
-2. **Check connector on MU**:
-   - SSH to your MU host
-   - Check connector status: `sudo systemctl status guardium-connector-*`
-   - Verify logs: `sudo journalctl -u guardium-connector-* -f`
-
-3. **Verify CSV file was generated**:
-   ```bash
-   ls -la .terraform/*.csv
-   cat .terraform/*.csv
-   ```
-
-## Troubleshooting
-
-### No Logs Appearing in Event Hub
-
-1. Verify diagnostic settings are configured:
-   ```bash
-   az monitor diagnostic-settings list \
-     --resource /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account>
-   ```
-
-2. Check Event Hub authorization rule has appropriate permissions
-
-3. Verify Cosmos DB is generating activity (perform some operations)
-
-### Universal Connector Not Processing Logs
-
-1. Verify Azure credentials in Guardium are correct
-2. Check network connectivity between Guardium and Azure
-3. Review Universal Connector logs in Guardium UI
-4. Verify Event Hub consumer group is accessible
-
-### Authentication Errors
-
-1. Verify Guardium OAuth client credentials
-2. Check Guardium user has appropriate permissions
-3. Ensure OAuth client is properly registered via `grdapi register_oauth_client`
-
-## Cleanup
-
-To remove all resources created by this example:
-
-```bash
-terraform destroy
-```
-
-**Note**: This will only remove the diagnostic settings. The Cosmos DB account, Event Hub, and Storage Account created by the setup-middleware module must be destroyed separately.
-
-## Additional Resources
-
-- [Azure Cosmos DB Diagnostic Logs](https://docs.microsoft.com/en-us/azure/cosmos-db/monitor-cosmos-db)
-- [Azure Event Hubs Documentation](https://docs.microsoft.com/en-us/azure/event-hubs/)
-- [IBM Guardium Data Protection Documentation](https://www.ibm.com/docs/en/guardium)
-- [Guardium Universal Connector Guide](https://www.ibm.com/docs/en/guardium/12.2?topic=connectors-universal-connector)
-
-## License
-
-```text
-#
-# Copyright IBM Corp. 2025
-# SPDX-License-Identifier: Apache-2.0
-#
+| Name | Description |
+|------|-------------|
+| udc_name | Name of the Universal Connector |
+| diagnostic_setting_name | Name of the diagnostic setting |
+| diagnostic_setting_id | Resource ID of the diagnostic setting |
+| event_hub_name | Name of the Event Hub receiving logs |
+| cosmos_account_endpoint | Cosmos DB account endpoint |
+| azure_region | Azure region where resources are deployed |
+| resource_group_name | Resource group name |
