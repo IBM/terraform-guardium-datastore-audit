@@ -6,13 +6,13 @@ module "datastore-audit_aws-postgresql-rds-object" {
   source = "../../modules/aws-postgresql-rds-object"
 
   # Basic configuration
-  aws_region                     = "us-east-1"
+  aws_region                      = "us-east-1"
   postgres_rds_cluster_identifier = "example-postgres"
-  db_host                        = "example-postgres.abcdefg.us-east-1.rds.amazonaws.com"
-  db_port                        = 5432
-  db_username                    = "admin"
-  db_password                    = "example-password"
-  db_name                        = "postgres"
+  db_host                         = "example-postgres.abcdefg.us-east-1.rds.amazonaws.com"
+  db_port                         = 5432
+  db_username                     = "admin"
+  db_password                     = "example-password"
+  db_name                         = "postgres"
 
   # Guardium configuration
   udc_aws_credential = "aws-credential-name"

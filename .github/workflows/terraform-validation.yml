@@ -1,0 +1,154 @@
+# Copyright 2026 IBM Corp.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Terraform Validation and Testing
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate-modules:
+    name: Validate Modules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ~1.5
+      
+      - name: Find and validate all modules
+        run: |
+          echo "Finding all module directories with Terraform files..."
+          
+          for dir in modules/*/; do
+            if [ -f "${dir}main.tf" ] || [ -f "${dir}versions.tf" ]; then
+              echo "Validating module: $dir"
+              cd "$dir"
+              
+              echo "  Running terraform fmt -check..."
+              terraform fmt -check -recursive || exit 1
+              
+              echo "  Running terraform init..."
+              terraform init -backend=false || exit 1
+              
+              echo "  Running terraform validate..."
+              terraform validate || exit 1
+              
+              cd - > /dev/null
+              echo "  ✓ Module $dir validated successfully"
+            else
+              echo "  ⊘ Skipping $dir (no Terraform files found)"
+            fi
+          done
+
+  validate-examples:
+    name: Validate Examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ~1.5
+      
+      - name: Find and validate all examples
+        run: |
+          echo "Finding all example directories with Terraform files..."
+          # Skip examples with import blocks (not supported in validation without apply)
+          SKIP_EXAMPLES=(
+            "examples/aws-aurora-postgres-object/"
+            "examples/aws-aurora-postgres-session/"
+            "examples/aws-documentdb/"
+            "examples/aws-mariadb-rds-audit/"
+            "examples/aws-mysql-rds-audit/"
+            "examples/aws-neptune-audit/"
+            "examples/aws-postgresql-rds-object/"
+            "examples/aws-postgresql-rds-object-tables/"
+            "examples/aws-postgresql-rds-session/"
+            "examples/aws-redshift-with-uc/"
+          )
+          
+          for dir in examples/*/; do
+            # Check if example should be skipped (import blocks only)
+            skip=false
+            for skip_example in "${SKIP_EXAMPLES[@]}"; do
+              if [ "$dir" == "$skip_example" ]; then
+                skip=true
+                echo "  ⊘ Skipping $dir (contains import blocks)"
+                break
+              fi
+            done
+            
+            if [ "$skip" = true ]; then
+              continue
+            fi
+            
+            if [ -f "${dir}main.tf" ] || [ -f "${dir}versions.tf" ]; then
+              echo "Validating example: $dir"
+              cd "$dir"
+              
+              echo "  Running terraform fmt -check..."
+              terraform fmt -check -recursive || exit 1
+              
+              echo "  Running terraform init..."
+              terraform init -backend=false || exit 1
+              
+              echo "  Running terraform validate..."
+              terraform validate || exit 1
+              
+              cd - > /dev/null
+              echo "  ✓ Example $dir validated successfully"
+            else
+              echo "  ⊘ Skipping $dir (no Terraform files found)"
+            fi
+          done
+
+  naming-validation:
+    name: AWS Resource Naming Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ~1.5
+
+      - name: Run Naming Validation Tests
+        run: |
+          chmod +x .github/scripts/validate-naming.sh
+          .github/scripts/validate-naming.sh
+
+  summary:
+    name: Validation Summary
+    runs-on: ubuntu-latest
+    needs: [validate-modules, validate-examples, naming-validation]
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          echo "## Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Validate Modules: ${{ needs.validate-modules.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Validate Examples: ${{ needs.validate-examples.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Naming Validation: ${{ needs.naming-validation.result }}" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.validate-modules.result }}" != "success" ] || \
+             [ "${{ needs.validate-examples.result }}" != "success" ] || \
+             [ "${{ needs.naming-validation.result }}" != "success" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ Some validation checks failed!" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ All validation checks passed!" >> $GITHUB_STEP_SUMMARY
+          fi
+
+# Made with Bob

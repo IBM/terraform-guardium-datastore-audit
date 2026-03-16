@@ -35,26 +35,26 @@ module "datastore-audit_aws-redshift" {
   s3_prefix               = var.s3_prefix
 
   # Parameter Group Configuration
-  create_parameter_group = var.create_parameter_group
+  create_parameter_group        = var.create_parameter_group
   existing_parameter_group_name = var.existing_parameter_group_name
-  enable_logging = var.enable_logging
+  enable_logging                = var.enable_logging
 
   # Guardium Data Protection Configuration
-  gdp_server             = var.gdp_server
-  gdp_port               = var.gdp_port
-  gdp_username           = var.gdp_username
-  gdp_password           = var.gdp_password
-  gdp_client_id          = var.gdp_client_id
-  gdp_client_secret      = var.gdp_client_secret
-  gdp_mu_host            = var.gdp_mu_host
+  gdp_server        = var.gdp_server
+  gdp_port          = var.gdp_port
+  gdp_username      = var.gdp_username
+  gdp_password      = var.gdp_password
+  gdp_client_id     = var.gdp_client_id
+  gdp_client_secret = var.gdp_client_secret
+  gdp_mu_host       = var.gdp_mu_host
 
   # Universal Connector Configuration
   enable_universal_connector = var.enable_universal_connector
-  udc_aws_credential        = var.udc_aws_credential
-  csv_start_position        = var.csv_start_position
-  csv_interval              = var.csv_interval
-  codec_pattern             = var.codec_pattern
-  csv_event_filter          = var.csv_event_filter
-  csv_description           = var.csv_description
-  csv_cluster_name          = var.csv_cluster_name
+  udc_aws_credential         = var.udc_aws_credential
+  csv_start_position         = var.csv_start_position
+  csv_interval               = var.csv_interval
+  codec_pattern              = var.codec_pattern
+  csv_event_filter           = var.csv_event_filter
+  csv_description            = var.csv_description
+  csv_cluster_name           = var.csv_cluster_name
 }

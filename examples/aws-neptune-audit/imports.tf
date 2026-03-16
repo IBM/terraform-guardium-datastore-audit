@@ -28,13 +28,13 @@ data "external" "neptune_cluster_info" {
 locals {
   existing_parameter_group_name = data.external.neptune_cluster_info.result.parameter_group
   # Check if parameter group is default (starts with "default.")
-  is_default_param_group = can(regex("^default\\.", local.existing_parameter_group_name))
+  is_default_param_group    = can(regex("^default\\.", local.existing_parameter_group_name))
   should_import_param_group = local.existing_parameter_group_name != "" && !local.is_default_param_group
 }
 
 # Import existing Neptune parameter group only if it's not a default one
 import {
   for_each = local.should_import_param_group ? toset(["import"]) : toset([])
-  to = module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_parameter_group.guardium
-  id = local.existing_parameter_group_name
+  to       = module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_parameter_group.guardium
+  id       = local.existing_parameter_group_name
 }

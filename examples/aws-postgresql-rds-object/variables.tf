@@ -14,14 +14,14 @@ variable "tags" {
 }
 
 variable "postgres_rds_cluster_identifier" {
-  type        = string
+  type = string
 
   description = "DocumentDB cluster identifier to be monitored"
 }
 
 variable "force_failover" {
   type        = bool
-  default = true
+  default     = true
   description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
 }
 
@@ -143,10 +143,10 @@ variable "csv_event_filter" {
 
 variable "log_export_type" {
   description = "The type of log exporting to be configured. Options SQS, Cloudwatch"
-  default = "object"
+  default     = "object"
 
   validation {
-    condition = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
+    condition     = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
     error_message = "log_export_type must be 'SQS' or 'Cloudwatch'"
   }
 }

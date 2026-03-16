@@ -20,25 +20,25 @@ module "datastore-audit_aws-postgresql-rds-session" {
   source = "../../modules/aws-postgresql-rds-session"
 
   # AWS configuration
-  aws_region                     = var.aws_region
+  aws_region                      = var.aws_region
   postgres_rds_cluster_identifier = var.postgres_rds_cluster_identifier
-  force_failover                 = var.force_failover
+  force_failover                  = var.force_failover
 
   # Guardium configuration
-  udc_name                       = var.udc_name
-  udc_aws_credential             = var.udc_aws_credential
-  gdp_client_secret              = var.gdp_client_secret
-  gdp_client_id                  = var.gdp_client_id
-  gdp_server                     = var.gdp_server
-  gdp_port                       = var.gdp_port
-  gdp_username                   = var.gdp_username
-  gdp_password                   = var.gdp_password
-  gdp_mu_host                    = var.gdp_mu_host
+  udc_name           = var.udc_name
+  udc_aws_credential = var.udc_aws_credential
+  gdp_client_secret  = var.gdp_client_secret
+  gdp_client_id      = var.gdp_client_id
+  gdp_server         = var.gdp_server
+  gdp_port           = var.gdp_port
+  gdp_username       = var.gdp_username
+  gdp_password       = var.gdp_password
+  gdp_mu_host        = var.gdp_mu_host
 
   # Universal Connector configuration
-  enable_universal_connector     = var.enable_universal_connector
-  csv_start_position             = var.csv_start_position
-  csv_interval                   = var.csv_interval
-  csv_event_filter               = var.csv_event_filter
-  log_export_type                = var.log_export_type
+  enable_universal_connector = var.enable_universal_connector
+  csv_start_position         = var.csv_start_position
+  csv_interval               = var.csv_interval
+  csv_event_filter           = var.csv_event_filter
+  log_export_type            = var.log_export_type
 }

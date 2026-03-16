@@ -12,7 +12,7 @@ terraform {
     }
     guardium-data-protection = {
       source  = "IBM/guardium-data-protection"
-      version = ">= 1.2.0"
+      version = "~> 1.3"
     }
   }
 }
