@@ -3,6 +3,7 @@
 output "profile_csv" {
   value       = local.capella_uc_csv
   description = "Content of the profile CSV"
+  sensitive   = true
 }
 
 output "udc_name" {
