@@ -29,9 +29,10 @@ module "datastore-audit_mysql-syslog" {
   mysql_install_path  = var.mysql_install_path
 
   # Windows-specific Configuration (only used if is_windows = true)
-  mysql_config_path  = var.mysql_config_path
-  mysql_service_name = var.mysql_service_name
-  mysql_bin_path     = var.mysql_bin_path
+  auto_enable_mysql_audit_in_window = var.auto_enable_mysql_audit_in_window
+  mysql_config_path                 = var.mysql_config_path
+  mysql_service_name                = var.mysql_service_name
+  mysql_bin_path                    = var.mysql_bin_path
 
   # Guardium Configuration
   udc_name          = var.udc_name

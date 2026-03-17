@@ -165,10 +165,23 @@ variable "mysql_install_path" {
 
 # Windows-specific variables
 
+variable "auto_enable_mysql_audit_in_window" {
+  type        = bool
+  description = "Enable MySQL audit logging configuration. Set to false to skip audit setup."
+  default     = false
+}
+
+variable "mysql_audit_log_file_pattern" {
+  type        = string
+  description = "Parent path of MySQL audit log path"
+  default     = "C:\\MySQL\\server\\mysql-commercial-9.6.0-winx64\\data\\audit.*.log"
+  # default = "C:\\MySQL\\server\\mysql-commercial-9.6.0-winx64\\data\\audit.20260317T033000.log"
+}
+
 variable "mysql_config_path" {
   type        = string
   description = "Path to MySQL configuration file (my.ini for Windows, my.cnf for Linux)"
-  default     = "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini"
+  default     = "C:\\MySQL\\server\\mysql-commercial-9.6.0-winx64\\my.ini"
 }
 
 variable "mysql_service_name" {
@@ -180,5 +193,17 @@ variable "mysql_service_name" {
 variable "mysql_bin_path" {
   type        = string
   description = "Path to MySQL bin directory on Windows"
-  default     = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin"
+  default     = "C:\\MySQL\\server\\mysql-commercial-9.6.0-winx64\\bin"
+}
+
+variable "nxlog_installer_path" {
+  description = "Path to the NXLog MSI installer"
+  type        = string
+  default     = "C:\\Users\\Administrator\\Downloads\\nxlog-ce-3.2.2329.msi"
+}
+
+variable "nxlog_config_template" {
+  description = "Path to NXLog config template"
+  type        = string
+  default     = ""
 }

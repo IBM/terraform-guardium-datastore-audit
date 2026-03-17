@@ -159,10 +159,16 @@ variable "mysql_root_password" {
 
 # Windows-specific variables
 
+variable "auto_enable_mysql_audit_in_window" {
+  type        = bool
+  description = "Enable MySQL audit logging configuration. Set to false to skip audit setup."
+  default     = false
+}
+
 variable "mysql_config_path" {
   type        = string
   description = "Path to MySQL configuration file (my.ini for Windows, my.cnf for Linux)"
-  default     = "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini"
+  default     = "C:\\MySQL\\server\\mysql-commercial-9.6.0-winx64\\my.ini"
 }
 
 variable "mysql_service_name" {
@@ -174,9 +180,8 @@ variable "mysql_service_name" {
 variable "mysql_bin_path" {
   type        = string
   description = "Path to MySQL bin directory on Windows"
-  default     = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin"
+  default     = "C:\\MySQL\\server\\mysql-commercial-9.6.0-winx64\\bin"
 }
-
 variable "mysql_install_path" {
   type        = string
   description = "audit log filter linux install script path"
