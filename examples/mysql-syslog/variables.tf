@@ -128,26 +128,21 @@ variable "enable_audit_log" {
   default     = true
 }
 
-# Server Connection variables
-
-variable "is_windows" {
-  type        = bool
-  description = "If true, run Windows audit setup; otherwise run Linux setup"
-}
+# Server Connection variables (Linux)
 
 variable "server_ip" {
   type        = string
-  description = "IP address or hostname of the MySQL server for SSH/WinRM connection"
+  description = "IP address or hostname of the MySQL server for SSH connection"
 }
 
 variable "server_username" {
   type        = string
-  description = "Username for SSH (Linux) or WinRM (Windows) connection to the MySQL server"
+  description = "Username for SSH connection to the MySQL server"
 }
 
 variable "server_password" {
   type        = string
-  description = "Password for SSH/WinRM connection to the MySQL server"
+  description = "Password for SSH connection to the MySQL server"
   sensitive   = true
 }
 
@@ -157,34 +152,9 @@ variable "mysql_root_password" {
   sensitive   = true
 }
 
-# Windows-specific variables
-
-variable "auto_enable_mysql_audit_in_window" {
-  type        = bool
-  description = "Enable MySQL audit logging configuration. Set to false to skip audit setup."
-  default     = false
-}
-
-variable "mysql_config_path" {
-  type        = string
-  description = "Path to MySQL configuration file (my.ini for Windows, my.cnf for Linux)"
-  default     = "C:\\MySQL\\server\\mysql-commercial-9.6.0-winx64\\my.ini"
-}
-
-variable "mysql_service_name" {
-  type        = string
-  description = "Name of the MySQL Windows service"
-  default     = "MySQL80"
-}
-
-variable "mysql_bin_path" {
-  type        = string
-  description = "Path to MySQL bin directory on Windows"
-  default     = "C:\\MySQL\\server\\mysql-commercial-9.6.0-winx64\\bin"
-}
 variable "mysql_install_path" {
   type        = string
-  description = "audit log filter linux install script path"
+  description = "Path to MySQL audit log filter install script"
   default     = "/usr/share/mysql-9.6"
 }
 
