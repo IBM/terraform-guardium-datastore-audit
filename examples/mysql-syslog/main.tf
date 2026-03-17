@@ -20,19 +20,12 @@ module "datastore-audit_mysql-syslog" {
   # Audit Configuration
   enable_audit_log = var.enable_audit_log
 
-  # Server Connection Configuration
-  is_windows          = var.is_windows
+  # Server Connection Configuration (Linux)
   server_ip           = var.server_ip
   server_username     = var.server_username
   server_password     = var.server_password
   mysql_root_password = var.mysql_root_password
   mysql_install_path  = var.mysql_install_path
-
-  # Windows-specific Configuration (only used if is_windows = true)
-  auto_enable_mysql_audit_in_window = var.auto_enable_mysql_audit_in_window
-  mysql_config_path                 = var.mysql_config_path
-  mysql_service_name                = var.mysql_service_name
-  mysql_bin_path                    = var.mysql_bin_path
 
   # Guardium Configuration
   udc_name          = var.udc_name

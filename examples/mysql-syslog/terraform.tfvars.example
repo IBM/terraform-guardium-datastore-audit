@@ -26,25 +26,19 @@ mysql_port = "3306"
 enable_audit_log = true
 
 ##############################
-# Server Connection Configuration
+# Server Connection Configuration (Linux)
 # (Required only when enable_audit_log = true)
 ##############################
 
-# Platform: REQUIRED when enable_audit_log = true
-# Set to true for Windows Server, false for Linux
-# This determines which commands will be executed (PowerShell vs Bash)
-is_windows = false
-
-# Server IP address or hostname for SSH/WinRM connection
+# Server IP address or hostname for SSH connection
 # REQUIRED when enable_audit_log = true
 server_ip = "192.168.1.100"
 
-# Username for SSH (Linux) or WinRM (Windows) connection
+# Username for SSH connection to Linux MySQL server
 # REQUIRED when enable_audit_log = true
-# Use "ubuntu" or similar for Linux, "Administrator" for Windows
-server_username = "ubuntu"
+server_username = "redhat"
 
-# Password for SSH/WinRM connection
+# Password for SSH connection
 # REQUIRED when enable_audit_log = true
 # IMPORTANT: Use environment variables or secure secret management for production
 # Example: export TF_VAR_server_password="your-secure-password"
@@ -56,25 +50,9 @@ server_password = "your-secure-password"
 # Example: export TF_VAR_mysql_root_password="your-mysql-root-password"
 mysql_root_password = "your-mysql-root-password"
 
-##############################
-# Windows-Specific Configuration
-# (Only required when enable_audit_log = true AND is_windows = true)
-##############################
-
-# Path to MySQL configuration file (my.ini)
-# REQUIRED for Windows when enable_audit_log = true
-# Default: "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini"
-mysql_config_path = "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini"
-
-# Name of the MySQL Windows service
-# REQUIRED for Windows when enable_audit_log = true
-# Default: "MySQL80"
-mysql_service_name = "MySQL80"
-
-# Path to MySQL bin directory
-# REQUIRED for Windows when enable_audit_log = true
-# Default: "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin"
-mysql_bin_path = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin"
+# Path to MySQL audit log filter install script
+# Default: "/usr/share/mysql-9.6"
+mysql_install_path = "/usr/share/mysql-9.6"
 
 ##############################
 # Guardium Configuration
@@ -123,19 +101,9 @@ enable_universal_connector = true
 # Syslog Configuration
 ##############################
 
-# Port number for Logstash to listen for syslog messages
-# Default: 5000
-syslog_port = "5000"
-
-# Syslog protocol: TCP or UDP
-# TCP: Reliable, connection-oriented (recommended for production)
-# UDP: Faster but may lose messages under high load
-syslog_protocol = "TCP"
-
-# Syslog message format: RFC3164 or RFC5424
-# RFC5424: Modern format with structured data (recommended)
-# RFC3164: Legacy BSD syslog format (use if MySQL only supports this)
-syslog_format = "RFC5424"
+# Port number for Logstash to listen for syslog messages from MySQL
+# Default: 5143 (standard for Linux MySQL syslog)
+syslog_port = "5143"
 
 ##############################
 # SSL/TLS Configuration
