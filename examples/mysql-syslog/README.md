@@ -1,44 +1,27 @@
 # MySQL Syslog Example
 
-This example demonstrates how to configure on-premises MySQL audit logging with IBM Guardium Data Protection using syslog protocol.
+This example demonstrates how to configure on-premises MySQL audit logging on Linux with IBM Guardium Data Protection using syslog protocol.
 
 ## Overview
 
 This example sets up:
+- MySQL audit plugin installation and configuration on Linux
 - Guardium Universal Connector to receive MySQL audit logs via syslog
-- Configuration for TCP or UDP syslog protocol
-- Support for RFC3164 or RFC5424 syslog formats
+- rsyslog configuration to forward audit logs to Guardium
 
 ## Prerequisites
 
-1. **On-premises MySQL Instance**: A MySQL server with syslog audit logging configured
-2. **Guardium Data Protection**: Version 12.2.1 or above
-3. **Network Connectivity**: MySQL server must be able to send syslog messages to Guardium
-4. **Guardium Credentials**: OAuth client credentials and Web UI credentials
-
-## MySQL Configuration
-
-Before running this example, configure your MySQL instance to send audit logs via syslog:
-
-```sql
--- Install the audit plugin
-INSTALL PLUGIN audit_log SONAME 'audit_log.so';
-
--- Configure syslog output
-SET GLOBAL audit_log_handler = 'SYSLOG';
-SET GLOBAL audit_log_syslog_facility = 'LOG_LOCAL0';
-SET GLOBAL audit_log_syslog_priority = 'LOG_INFO';
-
--- Configure what to audit
-SET GLOBAL audit_log_policy = 'ALL';
-SET GLOBAL audit_log_statement_policy = 'ALL';
-SET GLOBAL audit_log_connection_policy = 'ALL';
-
--- Verify configuration
-SHOW VARIABLES LIKE 'audit_log%';
-```
+1. **On-premises MySQL Instance**: A MySQL server running on Linux
+2. **SSH Access**: SSH access to the MySQL server
+3. **Guardium Data Protection**: Version 12.2.1 or above
+4. **Network Connectivity**: MySQL server must be able to send syslog messages to Guardium
+5. **Guardium Credentials**: OAuth client credentials and Web UI credentials
 
 ## Usage
+
+**Note:** This module will automatically install and configure the MySQL audit plugin on your Linux server. You don't need to manually configure MySQL before running Terraform.
+
+## Configuration
 
 1. Copy the example tfvars file:
    ```bash
@@ -91,19 +74,14 @@ SHOW VARIABLES LIKE 'audit_log%';
    terraform apply
    ```
 
-## Configuration Options
+## What Gets Configured
 
-### Syslog Protocol
-
-Choose between TCP and UDP:
-- **TCP** (Recommended): Reliable, connection-oriented. Best for production.
-- **UDP**: Faster but may lose messages under high load.
-
-### Syslog Format
-
-Choose between RFC3164 and RFC5424:
-- **RFC5424** (Recommended): Modern format with structured data.
-- **RFC3164**: Legacy BSD syslog format for older MySQL versions.
+This example will:
+1. Install MySQL audit plugin on your Linux server
+2. Configure MySQL to enable audit logging in JSON format
+3. Set up rsyslog to forward audit logs to Guardium
+4. Create a Guardium Universal Connector to receive the logs
+5. Enable audit filtering to capture all database activity
 
 ## Verification
 

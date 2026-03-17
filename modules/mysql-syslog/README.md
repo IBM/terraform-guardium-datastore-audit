@@ -1,22 +1,19 @@
 # MySQL Syslog Configuration
 
-This module configures syslog-based audit logging for on-premises MySQL instances (Windows and Linux) with IBM Guardium Data Protection. It automates the installation and configuration of MySQL audit plugin and enables MySQL to send audit logs via syslog protocol directly to Guardium for monitoring and analysis.
+This module configures syslog-based audit logging for on-premises MySQL instances on Linux with IBM Guardium Data Protection. It automates the installation and configuration of MySQL audit plugin and enables MySQL to send audit logs via syslog protocol directly to Guardium for monitoring and analysis.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 
 ## Platform Support
 
-This module supports both **Windows** and **Linux** MySQL installations:
-
-- **Windows Server**: Automatically configures audit logging via my.ini modification and Windows service management
-- **Linux**: Automatically configures audit logging via my.cnf modification and systemd service management
+This module supports **Linux** MySQL installations and automatically configures audit logging via my.cnf modification and systemd service management.
 
 ## Prerequisites
 
 Before using this module, you need to:
 
-1. Have an on-premises MySQL instance (Windows or Linux)
-2. SSH access (Linux) or WinRM access (Windows) to the MySQL server
+1. Have an on-premises MySQL instance on Linux
+2. SSH access to the MySQL server
 3. MySQL root password
 4. Have Guardium set up with appropriate credentials
 5. Network connectivity between MySQL server and Guardium
@@ -30,50 +27,6 @@ By default, the module will install and configure MySQL audit logging. Set `enab
 ### Skip Audit Setup (Connector Only)
 
 If your MySQL server already has audit logging configured, you can skip the audit setup and only configure the Guardium connector by setting `enable_audit_log = false`.
-
-### Windows MySQL Server
-
-```hcl
-module "mysql_audit_windows" {
-  source = "IBM/datastore-audit/guardium//modules/mysql-syslog"
-
-  # MySQL Instance Configuration
-  mysql_instance_identifier = "my-mysql-windows"
-  mysql_host                = "mysql-server.example.com"
-  mysql_port                = "3306"
-
-  # Audit Configuration
-  enable_audit_log = true  # Set to false to skip audit setup
-
-  # Server Connection (WinRM)
-  is_windows        = true
-  server_ip         = "192.168.1.100"
-  server_username   = "Administrator"
-  server_password   = var.server_password
-
-  # MySQL Root Password
-  mysql_root_password = var.mysql_root_password
-
-  # Windows-specific paths (optional, defaults shown)
-  mysql_config_path  = "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini"
-  mysql_service_name = "MySQL80"
-  mysql_bin_path     = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin"
-
-  # Guardium Configuration
-  gdp_server        = "guardium.example.com"
-  gdp_port          = "8443"
-  gdp_username      = "admin"
-  gdp_password      = var.gdp_password
-  gdp_client_id     = "client1"
-  gdp_client_secret = var.gdp_client_secret
-  gdp_mu_host       = "guardium-mu.example.com"
-
-  # Syslog Configuration
-  syslog_port = "5000"
-  ssl_enable  = true
-  ssl_verify  = true
-}
-```
 
 ### Linux MySQL Server
 
@@ -90,12 +43,9 @@ module "mysql_audit_linux" {
   enable_audit_log = true  # Set to false to skip audit setup
 
   # Server Connection (SSH)
-  is_windows        = false
-  server_ip         = "192.168.1.101"
-  server_username   = "ubuntu"
-  server_password   = var.server_password
-
-  # MySQL Root Password
+  server_ip           = "192.168.1.101"
+  server_username     = "ubuntu"
+  server_password     = var.server_password
   mysql_root_password = var.mysql_root_password
 
   # Guardium Configuration
@@ -116,17 +66,6 @@ module "mysql_audit_linux" {
 
 ## What This Module Does
 
-### For Windows Servers
-
-1. **Backs up my.ini**: Creates a backup of the MySQL configuration file
-2. **Configures Audit Plugin**: Appends the following to my.ini:
-   ```ini
-   plugin-load = audit_log.dll
-   audit_log_format=JSON
-   ```
-3. **Restarts MySQL Service**: Restarts the MySQL Windows service to apply changes
-4. **Enables Audit Filters**: Creates and assigns the 'log_all' filter to capture all database activity
-
 ### For Linux Servers
 
 1. **Installs Audit Plugin**: Runs the audit_log_filter_linux_install.sql script
@@ -137,14 +76,13 @@ module "mysql_audit_linux" {
    plugin-load = audit_log.so
    audit_log_format=JSON
    audit-log=FORCE_PLUS_PERMANENT
+   port=5143
    ```
-5. **Restarts MySQL Service**: Restarts mysqld via systemctl
-6. **Enables Audit Filters**: Creates and assigns the 'log_all' filter to capture all database activity
-
-### For Both Platforms
-
-7. **Configures Universal Connector**: Sets up Guardium Universal Connector to receive audit logs via syslog
-8. **Streams to Guardium**: Audit data flows to Guardium Data Protection for monitoring and compliance
+5. **Configures rsyslog**: Sets up rsyslog to forward MySQL audit logs to Guardium
+6. **Restarts MySQL Service**: Restarts mysqld via systemctl
+7. **Enables Audit Filters**: Creates and assigns the 'log_all' filter to capture all database activity
+8. **Configures Universal Connector**: Sets up Guardium Universal Connector to receive audit logs via syslog
+9. **Streams to Guardium**: Audit data flows to Guardium Data Protection for monitoring and compliance
 
 
 ## Requirements
