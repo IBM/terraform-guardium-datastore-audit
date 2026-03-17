@@ -13,7 +13,7 @@ resource "couchbase-capella_audit_log_settings" "auditlogsettings" {
 
 locals {
   # Create unique UDC name for this Capella cluster
-  udc_name     = format("capella-%s-%s", var.capella_project_id, var.capella_cluster_id)
+  udc_name     = format("capella-%s", var.capella_cluster_id)
   api_base_url = format("%s/v4", var.capella_api_host)
   auth_token   = format("Bearer %s", var.capella_api_token)
 }
