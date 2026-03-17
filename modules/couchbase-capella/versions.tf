@@ -14,20 +14,3 @@ terraform {
     }
   }
 }
-
-provider "couchbase-capella" {
-  authentication_token = var.capella_api_token
-  host = var.capella_api_host
-  global_api_request_timeout = 600
-}
-
-
-# Configure the Couchbase Capella Provider
-# Authentication token should be set via environment variable CAPELLA_TOKEN
-# or passed through the provider configuration
-
-# Configure the Guardium Data Protection Provider
-provider "guardium-data-protection" {
-  host = var.gdp_server
-  port = var.gdp_port
-}
