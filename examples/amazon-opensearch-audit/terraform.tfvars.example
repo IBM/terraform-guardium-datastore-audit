@@ -19,7 +19,6 @@ tags = {
 # OpenSearch Configuration
 #----------------------------------------
 opensearch_domain_name = "your-opensearch-domain"
-log_retention_days     = 7
 enable_profiler_logs   = false
 
 # OpenSearch Security Plugin Auditing

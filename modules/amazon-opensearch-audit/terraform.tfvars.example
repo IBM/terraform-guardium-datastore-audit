@@ -15,9 +15,6 @@ opensearch_domain_name = "my-opensearch-domain"
 # Enable profiler logs (INDEX_SLOW_LOGS) in addition to audit logs
 enable_profiler_logs = false
 
-# CloudWatch log retention in days (default: 7)
-log_retention_days = 7
-
 # Optional: Add tags to resources created by this module
 # tags = {
 #   Environment = "Production"
