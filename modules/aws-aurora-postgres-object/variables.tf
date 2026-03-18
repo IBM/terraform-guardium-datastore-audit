@@ -183,7 +183,7 @@ variable "tables" {
 variable "codec_pattern" {
   type        = string
   description = "Codec pattern for Aurora PostgreSQL CloudWatch logs"
-  default     = "plain"
+  default     = "(((?<ts>[^[A-Z]{3}]*)UTC:(?<client_ip>[^:]*):(?<db_user>[^@]*)@(?<db_name>[^:]*):(?<session_id>[^:*]*):(?<logger>LOCATION|DETAIL|STATEMENT|HINT):%{GREEDYDATA:sql_full_log})|(^\s))"
 }
 
 variable "cloudwatch_endpoint" {
