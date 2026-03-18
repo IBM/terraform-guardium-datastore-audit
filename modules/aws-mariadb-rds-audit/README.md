@@ -144,7 +144,7 @@ Guardium is configured to collect and analyze these logs.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| aws_region | AWS region | string | `"us-east-2"` | no |
+| aws_region | AWS region | string | `"us-east-1"` | no |
 | mariadb_rds_cluster_identifier | MariaDB RDS cluster identifier | string | `"guardium-mariadb"` | no |
 | audit_events | Comma-separated list of events to audit | string | `"CONNECT,QUERY"` | no |
 | audit_file_rotations | Number of audit file rotations to keep | string | `"10"` | no |
@@ -169,6 +169,7 @@ Guardium is configured to collect and analyze these logs.
 | csv_start_position | Start position for UDC | string | `"end"` | no |
 | csv_interval | Polling interval for UDC | string | `"5"` | no |
 | csv_event_filter | UDC Event filters | string | `""` | no |
+| codec_pattern | Codec pattern for RDS MariaDB CloudWatch logs | string | `""` | no |
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | `""` | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | `true` | no |
 
