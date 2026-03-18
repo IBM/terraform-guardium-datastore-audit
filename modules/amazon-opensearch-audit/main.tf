@@ -91,7 +91,7 @@ resource "aws_opensearch_domain" "audit" {
 
   lifecycle {
     # Prevent accidental domain destruction
-    #prevent_destroy = true
+    prevent_destroy = true
 
     # Ignore ALL domain configuration except log_publishing_options and tags
     # This ensures we only manage logging, not the entire domain
