@@ -23,12 +23,6 @@ variable "opensearch_domain_name" {
   description = "OpenSearch domain name to be monitored"
 }
 
-variable "log_retention_days" {
-  type        = number
-  description = "Number of days to retain CloudWatch logs"
-  default     = 7
-}
-
 variable "enable_profiler_logs" {
   type        = bool
   description = "Whether to enable profiler logs in addition to audit logs"
@@ -55,13 +49,13 @@ variable "enable_security_plugin_auditing" {
 
 variable "audit_rest_disabled_categories" {
   type        = list(string)
-  description = "List of REST audit categories to disable (e.g., ['AUTHENTICATED', 'GRANTED_PRIVILEGES']). All categories are enabled by default."
+  description = "List of REST audit categories to disable. All categories are enabled by default."
   default     = []
 }
 
 variable "audit_disabled_transport_categories" {
   type        = list(string)
-  description = "List of Transport audit categories to disable (e.g., ['COMPLIANCE_DOC_READ']). All categories are enabled by default."
+  description = "List of Transport audit categories to disable. All categories are enabled by default."
   default     = []
 }
 
