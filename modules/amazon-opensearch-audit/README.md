@@ -180,7 +180,6 @@ For the complete list of supported audit categories and their descriptions, refe
 | enable_universal_connector | Whether to enable the universal connector | bool | `true` | no |
 | csv_start_position | Start position for UDC | string | `"end"` | no |
 | csv_interval | Polling interval for UDC | string | `"5"` | no |
-| codec_pattern | Codec pattern for the Universal Connector | string | `""` | no |
 | csv_event_filter | UDC Event filters | string | `""` | no |
 | use_aws_bundled_ca | Whether to use AWS bundled CA certificates | bool | `true` | no |
 | log_group_prefix | Whether the log group name includes a prefix | bool | `false` | no |
