@@ -7,6 +7,11 @@ provider "azurerm" {
   features {}
 }
 
+provider "guardium-data-protection" {
+  host = var.gdp_server
+  port = var.gdp_port
+}
+
 module "datastore-audit_azure-sql-audit" {
   source = "../../modules/azure-sql-audit"
 

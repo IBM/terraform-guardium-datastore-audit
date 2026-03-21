@@ -6,6 +6,7 @@
 output "profile_csv" {
   description = "Universal Connector profile CSV"
   value       = module.common_azure-sql-jdbc-registration.profile_csv
+  sensitive   = true
 }
 
 output "udc_name" {

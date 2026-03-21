@@ -6,6 +6,7 @@
 output "profile_csv" {
   description = "Universal Connector profile CSV"
   value       = module.datastore-audit_azure-sql-audit.profile_csv
+  sensitive   = true
 }
 
 output "udc_name" {
