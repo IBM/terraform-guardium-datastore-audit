@@ -4,7 +4,7 @@ Terraform module which configures AWS and Azure datastores for audit logging and
 
 ## Scope
 
-This module automates the configuration of audit logging for various AWS and Azure datastores (AWS: DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, PostgreSQL RDS, Aurora PostgreSQL; Azure: Cosmos DB) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
+This module automates the configuration of audit logging for various AWS and Azure datastores (AWS: DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, PostgreSQL RDS, Aurora PostgreSQL; Azure: Cosmos DB, SQL Database) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
 
 ## High-Level Architecture
 
@@ -29,6 +29,12 @@ The following diagram illustrates how this module orchestrates the configuration
 │  │  │  DynamoDB    │  │  DocumentDB  │        │  │  │  Azure Cosmos DB         │  │ │
 │  │  │  + CloudTrail│  │  + Audit Logs│        │  │  │  + Diagnostic Settings   │  │ │
 │  │  └──────────────┘  └──────────────┘        │  │  │  → Event Hub             │  │ │
+│  │                                │ │
+│  │  ┌──────────────────────────┐  │ │
+│  │  │  Azure SQL Database      │  │ │
+│  │  │  + Auditing              │  │ │
+│  │  │  → Storage Account       │  │ │
+│  │  └──────────────────────────┘  │ │
 │  │                                            │  │  └──────────────────────────┘  │ │
 │  │  ┌──────────────┐  ┌──────────────┐        │  │                                │ │
 │  │  │  MariaDB RDS │  │  MySQL RDS   │        │  │                                │ │
@@ -108,6 +114,7 @@ The following diagram illustrates how this module orchestrates the configuration
   
   **Azure Datastores:**
   - **Cosmos DB**: Enables diagnostic settings to capture data plane, query runtime, and control plane logs
+  - **SQL Database**: Enables server-level and database-level auditing to Azure Storage Account
 
 2. **Log Aggregation**: Audit logs are collected in cloud platforms:
   
@@ -157,6 +164,7 @@ This module provides audit configuration for the following AWS and Azure datasto
 | Datastore | Module Path | Audit Method | Log Destination |
 |-----------|-------------|--------------|-----------------|
 | Azure Cosmos DB | `modules/azure-cosmos-audit` | Diagnostic Settings | Azure Event Hub |
+| Azure SQL Database | `modules/azure-sql-audit` | Server & Database Auditing | Azure Storage Account |
 
 ## Prerequisites
 

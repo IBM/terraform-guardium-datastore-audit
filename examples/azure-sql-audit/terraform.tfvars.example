@@ -1,0 +1,37 @@
+# Azure Configuration
+azure_region         = "eastus"
+resource_group_name  = "my-resource-group"
+sql_server_name      = "my-sql-server"
+sql_database_name    = "my-database"
+storage_account_name = "mysqlauditstorage"
+audit_container_name = "sqldbauditlogs"
+retention_in_days    = 90
+
+# JDBC Configuration
+jdbc_user            = "sqladmin"
+jdbc_password        = "YourSecurePassword123!"
+tracking_table_name  = "guardium_audit_tracking"
+enrollment_id        = "12345678"
+
+# Guardium Configuration
+gdp_client_id     = "your-client-id"
+gdp_client_secret = "your-client-secret"
+gdp_server        = "guardium-cm.example.com"
+gdp_port          = "8443"
+gdp_username      = "admin"
+gdp_password      = "your-guardium-password"
+gdp_mu_host       = "guardium-mu1.example.com,guardium-mu2.example.com"
+
+# Universal Connector Configuration
+enable_universal_connector = true
+csv_start_position         = "end"
+csv_interval               = "60"
+codec_pattern              = ""
+csv_event_filter           = ""
+
+# Tags
+tags = {
+  Environment = "production"
+  Project     = "guardium-integration"
+  ManagedBy   = "terraform"
+}
