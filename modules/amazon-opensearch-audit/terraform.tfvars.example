@@ -84,8 +84,5 @@ csv_interval = "5"
 # Optional: Event filter pattern
 csv_event_filter = ""
 
-# Optional: Codec pattern for log parsing
-codec_pattern = ""
-
 # Use AWS bundled CA certificates
 use_aws_bundled_ca = true

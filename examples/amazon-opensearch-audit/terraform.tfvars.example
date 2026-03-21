@@ -38,7 +38,6 @@ udc_aws_credential         = "guardium-aws"  # Name of the AWS credential stored
 csv_start_position = "end"
 csv_interval       = "5"
 csv_event_filter   = ""
-codec_pattern      = ""
 use_aws_bundled_ca = true   # Whether to use AWS bundled CA certificates for OpenSearch connections
 log_group_prefix   = false  # Whether the log group name includes a prefix
 unmask             = true   # Whether to unmask sensitive data in audit logs

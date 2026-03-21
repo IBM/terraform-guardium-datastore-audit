@@ -14,8 +14,8 @@ terraform {
     }
 
     gdp-middleware-helper = {
-      source = "ibm/gdp-middleware-helper"
-      # No version constraint when using dev_overrides
+      source  = "IBM/gdp-middleware-helper"
+      version = ">= 1.0.0"
     }
 
     guardium-data-protection = {
