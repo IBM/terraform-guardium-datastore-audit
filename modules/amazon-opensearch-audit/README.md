@@ -48,6 +48,7 @@ Create a `defaults.tfvars` file with your configuration. See [terraform.tfvars.e
   ```bash
   terraform import aws_opensearch_domain.audit <YOUR-OPENSEARCH-DOMAIN>
   ```
+Replace `<YOUR-OPENSEARCH-DOMAIN>` with the name of your existing OpenSearch domain.
 
 ### 4. Apply the Configuration
 

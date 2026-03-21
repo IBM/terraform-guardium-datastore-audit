@@ -80,7 +80,7 @@ Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.
 terraform import module.datastore-audit_amazon-opensearch-audit.aws_opensearch_domain.audit <YOUR-OPENSEARCH-DOMAIN>
 ```
 
-Replace `your-domain-name` with the name of your existing OpenSearch domain.
+Replace `<YOUR-OPENSEARCH-DOMAIN>` with the name of your existing OpenSearch domain.
 
 **Note:** The module uses lifecycle rules to ignore most domain configuration changes, allowing you to safely import existing domains without forcing recreation. Only audit logging configuration and tags will be managed by Terraform.
 

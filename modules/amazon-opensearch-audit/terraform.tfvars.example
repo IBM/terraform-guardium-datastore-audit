@@ -35,11 +35,9 @@ opensearch_master_username = "admin"
 opensearch_master_password = "YourSecurePassword123!"
 
 # Optional: Disable specific REST audit categories
-# Example: ["GRANTED_PRIVILEGES", "AUTHENTICATED"]
 audit_rest_disabled_categories = []
 
 # Optional: Disable specific Transport audit categories
-# Example: ["COMPLIANCE_DOC_READ"]
 audit_disabled_transport_categories = []
 
 ##############################
