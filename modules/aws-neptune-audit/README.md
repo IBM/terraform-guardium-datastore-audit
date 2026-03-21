@@ -93,12 +93,6 @@ Make sure your Terraform environment has access to the Guardium Data Protection 
 na.artifactory.swg-devops.com/ibm/guardium-data-protection
 ```
 
-## Module Dependencies
-
-This module uses the following internal modules:
-
-1. `aws-configuration` - Retrieves AWS account information
-
 ## Neptune Audit Logging
 
 Neptune audit logging captures:

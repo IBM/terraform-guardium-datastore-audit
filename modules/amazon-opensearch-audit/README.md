@@ -17,9 +17,9 @@ Before using this module, you need to:
 
 | Name | Version |
 |------|---------|
-| terraform | >= 1.0.0 |
-| aws | >= 4.0.0 |
-| guardium-data-protection | >= 1.0.0 |
+| terraform | >= 0.13 |
+| aws | ~> 6.0 |
+| guardium-data-protection | ~> 1.3 |
 | gdp-middleware-helper | >= 1.0.0 |
 
 ## Features
@@ -78,12 +78,6 @@ Make sure your Terraform environment has access to the Guardium Data Protection 
 ```
 na.artifactory.swg-devops.com/ibm/guardium-data-protection
 ```
-
-## Module Dependencies
-
-This module uses the following internal modules:
-
-1. `aws-configuration` - Retrieves AWS account information
 
 ## OpenSearch Audit Logging
 
