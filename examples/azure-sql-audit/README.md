@@ -73,7 +73,26 @@ Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.
   terraform init
   ```
 
-### 3. Apply the Configuration
+### 3. Import the Audit Policy (if already exists)
+
+If your Azure SQL Server already has an audit policy configured, you need to import it into Terraform state before applying:
+
+```bash
+# Get the resource ID of your SQL Server
+RESOURCE_ID="/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.Sql/servers/<server-name>"
+
+# Import the existing audit policy
+terraform import 'module.azure_sql_audit.module.audit_settings.azurerm_mssql_server_extended_auditing_policy.this' "${RESOURCE_ID}/extendedAuditingSettings/default"
+```
+
+Replace the placeholders:
+- `<subscription-id>`: Your Azure subscription ID
+- `<resource-group>`: Your resource group name
+- `<server-name>`: Your SQL Server name
+
+**Note**: If no audit policy exists, skip this step and proceed to apply.
+
+### 4. Apply the Configuration
 
   ```bash
   terraform apply
@@ -81,7 +100,7 @@ Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.
 
 Review the planned changes and type `yes` to apply them.
 
-### 4. Verify the Configuration
+### 5. Verify the Configuration
 
 After successful application:
 
