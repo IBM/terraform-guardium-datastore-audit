@@ -7,11 +7,6 @@ provider "azurerm" {
   features {}
 }
 
-provider "guardium-data-protection" {
-  host = var.gdp_server
-  port = var.gdp_port
-}
-
 module "datastore-audit_azure-sql-audit" {
   source = "../../modules/azure-sql-audit"
 
@@ -25,9 +20,8 @@ module "datastore-audit_azure-sql-audit" {
   retention_in_days    = var.retention_in_days
 
   # JDBC Configuration
-  jdbc_user            = var.jdbc_user
-  jdbc_password        = var.jdbc_password
-  tracking_table_name  = var.tracking_table_name
+  credential_name      = var.credential_name
+  jdbc_driver_library  = var.jdbc_driver_library
   enrollment_id        = var.enrollment_id
 
   # Guardium Configuration

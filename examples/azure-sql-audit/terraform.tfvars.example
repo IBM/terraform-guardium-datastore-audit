@@ -8,9 +8,8 @@ audit_container_name = "sqldbauditlogs"
 retention_in_days    = 90
 
 # JDBC Configuration
-jdbc_user            = "sqladmin"
-jdbc_password        = "YourSecurePassword123!"
-tracking_table_name  = "guardium_audit_tracking"
+credential_name      = "azure-sql-jdbc-cred"
+jdbc_driver_library  = "mssql-jdbc-7.4.1.jre8.jar"
 enrollment_id        = "12345678"
 
 # Guardium Configuration

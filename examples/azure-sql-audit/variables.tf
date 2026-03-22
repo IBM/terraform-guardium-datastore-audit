@@ -55,21 +55,16 @@ variable "tags" {
 // JDBC Configuration variables
 //////
 
-variable "jdbc_user" {
+variable "credential_name" {
   type        = string
-  description = "SQL Server admin username for JDBC connection"
+  description = "Name of the JDBC credential configured in Guardium CM"
+  default     = "azure-sql-jdbc-cred"
 }
 
-variable "jdbc_password" {
+variable "jdbc_driver_library" {
   type        = string
-  description = "SQL Server admin password for JDBC connection"
-  sensitive   = true
-}
-
-variable "tracking_table_name" {
-  type        = string
-  description = "Name of the table used for tracking processed audit records"
-  default     = "guardium_audit_tracking"
+  description = "Name of the JDBC driver JAR file uploaded to Guardium CM"
+  default     = "mssql-jdbc-7.4.1.jre8.jar"
 }
 
 variable "enrollment_id" {

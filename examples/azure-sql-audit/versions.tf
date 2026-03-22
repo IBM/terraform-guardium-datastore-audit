@@ -10,9 +10,5 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.0"
     }
-    guardium-data-protection = {
-      source  = "ibm/guardium-data-protection"
-      version = ">= 1.0.0"
-    }
   }
 }
