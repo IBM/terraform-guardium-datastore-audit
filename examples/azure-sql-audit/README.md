@@ -18,7 +18,6 @@ This example demonstrates how to configure Azure SQL Database with IBM Guardium 
                                                      │  Guardium         │
                                                      │  Universal        │
                                                      │  Connector        │
-                                                     │  (JDBC)           │
                                                      │                   │
                                                      └───────────────────┘
                                                             │
@@ -35,7 +34,7 @@ This example demonstrates how to configure Azure SQL Database with IBM Guardium 
 ## Data Flow
 
 1. Azure SQL Database activity is captured by server-level auditing
-2. Audit logs are written to Azure Storage Account as .xel files
+2. Audit logs are written to Azure Storage Account
 3. Guardium Universal Connector queries audit logs via JDBC using `sys.fn_get_audit_file()`
 4. Guardium processes and analyzes the SQL Database activity
 5. Security teams can view and alert on SQL Database activity in Guardium
@@ -53,10 +52,7 @@ This Terraform configuration:
 Before using this example, ensure you have:
 
 1. **Azure Resources**:
-   - An existing Azure SQL Server
-   - An existing Azure SQL Database
-   - An existing Azure Storage Account (for audit log storage)
-   - Resource group containing these resources
+   - An existing Azure SQL Server and Database
 
 2. **Guardium Data Protection**:
    - A running Guardium Data Protection instance (version 12.2.1 or above)
@@ -93,7 +89,6 @@ After successful application:
 2. Navigate to **Universal Connector** → **Datasource Profile Management**
 3. Verify that the Azure SQL Database profile has been created and is active
 4. Navigate to the managed unit (collector) the UC is deployed on and ensure the STAP status is green/active
-5. Generate some database activity and verify audit logs are being collected
 
 ## JDBC Integration
 
@@ -110,13 +105,6 @@ Azure SQL Database server-level auditing captures:
 - **Successful Authentication**: User login events
 - **Failed Authentication**: Failed login attempts
 - **Batch Completed**: SQL statement executions (SELECT, INSERT, UPDATE, DELETE, etc.)
-
-The audit logs include:
-- Event time and session information
-- Database name and client IP address
-- User principal name and application name
-- SQL statement text
-- Success/failure status
 
 ## Input Variables
 
@@ -140,8 +128,10 @@ The audit logs include:
 | gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
 | enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
-| csv_start_position | Start position for UDC (beginning/end) | `string` | `"end"` | no |
-| csv_interval | Polling interval for UDC in seconds | `string` | `"60"` | no |
+| csv_start_position | Start position for UDC | `string` | `"end"` | no |
+| csv_interval | Polling interval for UDC | `string` | `"60"` | no |
+| codec_pattern | Codec pattern for the Universal Connector | `string` | `""` | no |
+| csv_event_filter | UDC Event filters | `string` | `""` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs
@@ -155,4 +145,3 @@ The audit logs include:
 | storage_account_name | Name of the storage account |
 | azure_region | Azure region where resources are deployed |
 | resource_group_name | Resource group name |
-| jdbc_connection_string | JDBC connection string (without credentials) |
