@@ -4,7 +4,7 @@ Terraform module which configures AWS datastores for audit logging and integrate
 
 ## Scope
 
-This module automates the configuration of audit logging for various AWS datastores (DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, PostgreSQL RDS, Aurora PostgreSQL) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
+This module automates the configuration of audit logging for various AWS datastores (DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, OpenSearch, PostgreSQL RDS, Aurora PostgreSQL, Redshift) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
 
 ## High-Level Architecture
 
@@ -32,6 +32,11 @@ The following diagram illustrates how this module orchestrates the configuration
         │  │  MySQL RDS      │  │  Neptune                   │      │
         │  │  + Audit Plugin │  │  + Audit Logs              │      │
         │  └─────────────────┘  └────────────────────────────┘      │
+        │                                                           │
+        │  ┌────────────────────────────┐                           │
+        │  │  OpenSearch                │                           │
+        │  │  + Audit Logs              │                           │
+        │  └────────────────────────────┘                           │
         │                                                           │
         │  ┌────────────────────────────┐                           │
         │  │  PostgreSQL RDS            │                           │
@@ -98,6 +103,7 @@ The following diagram illustrates how this module orchestrates the configuration
   - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
   - **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
   - **Neptune**: Enables audit logs via parameter groups
+  - **OpenSearch**: Enables audit logs via domain configuration and security plugin
   - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
   - **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
   - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
@@ -130,6 +136,7 @@ This module provides audit configuration for the following AWS datastores:
 | AWS MariaDB RDS | `modules/aws-mariadb-rds-audit` | MariaDB Audit Plugin | CloudWatch Logs |
 | AWS MySQL RDS | `modules/aws-mysql-rds-audit` | MariaDB Audit Plugin | CloudWatch Logs |
 | AWS Neptune | `modules/aws-neptune-audit` | Neptune Audit Logs | CloudWatch Logs |
+| AWS OpenSearch | `modules/amazon-opensearch-audit` | OpenSearch Audit Logs | CloudWatch Logs |
 | AWS PostgreSQL RDS (Object) | `modules/aws-postgresql-rds-object` | pgAudit (Object-Level) | CloudWatch/SQS |
 | AWS PostgreSQL RDS (Session) | `modules/aws-postgresql-rds-session` | pgAudit (Session-Level) | CloudWatch/SQS |
 | AWS Aurora PostgreSQL (Object) | `modules/aws-aurora-postgres-object` | pgAudit (Object-Level) | CloudWatch/SQS |
@@ -332,6 +339,34 @@ module "neptune_audit" {
 }
 ```
 
+### AWS OpenSearch Audit Configuration
+
+Enable comprehensive audit logging for OpenSearch domains:
+
+```hcl
+module "opensearch_audit" {
+  source = "IBM/datastore-audit/guardium//modules/amazon-opensearch-audit"
+
+  # AWS Configuration
+  aws_region             = "us-east-1"
+  opensearch_domain_name = "my-opensearch-domain"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+
+  tags = {
+    Environment = "production"
+  }
+}
+```
+
 ### AWS PostgreSQL RDS Object-Level Audit Configuration
 
 Monitor specific tables with granular control:
@@ -526,6 +561,7 @@ module "redshift_audit" {
 
 Complete working examples are available in the `examples/` directory:
 
+- [amazon-opensearch-audit](examples/amazon-opensearch-audit) - OpenSearch audit configuration with Universal Connector
 - [aws-aurora-postgres-object](examples/aws-aurora-postgres-object) - Aurora PostgreSQL object-level auditing
 - [aws-aurora-postgres-session](examples/aws-aurora-postgres-session) - Aurora PostgreSQL session-level auditing
 - [aws-documentdb](examples/aws-documentdb) - DocumentDB audit configuration with Universal Connector
@@ -547,7 +583,7 @@ Each example includes:
 
 - **Automated Configuration**: Automatically configures audit logging for AWS datastores
 - **Universal Connector Integration**: Seamlessly integrates with Guardium Universal Connector
-- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, PostgreSQL RDS, and Aurora PostgreSQL
+- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, OpenSearch, PostgreSQL RDS, Aurora PostgreSQL, and Redshift
 - **Flexible Audit Levels**: Choose between object-level and session-level auditing for PostgreSQL and Aurora PostgreSQL
 - **CloudWatch Integration**: Leverages CloudWatch Logs for centralized log management
 - **Aurora Cluster Support**: Native support for Aurora PostgreSQL clusters with automatic parameter group management

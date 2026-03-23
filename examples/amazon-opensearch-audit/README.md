@@ -1,14 +1,14 @@
-# AWS Neptune with IBM Guardium Data Protection
+# AWS OpenSearch with IBM Guardium Data Protection
 
-This example demonstrates how to configure AWS Neptune with IBM Guardium Data Protection using audit logging for comprehensive monitoring.
+This example demonstrates how to configure AWS OpenSearch with IBM Guardium Data Protection using audit logging for comprehensive monitoring.
 
 ## Architecture
 
 ```
 ┌───────────────────┐     ┌───────────────────┐     ┌───────────────────┐
 │                   │     │                   │     │                   │
-│  AWS Neptune      │────►│  Neptune Audit    │────►│  CloudWatch Logs  │
-│  Cluster          │     │  Logging          │     │                   │
+│  AWS OpenSearch   │────►│  OpenSearch       │────►│  CloudWatch Logs  │
+│  Domain           │     │  Audit Logging    │     │                   │
 └───────────────────┘     └───────────────────┘     └───────────────────┘
                                                             │
                                                             │
@@ -33,18 +33,18 @@ This example demonstrates how to configure AWS Neptune with IBM Guardium Data Pr
 
 ## Data Flow
 
-1. Neptune database activity is captured by Neptune audit logging
+1. OpenSearch database activity is captured by OpenSearch audit logging
 2. Audit logs are sent to CloudWatch Logs
 3. Guardium Universal Connector reads from CloudWatch Logs
-4. Guardium processes and analyzes the Neptune activity
-5. Security teams can view and alert on Neptune activity in Guardium
+4. Guardium processes and analyzes the OpenSearch activity
+5. Security teams can view and alert on OpenSearch activity in Guardium
 
 ## Overview
 
 This Terraform configuration:
 
-1. Configures an existing AWS Neptune cluster for audit logging
-2. Sets up a Universal Data Connector in Guardium to collect and analyze Neptune audit logs from CloudWatch
+1. Configures an existing AWS OpenSearch domain for audit logging
+2. Sets up a Universal Data Connector in Guardium to collect and analyze OpenSearch audit logs from CloudWatch
 3. Enables comprehensive monitoring of database operations, user activity, and access patterns
 
 ## Prerequisites
@@ -52,7 +52,7 @@ This Terraform configuration:
 Before using this example, ensure you have:
 
 1. **AWS Resources**:
-   - An existing AWS Neptune cluster
+   - An existing AWS OpenSearch domain
 
 2. **Guardium Data Protection**:
    - A running Guardium Data Protection instance (version 12.2.1 or above)
@@ -72,40 +72,17 @@ Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.
   terraform init
   ```
 
-### 3. Import the Neptune Parameter Group (if using custom parameter group)
+### 3. Import the Existing OpenSearch Domain 
 
-**Option A: Automated Import (Recommended)**
-
-The module includes automated parameter group detection. When you run `terraform plan`, the module will:
-- Query your existing Neptune cluster to discover the current cluster parameter group
-- Automatically handle the import if it exists and is a custom parameter group
-- Skip default parameter groups (e.g., `default.neptune1`)
-- Prevent "parameter group already exists" errors
-
-The automation uses external data sources with AWS CLI to fetch your Neptune cluster configuration and extract the parameter group name.
-
-**Option B: Manual Import**
-
-If you prefer to import manually or encounter issues with automated import:
-
-Identify existing parameter group name:
+### You need to import existing OpenSearch domain before applying:
 
 ```bash
-# Get current parameter group name
-aws neptune describe-db-clusters \
-  --db-cluster-identifier your-neptune-cluster \
-  --region your-region \
-  --query "DBClusters[0].DBClusterParameterGroup" \
-  --output text
+terraform import module.datastore-audit_amazon-opensearch-audit.aws_opensearch_domain.audit <YOUR-OPENSEARCH-DOMAIN>
 ```
 
-Import existing parameter group:
+Replace `<YOUR-OPENSEARCH-DOMAIN>` with the name of your existing OpenSearch domain.
 
-```bash
-terraform import module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_parameter_group.guardium <your-parameter-group-name>
-```
-
-**Note**: The automated approach is recommended. Manual import is only needed if you encounter specific issues or prefer explicit control. Skipping the import step will cause Terraform to attempt creating a new parameter group, which may fail.
+**Note:** The module uses lifecycle rules to ignore most domain configuration changes, allowing you to safely import existing domains without forcing recreation. Only audit logging configuration and tags will be managed by Terraform.
 
 ### 4. Apply the Configuration
 
@@ -121,32 +98,22 @@ After successful application:
 
 1. Log in to your Guardium Data Protection web interface
 2. Navigate to **Universal Connector** → **Datasource Profile Management**
-3. Verify that the Neptune profile has been created and is active
-4. Navigate to **CloudWatch** → **Log Groups** on the AWS UI and search for `/aws/neptune/<neptune_cluster_id>/audit`. You should see log groups created
+3. Verify that the OpenSearch profile has been created and is active
+4. Navigate to **CloudWatch** → **Log Groups** on the AWS UI and search for `/aws/OpenSearchService/<domain-name>/audit`. You should see log groups created
 5. Navigate to the managed unit (collector) the UC is deployed on and ensure the STAP status is green/active
-
-## CloudWatch Integration
-
-The module configures Neptune to send audit logs to CloudWatch Logs. The Universal Connector then:
-
-1. Reads these logs from CloudWatch using the configured AWS credentials
-2. Parses and normalizes the log data
-3. Forwards the processed audit events to Guardium for analysis
-
-## Neptune Audit Logging
-
-Neptune audit logging captures:
-- **Gremlin queries**: Apache TinkerPop Gremlin graph traversal queries
-- **SPARQL queries**: W3C SPARQL queries for RDF data
-- Connection events and authentication attempts
 
 ## Input Variables
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | aws_region | AWS region where resources will be created | `string` | `"us-east-1"` | no |
-| neptune_cluster_identifier | Neptune cluster identifier to be monitored | `string` | `"guardium-neptune"` | no |
-| neptune_endpoint | Neptune cluster endpoint (optional - will be fetched automatically if not provided) | `string` | `""` | no |
+| opensearch_domain_name | OpenSearch domain name to be monitored | `string` | n/a | yes |
+| enable_profiler_logs | Whether to enable profiler logs (INDEX_SLOW_LOGS) | `bool` | `false` | no |
+| opensearch_master_username | Master username for OpenSearch domain | `string` | n/a | yes |
+| opensearch_master_password | Master password for OpenSearch domain | `string` | n/a | yes |
+| enable_security_plugin_auditing | Whether to enable security plugin auditing | `bool` | `true` | no |
+| audit_rest_disabled_categories | List of REST audit categories to disable | `list(string)` | `[]` | no |
+| audit_disabled_transport_categories | List of Transport audit categories to disable | `list(string)` | `[]` | no |
 | udc_aws_credential | Name of AWS credential defined in Guardium | `string` | n/a | yes |
 | gdp_client_id | Client ID used when running grdapi register_oauth_client | `string` | n/a | yes |
 | gdp_client_secret | Client secret from output of grdapi register_oauth_client | `string` | n/a | yes |
@@ -154,22 +121,27 @@ Neptune audit logging captures:
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
 | gdp_username | Username of Guardium Web UI user | `string` | n/a | yes |
 | gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
-| gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
+| gdp_mu_host | Comma separated list of Guardium Managed Units | `string` | n/a | yes |
 | enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
 | csv_start_position | Start position for UDC | `string` | `"end"` | no |
 | csv_interval | Polling interval for UDC | `string` | `"5"` | no |
 | csv_event_filter | UDC Event filters | `string` | `""` | no |
-| use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for Neptune connection | `bool` | `true` | no |
-| tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
+| use_aws_bundled_ca | Whether to use AWS bundled CA certificates | `bool` | `true` | no |
+| log_group_prefix | Whether the log group name includes a prefix | `bool` | `false` | no |
+| unmask | Whether to unmask sensitive data in audit logs | `bool` | `true` | no |
+| tags | Map of tags to apply to resources | `map(string)` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| udc_name | Name of the Universal Connector |
-| parameter_group_name | Name of the Neptune cluster parameter group |
-| cloudwatch_log_group | CloudWatch Log Group for audit logs |
+| cloudwatch_log_group_audit | Name of the CloudWatch Log Group for audit logs |
+| cloudwatch_log_group_audit_arn | ARN of the CloudWatch Log Group for audit logs |
+| cloudwatch_log_group_profiler | Name of the CloudWatch Log Group for profiler logs |
+| cloudwatch_log_group_profiler_arn | ARN of the CloudWatch Log Group for profiler logs |
 | aws_region | AWS region where resources are deployed |
 | aws_account_id | AWS account ID |
-| neptune_cluster_identifier | Neptune cluster identifier |
-| neptune_cluster_endpoint | Neptune cluster endpoint |
+| opensearch_domain_name | OpenSearch domain name |
+| opensearch_domain_endpoint | OpenSearch domain endpoint |
+| opensearch_domain_arn | OpenSearch domain ARN |
+| opensearch_dashboard_url | OpenSearch Dashboard URL |
