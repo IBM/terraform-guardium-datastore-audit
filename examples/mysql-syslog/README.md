@@ -31,7 +31,7 @@ This example sets up:
 2. Edit `terraform.tfvars` with your specific values:
    ```hcl
    # MySQL Instance Configuration
-   mysql_instance_identifier = "prod-mysql-01"
+   mysql_instance_identifier = "MySQL Over Syslog"
    mysql_host                = "192.168.1.100"
    mysql_port                = "3306"
 

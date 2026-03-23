@@ -35,7 +35,7 @@ module "mysql_audit_linux" {
   source = "IBM/datastore-audit/guardium//modules/mysql-syslog"
 
   # MySQL Instance Configuration
-  mysql_instance_identifier = "my-mysql-linux"
+  mysql_instance_identifier = "MySQL Over Syslog"
   mysql_host                = "mysql-server.example.com"
   mysql_port                = "3306"
 
