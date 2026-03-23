@@ -1,3 +1,8 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
 # Couchbase Capella Audit Configuration Module
 # This module enables audit logging on an existing Capella cluster and integrates with Guardium
 
