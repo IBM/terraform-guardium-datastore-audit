@@ -1,10 +1,9 @@
 # Guardium Datastore Audit Configuration Terraform Module
 
-Terraform module which configures AWS datastores for audit logging and integrates them with IBM Guardium Data Protection via Universal Connector.
+Terraform module which configures AWS datastores and Couchbase Capella for audit logging and integrates them with IBM Guardium Data Protection via Universal Connector.
 
 ## Scope
-
-This module automates the configuration of audit logging for various AWS datastores (DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, OpenSearch, PostgreSQL RDS, Aurora PostgreSQL, Redshift) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
+This module automates the configuration of audit logging for various AWS datastores (DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, PostgreSQL RDS, Aurora PostgreSQL, Redshift) and Couchbase Capella, establishing integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
 
 ## High-Level Architecture
 
@@ -97,7 +96,7 @@ The following diagram illustrates how this module orchestrates the configuration
 
 ### Architecture Flow
 
-1. **Datastore Configuration**: The module configures each AWS datastore to enable audit logging:
+1. **Datastore Configuration**: The module configures each datastore to enable audit logging:
   - **DynamoDB**: Enables CloudTrail data events to capture API calls
   - **DocumentDB**: Enables audit and profiler logs via parameter groups
   - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
@@ -107,6 +106,7 @@ The following diagram illustrates how this module orchestrates the configuration
   - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
   - **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
   - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
+  - **Couchbase Capella**: Enables audit logging via Capella API for cloud-native deployments
 
 2. **Log Aggregation**: Audit logs are collected in AWS:
   - CloudWatch Log Groups store structured logs
@@ -127,7 +127,7 @@ The following diagram illustrates how this module orchestrates the configuration
 
 ## Supported Datastores
 
-This module provides audit configuration for the following AWS datastores:
+This module provides audit configuration for the following datastores:
 
 | Datastore | Module Path | Audit Method | Log Destination |
 |-----------|-------------|--------------|-----------------|
@@ -142,6 +142,7 @@ This module provides audit configuration for the following AWS datastores:
 | AWS Aurora PostgreSQL (Object) | `modules/aws-aurora-postgres-object` | pgAudit (Object-Level) | CloudWatch/SQS |
 | AWS Aurora PostgreSQL (Session) | `modules/aws-aurora-postgres-session` | pgAudit (Session-Level) | CloudWatch/SQS |
 | AWS Redshift | `modules/aws-redshift` | Connection & User Activity Logs | CloudWatch Logs/S3 |
+| Couchbase Capella | `modules/couchbase-capella` | Capella Audit Logs | REST API |
 
 ## Prerequisites
 
@@ -573,6 +574,7 @@ Complete working examples are available in the `examples/` directory:
 - [aws-postgresql-rds-object-tables](examples/aws-postgresql-rds-object-tables) - PostgreSQL RDS object-level auditing with specific tables
 - [aws-postgresql-rds-session](examples/aws-postgresql-rds-session) - PostgreSQL RDS session-level auditing
 - [aws-redshift-with-uc](examples/aws-redshift-with-uc) - Redshift audit configuration with Universal Connector
+- [couchbase-capella](examples/couchbase-capella) - Couchbase Capella audit configuration with Universal Connector
 
 Each example includes:
 - Complete Terraform configuration
@@ -581,12 +583,13 @@ Each example includes:
 
 ## Key Features
 
-- **Automated Configuration**: Automatically configures audit logging for AWS datastores
+- **Automated Configuration**: Automatically configures audit logging for AWS datastores and Couchbase Capella
 - **Universal Connector Integration**: Seamlessly integrates with Guardium Universal Connector
-- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, OpenSearch, PostgreSQL RDS, Aurora PostgreSQL, and Redshift
+- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Neptune, PostgreSQL RDS, Aurora PostgreSQL, Redshift, and Couchbase Capella
 - **Flexible Audit Levels**: Choose between object-level and session-level auditing for PostgreSQL and Aurora PostgreSQL
 - **CloudWatch Integration**: Leverages CloudWatch Logs for centralized log management
 - **Aurora Cluster Support**: Native support for Aurora PostgreSQL clusters with automatic parameter group management
+- **Cloud-Native Support**: Includes support for Couchbase Capella cloud-native database platform
 - **Compliance Ready**: Supports compliance requirements (PCI-DSS, HIPAA, GDPR, SOC 2)
 - **Terraform Native**: Fully declarative infrastructure as code approach
 
@@ -657,3 +660,4 @@ Module is maintained by IBM with help from [these awesome contributors](https://
 - [AWS CloudTrail Documentation](https://docs.aws.amazon.com/cloudtrail/)
 - [AWS CloudWatch Logs Documentation](https://docs.aws.amazon.com/cloudwatch/latest/logs/)
 - [Terraform AWS Provider Documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- [Couchbase Capella Documentation](https://docs.couchbase.com/cloud/)
