@@ -306,6 +306,7 @@ module "mysql_audit" {
     Environment = "production"
   }
 }
+```
 
 ### AWS Aurora MySQL Audit Configuration
 
@@ -602,7 +603,7 @@ module "redshift_audit" {
     Project     = "data-security"
   }
 }
-
+```
 
 ## Examples
 
