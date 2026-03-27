@@ -151,6 +151,7 @@ This module provides audit configuration for the following datastores:
 | AWS Aurora PostgreSQL (Session) | `modules/aws-aurora-postgres-session` | pgAudit (Session-Level) | CloudWatch/SQS |
 | AWS Redshift | `modules/aws-redshift` | Connection & User Activity Logs | CloudWatch Logs/S3 |
 | Couchbase Capella | `modules/couchbase-capella` | Capella Audit Logs | REST API |
+| MySQL over Syslog| `modules/onprem-mysql` | MySQL Audit Plugin | Syslog |
 
 ## Prerequisites
 
@@ -305,7 +306,6 @@ module "mysql_audit" {
     Environment = "production"
   }
 }
-```
 
 ### AWS Aurora MySQL Audit Configuration
 
@@ -602,7 +602,7 @@ module "redshift_audit" {
     Project     = "data-security"
   }
 }
-```
+
 
 ## Examples
 
@@ -621,7 +621,11 @@ Complete working examples are available in the `examples/` directory:
 - [aws-postgresql-rds-object-tables](examples/aws-postgresql-rds-object-tables) - PostgreSQL RDS object-level auditing with specific tables
 - [aws-postgresql-rds-session](examples/aws-postgresql-rds-session) - PostgreSQL RDS session-level auditing
 - [aws-redshift-with-uc](examples/aws-redshift-with-uc) - Redshift audit configuration with Universal Connector
+<<<<<<< HEAD
 - [couchbase-capella](examples/couchbase-capella) - Couchbase Capella audit configuration with Universal Connector
+=======
+- [onprem-mysql](examples/onprem-mysql) - On-premises MySQL audit configuration with syslog
+>>>>>>> 8f82bcb (fix copy year)
 
 Each example includes:
 - Complete Terraform configuration
