@@ -23,8 +23,8 @@ terraform {
 # Configure the Couchbase Capella Provider
 # Set CAPELLA_TOKEN environment variable for authentication
 provider "couchbase-capella" {
-  authentication_token = var.capella_api_token
-  host = var.capella_api_host
+  authentication_token       = var.capella_api_token
+  host                       = var.capella_api_host
   global_api_request_timeout = 600
 }
 
