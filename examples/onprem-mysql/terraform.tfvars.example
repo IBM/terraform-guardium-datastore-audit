@@ -1,55 +1,113 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
+##############################
 # MySQL Instance Configuration
+##############################
 
 # Unique identifier for your MySQL instance
 mysql_instance_identifier = "prod-mysql-01"
 
 # Hostname or IP address of your MySQL server
-mysql_host = ""
+mysql_host = "192.168.1.100"
 
 # MySQL server port (default: 3306)
-mysql_port = ""
+mysql_port = "3306"
 
+##############################
 # Audit Configuration
+##############################
 
 # Enable MySQL audit logging configuration
+# Set to true to install and configure MySQL audit plugin
+# Set to false to skip audit setup (only configure Guardium connector)
 enable_audit_log = true
 
+##############################
 # Server Connection Configuration (Linux)
-server_ip = ""
+# (Required only when enable_audit_log = true)
+##############################
+
+# Server IP address or hostname for SSH connection
+# REQUIRED when enable_audit_log = true
+server_ip = "192.168.1.100"
+
+# Username for SSH connection to Linux MySQL server
+# REQUIRED when enable_audit_log = true
 server_username = "redhat"
+
+# Password for SSH connection
+# REQUIRED when enable_audit_log = true
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_server_password="your-secure-password"
 server_password = "your-secure-password"
+
+# MySQL root password for database operations
+# REQUIRED when enable_audit_log = true
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_mysql_root_password="your-mysql-root-password"
 mysql_root_password = "your-mysql-root-password"
 
 # Path to MySQL audit log filter install script
 # Default: "/usr/share/mysql-9.6"
 mysql_install_path = "/usr/share/mysql-9.6"
 
-# Guardium Data Protection Configuration
-#----------------------------------------
-# Guardium Connection Details
-#----------------------------------------
-gdp_server             = "guardium.example.com"  # Replace with your Guardium server
-gdp_port               = 8443
-gdp_username           = "admin"                 # Replace with your Guardium username
-gdp_password           = "password"              # Replace with your Guardium password
-gdp_client_id          = "client4"               # Replace with your client ID
-gdp_client_secret      = "client-secret"         # Replace with your client secret
-gdp_mu_host            = ""                      # Comma separated list of Guardium Managed Units
-udc_aws_credential = "guardium-aws"  # Name of the AWS credential stored in Guardium Central Manager
+##############################
+# Guardium Configuration
+##############################
 
+# Guardium Central Manager hostname or IP address
+gdp_server = "guardium.example.com"
+
+# Guardium Central Manager port (default: 8443)
+gdp_port = "8443"
+
+# Guardium Web UI username
+gdp_username = "admin"
+
+# Guardium Web UI password
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_gdp_password="your-secure-password"
+gdp_password = "your-secure-password"
+
+# OAuth client ID from Guardium
+# Obtain this by running: grdapi register_oauth_client
+gdp_client_id = "your-client-id"
+
+# OAuth client secret from Guardium
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_gdp_client_secret="your-client-secret"
+gdp_client_secret = "your-client-secret"
+
+# Comma-separated list of Guardium Managed Units to deploy the profile
+# Leave empty to deploy to all managed units
+gdp_mu_host = "guardium-mu-01"
+
+##############################
 # Universal Connector Configuration
+##############################
 
+# Name for the Universal Connector
 # If not provided, will be auto-generated as: onprem-mysql-<instance_identifier>
 udc_name = "mysql-prod-onprem"
+
+# Enable or disable the Universal Connector
+# Set to false to skip connector creation
 enable_universal_connector = true
 
+##############################
 # Syslog Configuration
+##############################
 
 # Port number for Logstash to listen for syslog messages from MySQL
 # Default: 5143 (standard for Linux MySQL syslog)
 syslog_port = "5143"
 
+##############################
 # SSL/TLS Configuration
+##############################
 
 # Enable SSL/TLS for secure syslog communication
 ssl_enable = true
@@ -65,15 +123,25 @@ ssl_key_path = "/service/certs/external/tls-syslog.key"
 # Set to false only for testing with self-signed certificates
 ssl_verify = true
 
+##############################
 # Logstash Configuration
+##############################
 
+# Enable DNS reverse lookup for incoming connections
+# Disabled by default for better performance
 dns_reverse_lookup_enabled = false
 
 # Custom Grok pattern for parsing MySQL syslog messages
 # Leave empty to use the default pattern:
+# %{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:server_hostname} %{SYSLOGPROG:source_program}(?:[%{POSINT:syslog_pid}])?: %{GREEDYDATA:mysql_message}
 logstash_grok_pattern = ""
 
+##############################
 # Tags
+##############################
+
+# Tags to apply to resources
+# Useful for organization, cost tracking, and automation
 tags = {
   Environment = "production"
   Application = "mysql-audit"

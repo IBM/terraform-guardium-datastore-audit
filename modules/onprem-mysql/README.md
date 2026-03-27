@@ -304,5 +304,5 @@ The module supports two syslog message formats:
 
 ## License
 
-Copyright IBM Corp. 2026
+Copyright IBM Corp. 2025
 SPDX-License-Identifier: Apache-2.0
