@@ -1,2 +1,0 @@
-profile_definition_name,name,description,port,ssl_certificate_authority_filename,ssl_enable,ssl_verify
-MySQL Over Syslog,${udc_name},${description},${syslog_port},${ssl_certificate_authority_filename},${ssl_enable},${ssl_verify}
