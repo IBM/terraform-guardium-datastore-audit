@@ -1,0 +1,82 @@
+# MySQL Instance Configuration
+
+# Unique identifier for your MySQL instance
+mysql_instance_identifier = "prod-mysql-01"
+
+# Hostname or IP address of your MySQL server
+mysql_host = ""
+
+# MySQL server port (default: 3306)
+mysql_port = ""
+
+# Audit Configuration
+
+# Enable MySQL audit logging configuration
+enable_audit_log = true
+
+# Server Connection Configuration (Linux)
+server_ip = ""
+server_username = "redhat"
+server_password = "your-secure-password"
+mysql_root_password = "your-mysql-root-password"
+
+# Path to MySQL audit log filter install script
+# Default: "/usr/share/mysql-9.6"
+mysql_install_path = "/usr/share/mysql-9.6"
+
+# Guardium Data Protection Configuration
+#----------------------------------------
+# Guardium Connection Details
+#----------------------------------------
+gdp_server             = "guardium.example.com"  # Replace with your Guardium server
+gdp_port               = 8443
+gdp_username           = "admin"                 # Replace with your Guardium username
+gdp_password           = "password"              # Replace with your Guardium password
+gdp_client_id          = "client4"               # Replace with your client ID
+gdp_client_secret      = "client-secret"         # Replace with your client secret
+gdp_mu_host            = ""                      # Comma separated list of Guardium Managed Units
+udc_aws_credential = "guardium-aws"  # Name of the AWS credential stored in Guardium Central Manager
+
+# Universal Connector Configuration
+
+# If not provided, will be auto-generated as: onprem-mysql-<instance_identifier>
+udc_name = "mysql-prod-onprem"
+enable_universal_connector = true
+
+# Syslog Configuration
+
+# Port number for Logstash to listen for syslog messages from MySQL
+# Default: 5143 (standard for Linux MySQL syslog)
+syslog_port = "5143"
+
+# SSL/TLS Configuration
+
+# Enable SSL/TLS for secure syslog communication
+ssl_enable = true
+
+# Path to SSL certificate file on Guardium server
+# This certificate will be used for TLS encryption
+ssl_cert_path = "/service/certs/external/tls-syslog.crt"
+
+# Path to SSL private key file on Guardium server
+ssl_key_path = "/service/certs/external/tls-syslog.key"
+
+# Enable SSL certificate verification
+# Set to false only for testing with self-signed certificates
+ssl_verify = true
+
+# Logstash Configuration
+
+dns_reverse_lookup_enabled = false
+
+# Custom Grok pattern for parsing MySQL syslog messages
+# Leave empty to use the default pattern:
+logstash_grok_pattern = ""
+
+# Tags
+tags = {
+  Environment = "production"
+  Application = "mysql-audit"
+  ManagedBy   = "terraform"
+  Owner       = "database-team"
+}
