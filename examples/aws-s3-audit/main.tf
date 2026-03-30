@@ -19,10 +19,10 @@ module "datastore-audit_aws-s3" {
   existing_cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name
   force_destroy_bucket               = var.force_destroy_bucket
   cloudwatch_logs_retention_days     = var.cloudwatch_logs_retention_days
-  
+
   # S3 Buckets to Monitor
   s3_bucket_arns = var.s3_bucket_arns
-  
+
   # CloudTrail Settings
   include_global_service_events = var.include_global_service_events
   is_multi_region_trail         = var.is_multi_region_trail

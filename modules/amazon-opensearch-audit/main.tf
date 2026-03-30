@@ -117,14 +117,14 @@ resource "aws_opensearch_domain" "audit" {
 // CloudWatch logging is handled by aws_opensearch_domain resource above
 //////
 resource "gdp-middleware-helper_opensearch_modify" "enable_security_audit" {
-  count                                = var.enable_security_plugin_auditing ? 1 : 0
-  domain_name                          = var.opensearch_domain_name
-  region                               = var.aws_region
-  enable_security_plugin_auditing      = true
-  master_username                      = var.opensearch_master_username
-  master_password                      = var.opensearch_master_password
-  audit_rest_disabled_categories       = var.audit_rest_disabled_categories
-  audit_disabled_transport_categories  = var.audit_disabled_transport_categories
+  count                               = var.enable_security_plugin_auditing ? 1 : 0
+  domain_name                         = var.opensearch_domain_name
+  region                              = var.aws_region
+  enable_security_plugin_auditing     = true
+  master_username                     = var.opensearch_master_username
+  master_password                     = var.opensearch_master_password
+  audit_rest_disabled_categories      = var.audit_rest_disabled_categories
+  audit_disabled_transport_categories = var.audit_disabled_transport_categories
 
   depends_on = [
     aws_opensearch_domain.audit
@@ -167,11 +167,11 @@ module "gdp_connect-datasource-to-uc" {
   count          = var.enable_universal_connector ? 1 : 0 # Skip creation when disabled
   udc_name       = local.udc_name
   udc_csv_parsed = local.opensearch_csv
-  client_id     = var.gdp_client_id
-  client_secret = var.gdp_client_secret
-  gdp_server    = var.gdp_server
-  gdp_port      = var.gdp_port
-  gdp_username  = var.gdp_username
-  gdp_password  = var.gdp_password
-  gdp_mu_host   = var.gdp_mu_host
+  client_id      = var.gdp_client_id
+  client_secret  = var.gdp_client_secret
+  gdp_server     = var.gdp_server
+  gdp_port       = var.gdp_port
+  gdp_username   = var.gdp_username
+  gdp_password   = var.gdp_password
+  gdp_mu_host    = var.gdp_mu_host
 }

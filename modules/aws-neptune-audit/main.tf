@@ -111,11 +111,11 @@ module "gdp_connect-datasource-to-uc" {
   count          = var.enable_universal_connector ? 1 : 0 # Skip creation when disabled
   udc_name       = local.udc_name
   udc_csv_parsed = local.neptune_csv
-  client_id     = var.gdp_client_id
-  client_secret = var.gdp_client_secret
-  gdp_server    = var.gdp_server
-  gdp_port      = var.gdp_port
-  gdp_username  = var.gdp_username
-  gdp_password  = var.gdp_password
-  gdp_mu_host   = var.gdp_mu_host
+  client_id      = var.gdp_client_id
+  client_secret  = var.gdp_client_secret
+  gdp_server     = var.gdp_server
+  gdp_port       = var.gdp_port
+  gdp_username   = var.gdp_username
+  gdp_password   = var.gdp_password
+  gdp_mu_host    = var.gdp_mu_host
 }

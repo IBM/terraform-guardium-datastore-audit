@@ -9,7 +9,7 @@ locals {
   aws_region     = var.aws_region
   aws_account_id = module.common_aws-configuration.aws_account_id
   log_group      = format("/aws/rds/cluster/%s/audit", var.aurora_mysql_cluster_identifier)
-  
+
   # Create a sanitized version of the UDC name for file paths
   udc_name_safe = trimspace(replace(local.udc_name, "/", "-"))
 }
