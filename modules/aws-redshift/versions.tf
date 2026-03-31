@@ -12,7 +12,7 @@ terraform {
       version = ">= 4.0.0"
     }
     guardium-data-protection = {
-      source  = "IBM/guardium-data-protection"
+      source = "IBM/guardium-data-protection"
     }
     null = {
       source  = "hashicorp/null"

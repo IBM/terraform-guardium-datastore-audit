@@ -3,7 +3,7 @@ terraform {
 
   required_providers {
     guardium-data-protection = {
-      source  = "IBM/guardium-data-protection"
+      source = "IBM/guardium-data-protection"
     }
     aws = {
       source  = "hashicorp/aws"
