@@ -622,8 +622,11 @@ Complete working examples are available in the `examples/` directory:
 - [aws-postgresql-rds-object-tables](examples/aws-postgresql-rds-object-tables) - PostgreSQL RDS object-level auditing with specific tables
 - [aws-postgresql-rds-session](examples/aws-postgresql-rds-session) - PostgreSQL RDS session-level auditing
 - [aws-redshift-with-uc](examples/aws-redshift-with-uc) - Redshift audit configuration with Universal Connector
+<<<<<<< HEAD
 - [couchbase-capella](examples/couchbase-capella) - Couchbase Capella audit configuration with Universal Connector
+=======
 - [onprem-mysql](examples/onprem-mysql) - On-premises MySQL audit configuration with syslog
+>>>>>>> 8f82bcb (fix copy year)
 
 Each example includes:
 - Complete Terraform configuration
