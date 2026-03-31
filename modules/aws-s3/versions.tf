@@ -18,12 +18,4 @@ terraform {
   }
 }
 
-# Configure the AWS Provider
-provider "aws" {
-  region = var.aws_region
-}
 
-provider "guardium-data-protection" {
-  host = var.gdp_server
-  port = var.gdp_port
-}
