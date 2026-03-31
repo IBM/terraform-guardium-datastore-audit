@@ -20,7 +20,6 @@ terraform {
 
     guardium-data-protection = {
       source  = "IBM/guardium-data-protection"
-      version = "~> 1.3"
     }
 
     aws = {
@@ -30,12 +29,4 @@ terraform {
   }
 }
 
-# Configure the AWS Provider
-provider "aws" {
-  region = var.aws_region
-}
 
-provider "guardium-data-protection" {
-  host = var.gdp_server
-  port = var.gdp_port
-}
