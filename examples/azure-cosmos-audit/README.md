@@ -65,7 +65,28 @@ Before using this example, ensure you have:
 
 ## Usage
 
-### 1. Create a terraform.tfvars File
+### 1. Authenticate with Azure CLI
+
+Before running Terraform, ensure you are authenticated with Azure:
+
+```bash
+az login
+```
+
+If you have multiple subscriptions, set the default:
+
+```bash
+az account list --output table
+az account set --subscription "YOUR_SUBSCRIPTION_ID"
+```
+
+Verify authentication:
+
+```bash
+az account show
+```
+
+### 2. Create a terraform.tfvars File
 
 Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.example](./terraform.tfvars.example) for an example with available options and detailed comments.
 
