@@ -144,7 +144,7 @@ Guardium is configured to collect and analyze these logs.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| aws_region | AWS region | string | `"us-east-2"` | no |
+| aws_region | AWS region | string | `"us-east-1"` | no |
 | mysql_rds_cluster_identifier | MySQL RDS cluster identifier | string | `"guardium-mysql"` | no |
 | audit_events | Comma-separated list of events to audit | string | `"CONNECT,QUERY"` | no |
 | audit_file_rotations | Number of audit file rotations to keep | string | `"10"` | no |

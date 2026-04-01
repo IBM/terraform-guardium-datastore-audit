@@ -3,11 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-output "profile_csv" {
-  description = "Universal Connector profile CSV"
-  value       = var.enable_universal_connector ? module.gdp_connect-datasource-to-uc[0].profile_csv : "Universal connector disabled"
-}
-
 output "udc_name" {
   description = "Name of the Universal Connector"
   value       = local.udc_name

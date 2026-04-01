@@ -1,0 +1,58 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# AWS Aurora MySQL with IBM Guardium Data Protection - Terraform Variables
+
+#----------------------------------------
+# General Configuration
+#----------------------------------------
+aws_region = "us-east-1"
+tags = {
+  Environment = "Demo"
+  Owner       = "Security"
+  Project     = "Guardium-Terraform"
+}
+
+#----------------------------------------
+# Aurora MySQL Configuration
+#----------------------------------------
+aurora_mysql_cluster_identifier = "your-aurora-mysql-cluster"
+force_failover = false
+
+#----------------------------------------
+# Audit Configuration
+#----------------------------------------
+audit_events = "CONNECT,QUERY"
+audit_incl_users = ""  # Comma-separated list of users to include (empty = audit all users)
+audit_excl_users = "rdsadmin"  # Comma-separated list of users to exclude (rdsadmin recommended to reduce log volume)
+cloudwatch_logs_exports = ["audit"]  # List of log types to export to CloudWatch. Valid values for Aurora MySQL: audit, error, general, slowquery
+log_export_type = "Cloudwatch"
+cloudwatch_endpoint = ""  # Custom endpoint URL for AWS CloudWatch (leave empty to use default AWS endpoint)
+use_aws_bundled_ca = true  # Whether to use the AWS bundled CA certificates for CloudWatch connection
+
+#----------------------------------------
+# Universal Connector Configuration
+#----------------------------------------
+enable_universal_connector = true
+udc_name = "aurora-mysql-gdp"
+udc_aws_credential = "guardium-aws"  # Name of the AWS credential stored in Guardium Central Manager
+
+# CSV Configuration
+csv_start_position = "end"
+csv_interval = "5"
+csv_event_filter = ""
+prefix = false
+unmask = false
+
+#----------------------------------------
+# Guardium Connection Details
+#----------------------------------------
+gdp_server             = "guardium.example.com"  # Replace with your Guardium server
+gdp_port               = 8443
+gdp_username           = "admin"                 # Replace with your Guardium username
+gdp_password           = "password"              # Replace with your Guardium password
+gdp_client_id          = "client4"               # Replace with your client ID
+gdp_client_secret      = "client-secret"         # Replace with your client secret
+gdp_mu_host            = ""                      # Comma separated list of Guardium Managed Units

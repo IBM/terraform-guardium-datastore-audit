@@ -13,8 +13,7 @@ terraform {
     }
 
     guardium-data-protection = {
-      source  = "IBM/guardium-data-protection"
-      version = "~> 1.3"
+      source = "IBM/guardium-data-protection"
     }
 
     gdp-middleware-helper = {
@@ -30,23 +29,5 @@ terraform {
 }
 
 
-provider "postgresql" {
-  host            = var.db_host
-  port            = var.db_port
-  username        = var.db_username
-  password        = var.db_password
-  database        = var.db_name
-  superuser       = false
-  sslmode         = "require"
-  connect_timeout = 15
-}
 
-# Configure the AWS Provider
-provider "aws" {
-  region = var.aws_region
-}
 
-provider "guardium-data-protection" {
-  host = var.gdp_server
-  port = var.gdp_port
-}

@@ -1,0 +1,67 @@
+# AWS S3 with Universal Connector Example Configuration (via CloudTrail)
+
+# General Configuration
+name_prefix = "guardium-s3"
+aws_region  = "us-east-1"
+tags = {
+  Purpose = "guardium-s3-uc"
+  Owner   = "your-email@example.com"
+}
+
+# CloudTrail Configuration
+enable_cloudtrail = true
+
+# Optional: Use existing CloudTrail
+# existing_cloudtrail_name = "my-existing-trail"
+
+# Optional: Use existing CloudWatch Log Group
+# existing_cloudwatch_log_group_name = "/aws/cloudtrail/my-trail"
+
+# S3 bucket deletion behavior
+force_destroy_bucket = false  # Set to true to allow bucket deletion with objects
+
+# CloudWatch Logs retention
+cloudwatch_logs_retention_days = 7
+
+# S3 Buckets to Monitor
+# Use ["arn:aws:s3"] to monitor ALL S3 buckets in the account (default)
+s3_bucket_arns = ["arn:aws:s3"]
+
+# Or monitor specific buckets:
+# s3_bucket_arns = [
+#   "arn:aws:s3:::my-sensitive-bucket/*",
+#   "arn:aws:s3:::my-audit-bucket/*"
+# ]
+
+# CloudTrail Settings
+include_global_service_events = false
+is_multi_region_trail         = false
+include_management_events     = false
+
+# Guardium Data Protection Configuration
+#----------------------------------------
+# Guardium Connection Details
+#----------------------------------------
+gdp_server        = "guardium.example.com"  # Replace with your Guardium server
+gdp_port          = 8443
+gdp_username      = "admin"                 # Replace with your Guardium username
+gdp_password      = "password"              # Replace with your Guardium password
+gdp_client_id     = "client4"               # Replace with your client ID
+gdp_client_secret = "client-secret"         # Replace with your client secret
+gdp_mu_host       = ""                      # Comma separated list of Guardium Managed Units
+
+# AWS Credential Configuration
+udc_aws_credential = "guardium-aws"  # Name of the AWS credential stored in Guardium Central Manager
+
+# Universal Connector Configuration
+enable_universal_connector = true
+
+# Optional UDC Settings (uncomment to customize)
+# udc_start_position     = "end"
+# udc_interval           = "5"
+# udc_event_filter       = "{$.eventSource=\"s3.amazonaws.com\"}"
+# udc_description        = "S3 Universal Connector via CloudTrail"
+# udc_prefix             = ""
+# udc_unmask             = "false"
+# udc_endpoint           = ""
+# udc_use_aws_bundled_ca = "true"

@@ -1,0 +1,49 @@
+# AWS OpenSearch with IBM Guardium Data Protection - Terraform Variables
+
+#----------------------------------------
+# General Configuration
+#----------------------------------------
+aws_region = "us-east-1"
+tags = {
+  Environment = "Demo"
+  Owner       = "Security"
+  Project     = "Guardium-Terraform"
+}
+
+#----------------------------------------
+# OpenSearch Configuration
+#----------------------------------------
+opensearch_domain_name = "your-opensearch-domain"
+enable_profiler_logs   = false
+
+# OpenSearch Security Plugin Auditing
+enable_security_plugin_auditing     = true
+opensearch_master_username          = "admin"                    # Replace with your OpenSearch master username
+opensearch_master_password          = "YourSecurePassword123!"   # Replace with your OpenSearch master password
+audit_rest_disabled_categories      = []                         # Optional: List of REST categories to disable
+audit_disabled_transport_categories = []                         # Optional: List of Transport categories to disable
+
+#----------------------------------------
+# Universal Connector Configuration
+#----------------------------------------
+enable_universal_connector = true
+udc_aws_credential         = "guardium-aws"  # Name of the AWS credential stored in Guardium Central Manager
+
+# CSV Configuration
+csv_start_position = "end"
+csv_interval       = "5"
+csv_event_filter   = ""
+use_aws_bundled_ca = true   # Whether to use AWS bundled CA certificates for OpenSearch connections
+log_group_prefix   = false  # Whether the log group name includes a prefix
+unmask             = true   # Whether to unmask sensitive data in audit logs
+
+#----------------------------------------
+# Guardium Connection Details
+#----------------------------------------
+gdp_server        = "guardium.example.com"  # Replace with your Guardium server
+gdp_port          = "8443"
+gdp_username      = "admin"                 # Replace with your Guardium username
+gdp_password      = "password"              # Replace with your Guardium password
+gdp_client_id     = "client4"               # Replace with your client ID
+gdp_client_secret = "client-secret"         # Replace with your client secret
+gdp_mu_host       = ""                      # Comma separated list of Guardium Managed Units

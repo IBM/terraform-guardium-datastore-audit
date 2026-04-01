@@ -158,7 +158,6 @@ Neptune audit logging captures:
 | enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
 | csv_start_position | Start position for UDC | `string` | `"end"` | no |
 | csv_interval | Polling interval for UDC | `string` | `"5"` | no |
-| codec_pattern | Codec pattern for the Universal Connector | `string` | `""` | no |
 | csv_event_filter | UDC Event filters | `string` | `""` | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for Neptune connection | `bool` | `true` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
