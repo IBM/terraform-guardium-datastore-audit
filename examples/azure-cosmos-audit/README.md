@@ -179,7 +179,6 @@ Cosmos DB diagnostic settings capture:
 | enable_data_plane_logs | Enable DataPlaneRequests logs | `bool` | `true` | no |
 | enable_query_runtime_logs | Enable QueryRuntimeStatistics logs | `bool` | `true` | no |
 | enable_control_plane_logs | Enable ControlPlaneRequests logs | `bool` | `true` | no |
-| udc_azure_credential | Name of Azure credential defined in Guardium | `string` | n/a | yes |
 | gdp_client_id | Client ID used when running grdapi register_oauth_client | `string` | n/a | yes |
 | gdp_client_secret | Client secret from output of grdapi register_oauth_client | `string` | n/a | yes |
 | gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a | yes |

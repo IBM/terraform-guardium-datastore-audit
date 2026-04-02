@@ -100,11 +100,6 @@ variable "enable_partition_ru_logs" {
 // Guardium Configuration
 //////
 
-variable "udc_azure_credential" {
-  type        = string
-  description = "Name of Azure credential defined in Guardium"
-}
-
 variable "gdp_client_secret" {
   type        = string
   description = "Client secret from output of grdapi register_oauth_client"

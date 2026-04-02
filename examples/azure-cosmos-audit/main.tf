@@ -31,7 +31,6 @@ module "datastore-audit_azure-cosmos-audit" {
   enable_partition_ru_logs  = var.enable_partition_ru_logs
 
   # Guardium Configuration
-  udc_azure_credential = var.udc_azure_credential
   gdp_client_id        = var.gdp_client_id
   gdp_client_secret    = var.gdp_client_secret
   gdp_server           = var.gdp_server

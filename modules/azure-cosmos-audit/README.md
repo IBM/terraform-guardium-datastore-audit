@@ -114,9 +114,6 @@ module "cosmos_audit" {
   gdp_client_secret      = "client-secret"
   gdp_mu_host            = "guardium-mu.example.com"
   
-  # Universal Connector Configuration
-  udc_azure_credential = "azure-credential-name"
-  
   tags = {
     Environment = "production"
     Project     = "data-security"
@@ -159,7 +156,6 @@ module "cosmos_audit" {
   gdp_mu_host            = "guardium-mu.example.com"
   
   # Universal Connector Configuration
-  udc_azure_credential = "azure-credential-name"
   csv_start_position   = "end"
   csv_interval         = "5"
   
@@ -215,7 +211,6 @@ na.artifactory.swg-devops.com/ibm/guardium-data-protection
 | gdp_client_id | OAuth client ID | `string` | n/a | yes |
 | gdp_client_secret | OAuth client secret | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units | `string` | n/a | yes |
-| udc_azure_credential | Name of Azure credential in Guardium | `string` | n/a | yes |
 | enable_universal_connector | Enable Universal Connector module | `bool` | `true` | no |
 | csv_start_position | Start position for UDC (beginning or end) | `string` | `"end"` | no |
 | csv_interval | Polling interval for UDC in seconds | `string` | `"5"` | no |
