@@ -14,3 +14,8 @@ terraform {
     }
   }
 }
+
+provider "guardium-data-protection" {
+  host = var.gdp_server
+  port = var.gdp_port
+}
