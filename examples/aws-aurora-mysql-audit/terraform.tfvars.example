@@ -19,7 +19,6 @@ tags = {
 # Aurora MySQL Configuration
 #----------------------------------------
 aurora_mysql_cluster_identifier = "your-aurora-mysql-cluster"
-force_failover = false
 
 #----------------------------------------
 # Audit Configuration
