@@ -113,7 +113,7 @@ terraform import module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_pa
   terraform apply
   ```
 
-By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+**Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
 Review the planned changes and type `yes` to apply them.
 
