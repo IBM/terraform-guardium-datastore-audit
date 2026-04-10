@@ -530,8 +530,8 @@ module "aurora_postgres_object_audit" {
   udc_aws_credential = "aws-credential-name"
   log_export_type    = "Cloudwatch"
   
-  # Optional: Force cluster failover to apply parameter changes immediately
-  force_failover = false
+  # Optional: Skip automatic reboot (default: true)
+  skip_reboot = true
 }
 ```
 
@@ -561,8 +561,8 @@ module "aurora_postgres_session_audit" {
   udc_aws_credential = "aws-credential-name"
   log_export_type    = "Cloudwatch"
   
-  # Optional: Force cluster failover to apply parameter changes immediately
-  force_failover = false
+  # Optional: Skip automatic reboot (default: true)
+  skip_reboot = true
 }
 ```
 

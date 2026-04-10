@@ -80,7 +80,7 @@ This approach provides comprehensive coverage of database activity, ensuring tha
    terraform apply
    ```
 
-   By default, this example uses `skip_reboot = true`. After apply, manually reboot the RDS PostgreSQL instance to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+   **Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the RDS PostgreSQL instance to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
 ## Audit Log Configuration
 

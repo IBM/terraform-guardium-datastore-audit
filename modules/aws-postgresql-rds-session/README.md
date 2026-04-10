@@ -92,7 +92,7 @@ This module configures pgAudit to log the following statement classes:
 
 The default configuration logs all statement classes except MISC to reduce noise in the audit logs.
 
-By default, `skip_reboot = true`. After applying the module, manually reboot the RDS PostgreSQL instance to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+**Please note:** By default, `skip_reboot = true`. After applying the module, manually reboot the RDS PostgreSQL instance to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
 ## Dependencies
 

@@ -132,7 +132,7 @@ Valid grant options are:
 - TRIGGER
 - ALL
 
-By default, `skip_reboot = true`. After applying the module, manually reboot the RDS PostgreSQL instance to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+**Please note:** By default, `skip_reboot = true`. After applying the module, manually reboot the RDS PostgreSQL instance to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
 ## Dependencies
 
