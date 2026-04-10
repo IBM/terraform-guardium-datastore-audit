@@ -73,7 +73,7 @@ terraform plan -var-file=defaults.tfvars
 terraform apply -var-file=defaults.tfvars
 ```
 
-If you keep the default `skip_reboot = true`, you must manually reboot the Neptune cluster instances after apply for audit logging to start working.
+**Please note:** By default, this module uses `skip_reboot = true`. After apply, manually reboot the Neptune cluster instances to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
 ## Provider Configuration
 
