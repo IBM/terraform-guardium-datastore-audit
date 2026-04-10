@@ -48,7 +48,7 @@ module "aurora_postgresql_session_audit" {
 }
 ```
 
-**Please note:** By default, this module uses `skip_reboot = true`. After apply, manually reboot the Aurora PostgreSQL cluster to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+**Please note:** By default, this module uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
 ## Required Variables
 

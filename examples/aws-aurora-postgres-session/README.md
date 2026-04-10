@@ -72,7 +72,7 @@ This approach provides comprehensive coverage of database activity but may gener
    terraform apply
    ```
 
-  **Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the Aurora PostgreSQL cluster to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+  **Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
 ## pgAudit Log Configuration
 
