@@ -5,5 +5,5 @@
 
 output "reboot_required" {
   description = "Whether manual reboot is required to enable audit logging"
-  value       = module.datastore-audit_aws-aurora-postgres-object.reboot_required
+  value       = module.aurora_postgres_object_audit.reboot_required
 }

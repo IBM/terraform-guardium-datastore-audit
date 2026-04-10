@@ -20,6 +20,17 @@ provider "aws" {
   region = var.aws_region
 }
 
+# Configure PostgreSQL provider
+provider "postgresql" {
+  host            = var.db_host
+  port            = var.db_port
+  username        = var.db_username
+  password        = var.db_password
+  database        = var.db_name
+  sslmode         = var.ssl_mode
+  connect_timeout = 15
+}
+
 # Configure Guardium Data Protection provider
 provider "guardium-data-protection" {
   host = var.gdp_server
@@ -43,6 +54,7 @@ module "aurora_postgres_object_audit" {
 
   # Audit Configuration
   force_failover = var.force_failover
+  skip_reboot    = var.skip_reboot
   tables         = var.tables
 
   # Guardium Data Protection Configuration

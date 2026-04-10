@@ -34,7 +34,7 @@ variable "force_failover" {
 variable "skip_reboot" {
   description = "Skip automatic reboot (audit logging won't work until manual reboot)"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "db_host" {
@@ -68,8 +68,8 @@ variable "db_name" {
 
 variable "ssl_mode" {
   type        = string
-  description = "SSL mode for PostgreSQL connection"
-  default     = "prefer"
+  description = "SSL mode for PostgreSQL connection. Supported values: require, verify-full, verify-ca, disable"
+  default     = "require"
 }
 
 //////
