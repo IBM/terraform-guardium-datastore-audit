@@ -122,3 +122,9 @@ variable "use_aws_bundled_ca" {
   description = "Whether to use AWS bundled CA certificates for Neptune connections"
   default     = true
 }
+
+variable "skip_reboot" {
+  type        = bool
+  description = "Skip automatic reboot (audit logging won't work until manual reboot)"
+  default     = true
+}
