@@ -91,6 +91,7 @@ module "aurora_postgresql_object_audit" {
 | aws_region | AWS region where the Aurora cluster is located | string | "us-east-1" |
 | aurora_postgres_cluster_identifier | Aurora PostgreSQL cluster identifier | string | "guardium-aurora-postgres" |
 | force_failover | Whether to force failover during parameter group update | bool | false |
+| skip_reboot | Skip automatic reboot (audit logging won't work until manual reboot) | bool | false |
 | db_port | The port of the Aurora PostgreSQL cluster | number | 5432 |
 | db_name | The database to connect to | string | "postgres" |
 | udc_name | Name for universal connector | string | "aurora-postgres-object" |
