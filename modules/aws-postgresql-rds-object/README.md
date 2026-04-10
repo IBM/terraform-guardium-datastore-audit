@@ -13,6 +13,7 @@ Object-level auditing in PostgreSQL provides granular control over what database
 3. Configures pgAudit to log operations performed by this role
 4. Sets up either SQS or CloudWatch for log collection
 5. Configures Guardium Universal Connector to process these logs
+6. Provides configurable reboot behavior after audit logging changes
 
 ## How It Works
 
@@ -53,7 +54,8 @@ module "datastore-audit_aws-postgresql-rds-object" {
   
   # Log export configuration
   log_export_type = "Cloudwatch"  # or "SQS"
-  
+  skip_reboot    = true
+
   # Tables to monitor
   tables = [
     {
@@ -104,6 +106,7 @@ module "datastore-audit_aws-postgresql-rds-object" {
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | "" |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | true |
 | log_export_type | The type of log exporting to be configured: "SQS" or "Cloudwatch" | string | "object" |
+| skip_reboot | Skip automatic reboot (audit logging will not work until manual reboot) | bool | true |
 | tables | List of tables to monitor | list(object) | [] |
 
 ## Table Configuration
@@ -128,6 +131,8 @@ Valid grant options are:
 - REFERENCES
 - TRIGGER
 - ALL
+
+By default, `skip_reboot = true`. After applying the module, manually reboot the RDS PostgreSQL instance to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
 ## Dependencies
 

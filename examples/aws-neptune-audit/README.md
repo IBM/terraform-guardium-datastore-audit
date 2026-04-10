@@ -113,6 +113,8 @@ terraform import module.datastore-audit_aws-neptune-audit.aws_neptune_cluster_pa
   terraform apply
   ```
 
+By default, this example uses `skip_reboot = true`. After apply, manually reboot the Neptune cluster instances to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+
 Review the planned changes and type `yes` to apply them.
 
 ### 5. Verify the Configuration
@@ -160,6 +162,7 @@ Neptune audit logging captures:
 | csv_interval | Polling interval for UDC | `string` | `"5"` | no |
 | csv_event_filter | UDC Event filters | `string` | `""` | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for Neptune connection | `bool` | `true` | no |
+| skip_reboot | Skip automatic reboot (audit logging will not work until manual reboot) | `bool` | `true` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs
@@ -173,3 +176,4 @@ Neptune audit logging captures:
 | aws_account_id | AWS account ID |
 | neptune_cluster_identifier | Neptune cluster identifier |
 | neptune_cluster_endpoint | Neptune cluster endpoint |
+| reboot_required | Reboot status message for enabling audit logging |

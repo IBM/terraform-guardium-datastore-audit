@@ -84,6 +84,8 @@ This approach allows you to focus auditing on specific tables and operations, re
    terraform apply
    ```
 
+  By default, this example uses `skip_reboot = true`. After apply, manually reboot or fail over the Aurora PostgreSQL cluster to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+
 ## Table Configuration
 
 The `tables` variable allows you to specify which tables to monitor and what operations to audit:

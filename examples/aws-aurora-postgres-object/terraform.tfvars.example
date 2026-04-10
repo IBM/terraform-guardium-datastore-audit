@@ -10,6 +10,9 @@ aurora_postgres_cluster_identifier = ""
 # Whether to force a failover when applying parameter changes (requires Multi-AZ)
 force_failover = false
 
+# Skip automatic reboot after parameter changes (default: true)
+skip_reboot = true
+
 # =====================================================================
 # DATABASE CONNECTION DETAILS - CRITICAL
 # =====================================================================

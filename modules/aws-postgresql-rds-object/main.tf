@@ -18,6 +18,7 @@ module "common_rds-postgres-parameter-group" {
   pg_audit_log                    = "none"
   pg_audit_role                   = "rds_pgaudit"
   force_failover                  = var.force_failover
+  skip_reboot                     = var.skip_reboot
   postgres_rds_cluster_identifier = var.postgres_rds_cluster_identifier
   aws_region                      = var.aws_region
 }
