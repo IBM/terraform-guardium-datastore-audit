@@ -83,6 +83,8 @@ This approach allows you to focus auditing on specific tables and operations, re
    terraform apply
    ```
 
+   **Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+
 ## Table Configuration
 
 The `tables` variable allows you to specify which tables to monitor and what operations to audit:

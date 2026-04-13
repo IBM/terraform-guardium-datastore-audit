@@ -34,7 +34,7 @@ module "datastore-audit_aws-neptune-audit" {
   codec_pattern              = var.codec_pattern
   csv_event_filter           = var.csv_event_filter
   use_aws_bundled_ca         = var.use_aws_bundled_ca
-
+  skip_reboot                = var.skip_reboot
 
   # Tags
   tags = var.tags

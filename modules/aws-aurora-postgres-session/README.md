@@ -48,6 +48,8 @@ module "aurora_postgresql_session_audit" {
 }
 ```
 
+**Please note:** By default, this module uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+
 ## Required Variables
 
 | Name | Description | Type | Default |
@@ -66,6 +68,7 @@ module "aurora_postgresql_session_audit" {
 |------|-------------|------|---------|
 | aws_region | AWS region where the Aurora cluster is located | string | "us-east-1" |
 | force_failover | Whether to force failover during parameter group update | bool | false |
+| skip_reboot | Skip automatic reboot (audit logging won't work until manual reboot) | bool | false |
 | udc_name | Name for universal connector | string | "aurora-postgres-session" |
 | gdp_port | Port of Guardium Central Manager | string | "8443" |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | string | "" |
