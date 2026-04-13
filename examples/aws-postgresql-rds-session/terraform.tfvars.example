@@ -10,6 +10,9 @@ postgres_rds_cluster_identifier = "guardium-postgres"
 # Whether to force a failover when applying parameter changes (requires Multi-AZ)
 force_failover = false
 
+# Skip automatic reboot after parameter changes (default: true)
+skip_reboot = true
+
 # =====================================================================
 # GUARDIUM CONFIGURATION - CRITICAL
 # =====================================================================

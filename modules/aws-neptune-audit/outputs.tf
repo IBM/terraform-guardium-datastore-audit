@@ -37,3 +37,8 @@ output "neptune_cluster_endpoint" {
   description = "Neptune cluster endpoint"
   value       = var.neptune_endpoint
 }
+
+output "reboot_required" {
+  description = "Whether manual reboot is required to enable audit logging"
+  value       = var.skip_reboot ? "Manual reboot required to enable audit logging" : "Audit logging enabled (reboot completed)"
+}

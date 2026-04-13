@@ -11,6 +11,7 @@ Session-level auditing in PostgreSQL provides broad coverage of database activit
 1. Configures pgAudit to log all SQL statements (except miscellaneous commands)
 2. Sets up either SQS or CloudWatch for log collection
 3. Configures Guardium Universal Connector to process these logs
+4. Provides configurable reboot behavior after audit logging changes
 
 ## How It Works
 
@@ -43,6 +44,7 @@ module "datastore-audit_aws-postgresql-rds-session" {
   
   # Log export configuration
   log_export_type = "Cloudwatch"  # or "SQS"
+  skip_reboot    = true
 }
 ```
 
@@ -75,6 +77,7 @@ module "datastore-audit_aws-postgresql-rds-session" {
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | string | "" |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | bool | true |
 | log_export_type | The type of log exporting to be configured: "SQS" or "Cloudwatch" | string | "object" |
+| skip_reboot | Skip automatic reboot (audit logging will not work until manual reboot) | bool | true |
 
 ## Audit Log Configuration
 
@@ -88,6 +91,8 @@ This module configures pgAudit to log the following statement classes:
 - MISC: Miscellaneous commands, such as DISCARD, FETCH, CHECKPOINT, VACUUM, SET (excluded by default)
 
 The default configuration logs all statement classes except MISC to reduce noise in the audit logs.
+
+**Please note:** By default, `skip_reboot = true`. After applying the module, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
 ## Dependencies
 

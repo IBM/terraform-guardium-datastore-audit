@@ -33,6 +33,7 @@ module "aurora_postgres_session_audit" {
   aws_region                         = var.aws_region
   aurora_postgres_cluster_identifier = var.aurora_postgres_cluster_identifier
   force_failover                     = var.force_failover
+  skip_reboot                        = var.skip_reboot
   pg_audit_log                       = var.pg_audit_log
 
   # Guardium configuration

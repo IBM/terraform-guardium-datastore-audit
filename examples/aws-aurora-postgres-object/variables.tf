@@ -55,9 +55,9 @@ variable "db_name" {
 }
 
 variable "ssl_mode" {
-  description = "SSL mode for postgres"
+  description = "SSL mode for postgres. Supported values: require, verify-full, verify-ca, disable"
   type        = string
-  default     = "prefer"
+  default     = "require"
 }
 
 
@@ -169,4 +169,10 @@ variable "tables" {
     error_message = "Each grant must be one of: SELECT, INSERT, UPDATE, DELETE,  REFERENCES, TRIGGER (case-insensitive)."
   }
   default = []
+}
+
+variable "skip_reboot" {
+  description = "Skip automatic reboot (audit logging won't work until manual reboot)"
+  type        = bool
+  default     = true
 }
