@@ -21,6 +21,6 @@ locals {
 # Import existing cluster parameter group only if it's not a default one
 import {
   for_each = local.should_import ? toset(["import"]) : toset([])
-  to       = module.aurora_postgres_session_audit.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium
+  to       = module.datastore-audit_aws-aurora-postgres-session.module.common_aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium
   id       = local.pg_name
 }
