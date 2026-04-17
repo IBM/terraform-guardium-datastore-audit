@@ -13,11 +13,11 @@ locals {
   dynamodb_tables           = var.dynamodb_tables == "all" ? data.aws_dynamodb_tables.all.names : split(",", var.dynamodb_tables)
   cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/cloudtrail/${var.name_prefix}"
   cloudtrail_name           = var.existing_cloudtrail_name != "" ? var.existing_cloudtrail_name : var.name_prefix
-  
-  # Sanitize and truncate names to fit AWS limits with short suffixes
+
+  # Sanitize and truncate names to fit AWS limits
   sanitized_name_prefix    = replace(var.name_prefix, "_", "-")
-  cloudtrail_s3_bucket     = "${substr(local.sanitized_name_prefix, 0, 60)}-ct"  # Max 63: 60 + 3
-  dynamodb_monitoring_role = replace("${substr(var.name_prefix, 0, 62)}_r", "-", "_")  # Max 64: 62 + 2
+  cloudtrail_s3_bucket     = "${substr(local.sanitized_name_prefix, 0, 52)}-cloudtrail"  # Max 63: 52 + 11
+  dynamodb_monitoring_role = replace("${substr(var.name_prefix, 0, 59)}_role", "-", "_")  # Max 64: 59 + 5
 
   # Determine if we're using existing resources
   use_existing_cloudtrail           = var.existing_cloudtrail_name != ""
