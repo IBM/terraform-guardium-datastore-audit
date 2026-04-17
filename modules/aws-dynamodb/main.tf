@@ -14,13 +14,10 @@ locals {
   cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/cloudtrail/${var.name_prefix}"
   cloudtrail_name           = var.existing_cloudtrail_name != "" ? var.existing_cloudtrail_name : var.name_prefix
   
-  # Generate a consistent hash from name_prefix for resource naming
-  # This ensures names always fit within AWS limits
-  name_hash = substr(md5(var.name_prefix), 0, 12)
-  
-  # S3 bucket name: gdp-ddb-<hash>-ct (max 63 chars, we use 22)
-  # Format: gdp-ddb-<12-char-hash>-ct
-  cloudtrail_s3_bucket = "gdp-ddb-${local.name_hash}-ct"
+  # Sanitize and truncate names to fit AWS limits with short suffixes
+  sanitized_name_prefix    = replace(var.name_prefix, "_", "-")
+  cloudtrail_s3_bucket     = "${substr(local.sanitized_name_prefix, 0, 60)}-ct"  # Max 63: 60 + 3
+  dynamodb_monitoring_role = replace("${substr(var.name_prefix, 0, 62)}_r", "-", "_")  # Max 64: 62 + 2
 
   # Determine if we're using existing resources
   use_existing_cloudtrail           = var.existing_cloudtrail_name != ""
@@ -30,10 +27,6 @@ locals {
 
   # Format CloudWatch Logs Group ARN for CloudTrail
   formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "${data.aws_cloudwatch_log_group.existing[0].arn}:*" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
-  
-  # IAM role name: gdp_ddb_<hash>_role (max 64 chars, we use 26)
-  # Format: gdp_ddb_<12-char-hash>_role
-  dynamodb_monitoring_role = "gdp_ddb_${local.name_hash}_role"
 }
 
 # Data source for existing CloudWatch Log Group
