@@ -14,7 +14,7 @@ locals {
   cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/cloudtrail/${var.name_prefix}"
   cloudtrail_name           = var.existing_cloudtrail_name != "" ? var.existing_cloudtrail_name : var.name_prefix
 
-  # Sanitize and truncate names to fit AWS limits
+  # Sanitize and truncate names to comply with AWS resource naming character limits
   sanitized_name_prefix    = replace(var.name_prefix, "_", "-")
   cloudtrail_s3_bucket     = "${substr(local.sanitized_name_prefix, 0, 52)}-cloudtrail"  # Max 63: 52 + 11
   dynamodb_monitoring_role = replace("${substr(var.name_prefix, 0, 59)}_role", "-", "_")  # Max 64: 59 + 5
@@ -131,7 +131,6 @@ resource "aws_iam_role" "dynamodb_monitoring_role" {
   name               = local.dynamodb_monitoring_role
   assume_role_policy = data.aws_iam_policy_document.cloudtrail_assume_role.json
   tags               = var.tags
-
 
   # Add lifecycle configuration to ensure proper destruction
   lifecycle {
