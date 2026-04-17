@@ -17,7 +17,7 @@ locals {
   # Sanitize and truncate names to comply with AWS resource naming character limits
   sanitized_name_prefix    = replace(var.name_prefix, "_", "-")
   cloudtrail_s3_bucket     = "${substr(local.sanitized_name_prefix, 0, 52)}-cloudtrail"  # Max 63: 52 + 11
-  dynamodb_monitoring_role = replace("${substr(var.name_prefix, 0, 59)}_role", "-", "_")  # Max 64: 59 + 5
+  dynamodb_monitoring_role = replace("${substr(var.name_prefix, 0, 59)}_role", "-", "_") # Max 64: 59 + 5
 
   # Determine if we're using existing resources
   use_existing_cloudtrail           = var.existing_cloudtrail_name != ""
