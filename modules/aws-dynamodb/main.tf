@@ -22,8 +22,22 @@ locals {
   # Determine if we're using existing resources
   use_existing_cloudtrail           = var.existing_cloudtrail_name != ""
   use_existing_cloudwatch_log_group = var.existing_cloudwatch_log_group_name != ""
+  # Check if bucket exists using external data source
+  bucket_exists                     = data.external.check_s3_bucket.result["exists"] == "true"
+  use_existing_s3_bucket            = local.bucket_exists
 
-  ct_bucket = aws_s3_bucket.dynamodb_monitoring.bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring.arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] : ["${aws_s3_bucket.dynamodb_monitoring.arn}/${aws_s3_bucket.dynamodb_monitoring.bucket_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
+  # Get the S3 bucket ARN from either existing or new bucket
+  s3_bucket_arn = local.use_existing_s3_bucket ? data.aws_s3_bucket.existing[0].arn : aws_s3_bucket.dynamodb_monitoring[0].arn
+
+  ct_bucket = local.use_existing_s3_bucket ? (
+    data.aws_s3_bucket.existing[0].bucket_prefix == "" ?
+      ["${data.aws_s3_bucket.existing[0].arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] :
+      ["${data.aws_s3_bucket.existing[0].arn}/${data.aws_s3_bucket.existing[0].bucket_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
+  ) : (
+    aws_s3_bucket.dynamodb_monitoring[0].bucket_prefix == "" ?
+      ["${aws_s3_bucket.dynamodb_monitoring[0].arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] :
+      ["${aws_s3_bucket.dynamodb_monitoring[0].arn}/${aws_s3_bucket.dynamodb_monitoring[0].bucket_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
+  )
 
   # Format CloudWatch Logs Group ARN for CloudTrail
   formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "${data.aws_cloudwatch_log_group.existing[0].arn}:*" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
@@ -47,8 +61,27 @@ resource "aws_cloudwatch_log_group" "dynamodb_monitoring" {
   }
 }
 
-# S3 Bucket
+# External data source to check if S3 bucket exists without failing
+data "external" "check_s3_bucket" {
+  program = ["bash", "-c", <<-EOT
+    if aws s3api head-bucket --bucket "${local.cloudtrail_s3_bucket}" 2>/dev/null 1>&2; then
+      echo '{"exists":"true","bucket":"${local.cloudtrail_s3_bucket}"}'
+    else
+      echo '{"exists":"false","bucket":"${local.cloudtrail_s3_bucket}"}'
+    fi
+  EOT
+  ]
+}
+
+# Data source for existing S3 bucket (only if it exists)
+data "aws_s3_bucket" "existing" {
+  count  = local.bucket_exists ? 1 : 0
+  bucket = local.cloudtrail_s3_bucket
+}
+
+# S3 Bucket (only create if bucket doesn't exist)
 resource "aws_s3_bucket" "dynamodb_monitoring" {
+  count         = local.bucket_exists ? 0 : 1
   bucket        = local.cloudtrail_s3_bucket
   force_destroy = true
   tags          = var.tags
@@ -70,7 +103,7 @@ data "aws_iam_policy_document" "dynamodb_monitoring" {
       identifiers = ["cloudtrail.amazonaws.com"]
     }
 
-    resources = [aws_s3_bucket.dynamodb_monitoring.arn]
+    resources = [local.s3_bucket_arn]
 
     condition {
       test     = "StringEquals"
@@ -105,7 +138,8 @@ data "aws_iam_policy_document" "dynamodb_monitoring" {
 }
 
 resource "aws_s3_bucket_policy" "dynamodb_monitoring" {
-  bucket = aws_s3_bucket.dynamodb_monitoring.id
+  count  = local.use_existing_s3_bucket ? 0 : 1
+  bucket = aws_s3_bucket.dynamodb_monitoring[0].id
   policy = data.aws_iam_policy_document.dynamodb_monitoring.json
 
   # Add lifecycle configuration to ensure proper destruction
@@ -183,7 +217,7 @@ resource "aws_cloudtrail" "dynamodb_monitoring" {
   ]
 
   name                          = local.cloudtrail_name
-  s3_bucket_name                = aws_s3_bucket.dynamodb_monitoring.id
+  s3_bucket_name                = local.use_existing_s3_bucket ? data.aws_s3_bucket.existing[0].id : aws_s3_bucket.dynamodb_monitoring[0].id
   include_global_service_events = false
   cloud_watch_logs_group_arn    = local.formatted_cloudwatch_logs_group_arn
   cloud_watch_logs_role_arn     = aws_iam_role.dynamodb_monitoring_role.arn

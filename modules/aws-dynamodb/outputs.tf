@@ -29,7 +29,7 @@ output "cloudtrail_name" {
 }
 
 output "cloudtrail_s3_bucket" {
-  value       = aws_s3_bucket.dynamodb_monitoring.bucket
+  value       = try(data.aws_s3_bucket.existing[0].bucket, aws_s3_bucket.dynamodb_monitoring[0].bucket)
   description = "Name of the S3 bucket for CloudTrail logs"
 }
 
