@@ -11,14 +11,14 @@ This module automates the configuration of audit logging for various AWS and Azu
 The following diagram illustrates how this module orchestrates the configuration of AWS and Azure datastores and their integration with Guardium Data Protection:
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                                    │
-│                           Guardium Datastore Audit Configuration Module                            │
-│                                                                                                    │
-└────────────────────────────────────────────────────────────────────────────────────────────────────┘
-                                                │
-                                                │ Orchestrates
-                                                ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                 │
+│                    Guardium Datastore Audit Configuration Module                │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                                        │ Orchestrates
+                                        ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                    Cloud Datastore Configuration                                   │
 │                                                                                                    │
@@ -89,7 +89,7 @@ The following diagram illustrates how this module orchestrates the configuration
         │                                                           │
         │         Guardium Universal Connector (UC)                 │
         │                                                           │
-        │  • Reads logs from CloudWatch/S3/Event Hub                │
+        │  • Reads logs from CloudWatch/S3                          │
         │  • Parses and normalizes audit data                       │
         │  • Applies security policies                              │
         │  • Forwards to Guardium Data Protection                   │
@@ -113,48 +113,48 @@ The following diagram illustrates how this module orchestrates the configuration
 ### Architecture Flow
 
 1. **Datastore Configuration**: The module configures each datastore to enable audit logging:
-  
-  **AWS Datastores:**
-  - **DynamoDB**: Enables CloudTrail data events to capture API calls
-  - **DocumentDB**: Enables audit and profiler logs via parameter groups
-  - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
-  - **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
-  - **Aurora MySQL**: Enables server audit logging via cluster parameter groups for Aurora MySQL clusters
-  - **Neptune**: Enables audit logs via parameter groups
-  - **OpenSearch**: Enables audit logs via domain configuration and security plugin
-  - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
-  - **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
-  - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
-  
-  **Azure Datastores:**
-  - **Cosmos DB**: Enables diagnostic settings to capture data plane, query runtime, and control plane logs
-  
-  **Cloud-Native Datastores:**
-  - **Couchbase Capella**: Enables audit logging via Capella API for cloud-native deployments
+
+**AWS Datastores:**
+- **DynamoDB**: Enables CloudTrail data events to capture API calls
+- **DocumentDB**: Enables audit and profiler logs via parameter groups
+- **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
+- **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
+- **Aurora MySQL**: Enables server audit logging via cluster parameter groups for Aurora MySQL clusters
+- **Neptune**: Enables audit logs via parameter groups
+- **OpenSearch**: Enables audit logs via domain configuration and security plugin
+- **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
+- **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
+- **Redshift**: Enables connection and user activity logging to CloudWatch or S3
+
+**Azure Datastores:**
+- **Cosmos DB**: Enables diagnostic settings to capture data plane, query runtime, and control plane logs
+
+**Cloud-Native Datastores:**
+- **Couchbase Capella**: Enables audit logging via Capella API for cloud-native deployments
 
 2. **Log Aggregation**: Audit logs are collected in cloud platforms:
-  
-  **AWS:**
-  - CloudWatch Log Groups store structured logs
-  - S3 buckets provide long-term storage for CloudTrail logs
-  - IAM roles and policies ensure secure access
-  
-  **Azure:**
-  - Event Hub receives real-time diagnostic logs
-  - Storage accounts provide checkpointing for Event Hub consumers
-  - Azure RBAC ensures secure access
+
+**AWS:**
+- CloudWatch Log Groups store structured logs
+- S3 buckets provide long-term storage for CloudTrail logs
+- IAM roles and policies ensure secure access
+
+**Azure:**
+- Event Hub receives real-time diagnostic logs
+- Storage accounts provide checkpointing for Event Hub consumers
+- Azure RBAC ensures secure access
 
 3. **Universal Connector**: The module deploys and configures Guardium Universal Connector:
-  - Establishes connection to CloudWatch Logs, S3, or Azure Event Hub
-  - Uses AWS or Azure credentials configured in Guardium
-  - Applies parsing rules specific to each datastore type
-  - Streams processed data to Guardium Data Protection
+- Establishes connection to CloudWatch Logs, S3, or Azure Event Hub
+- Uses AWS or Azure credentials configured in Guardium
+- Applies parsing rules specific to each datastore type
+- Streams processed data to Guardium Data Protection
 
 4. **Guardium Integration**: Audit data flows into Guardium for:
-  - Real-time security monitoring
-  - Compliance reporting (PCI-DSS, HIPAA, GDPR, etc.)
-  - Threat detection and alerting
-  - Forensic analysis and investigation
+- Real-time security monitoring
+- Compliance reporting (PCI-DSS, HIPAA, GDPR, etc.)
+- Threat detection and alerting
+- Forensic analysis and investigation
 
 ## Supported Datastores
 
@@ -190,31 +190,31 @@ This module provides audit configuration for the following AWS and Azure datasto
 Before using this module, ensure you have:
 
 1. **Cloud Account**: With appropriate permissions to create and manage resources:
-  
-  **For AWS:**
-  - CloudTrail and CloudWatch resources
-  - IAM roles and policies
-  - S3 buckets
-  - Database parameter/option groups
-  - SQS queues (for PostgreSQL modules)
-  
-  **For Azure:**
-  - Diagnostic settings
-  - Event Hub namespaces and Event Hubs
-  - Storage accounts
-  - Azure RBAC permissions
+
+**For AWS:**
+- CloudTrail and CloudWatch resources
+- IAM roles and policies
+- S3 buckets
+- Database parameter/option groups
+- SQS queues (for PostgreSQL modules)
+
+**For Azure:**
+- Diagnostic settings
+- Event Hub namespaces and Event Hubs
+- Storage accounts
+- Azure RBAC permissions
 
 2. **Guardium Data Protection Instance**: A running GDP cluster (version 12.2.1 or above) with:
-  - Web UI credentials with appropriate permissions
-  - OAuth client registered via `grdapi register_oauth_client`
-  - AWS credentials configured in Universal Connector (for AWS datastores)
-  - Azure credentials configured in Universal Connector (for Azure datastores)
+- Web UI credentials with appropriate permissions
+- OAuth client registered via `grdapi register_oauth_client`
+- AWS credentials configured in Universal Connector (for AWS datastores)
+- Azure credentials configured in Universal Connector (for Azure datastores)
 
 3. **Terraform**: Version 1.0.0 or later
 
 4. **Cloud CLI**: Configured with appropriate credentials
-  - **AWS CLI** for AWS datastores
-  - **Azure CLI** for Azure datastores
+- **AWS CLI** for AWS datastores
+- **Azure CLI** for Azure datastores
 
 ## Guardium Data Protection Version Compatibility
 
@@ -224,7 +224,429 @@ All modules that register datastores with Guardium Universal Connector use API-b
 
 ## Usage
 
-[Rest of the usage examples remain the same as in the original file...]
+### AWS DynamoDB Audit Configuration
+
+Monitor DynamoDB tables with comprehensive API call tracking:
+
+```hcl
+module "dynamodb_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-dynamodb"
+
+  # AWS Configuration
+  aws_region      = "us-east-1"
+  dynamodb_tables = "users-table,orders-table"  # or "all" for all tables
+  name_prefix     = "my-dynamodb-audit"
+
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  gdp_mu_host        = "guardium-mu.example.com"
+
+  tags = {
+    Environment = "production"
+    Project     = "data-security"
+  }
+}
+```
+
+### AWS DocumentDB Audit Configuration
+
+Enable comprehensive audit logging for DocumentDB clusters:
+
+```hcl
+module "documentdb_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-documentdb"
+
+  # AWS Configuration
+  aws_region                    = "us-east-1"
+  documentdb_cluster_identifier = "my-docdb-cluster"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_name           = "docdb-connector"
+  udc_aws_credential = "aws-credential-name"
+  gdp_mu_host        = "guardium-mu.example.com"
+
+  tags = {
+    Environment = "production"
+  }
+}
+```
+
+### AWS MariaDB RDS Audit Configuration
+
+Configure MariaDB Audit Plugin for RDS instances:
+
+```hcl
+module "mariadb_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-mariadb-rds-audit"
+
+  # AWS Configuration
+  aws_region                     = "us-east-1"
+  mariadb_rds_cluster_identifier = "my-mariadb-instance"
+  
+  # Audit Configuration
+  audit_events          = "CONNECT,QUERY"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  log_export_type    = "Cloudwatch"
+
+  tags = {
+    Environment = "production"
+  }
+}
+```
+
+### AWS MySQL RDS Audit Configuration
+
+Configure MariaDB Audit Plugin for MySQL RDS instances:
+
+```hcl
+module "mysql_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-mysql-rds-audit"
+
+  # AWS Configuration
+  aws_region                   = "us-east-1"
+  mysql_rds_cluster_identifier = "my-mysql-instance"
+  
+  # Audit Configuration
+  audit_events          = "CONNECT,QUERY"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  log_export_type    = "Cloudwatch"
+
+  tags = {
+    Environment = "production"
+  }
+}
+```
+
+### AWS Aurora MySQL Audit Configuration
+
+Enables server audit logging via cluster parameter groups:
+
+```hcl
+module "aurora_mysql_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-aurora-mysql-audit"
+
+  # AWS Configuration
+  aws_region                      = "us-east-1"
+  aurora_mysql_cluster_identifier = "my-aurora-mysql-cluster"
+  
+  # Audit Configuration
+  cloudwatch_logs_exports = ["audit"]
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  gdp_mu_host        = "guardium-mu.example.com"
+  
+  # Optional: Universal Connector Settings
+  enable_universal_connector = true
+  csv_start_position        = "end"
+  csv_interval              = "5"
+
+  tags = {
+    Environment = "production"
+  }
+}
+```
+
+### AWS Neptune Audit Configuration
+
+Enable comprehensive audit logging for Neptune clusters:
+
+```hcl
+module "neptune_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-neptune-audit"
+
+  # AWS Configuration
+  aws_region                  = "us-east-1"
+  neptune_cluster_identifier  = "my-neptune-cluster"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  gdp_mu_host            = "guardium-mu.example.com"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  
+  # Optional: Universal Connector Settings
+  # enable_universal_connector = true
+  # csv_start_position = "end"
+  # csv_interval = "5"
+  # codec_pattern = ""
+  # csv_event_filter = ""
+  
+  # Optional: Neptune Configuration
+  # neptune_endpoint = ""
+  # use_aws_bundled_ca = true
+
+  tags = {
+    Environment = "production"
+  }
+}
+```
+
+### AWS OpenSearch Audit Configuration
+
+Enable comprehensive audit logging for OpenSearch domains:
+
+```hcl
+module "opensearch_audit" {
+  source = "IBM/datastore-audit/guardium//modules/amazon-opensearch-audit"
+
+  # AWS Configuration
+  aws_region             = "us-east-1"
+  opensearch_domain_name = "my-opensearch-domain"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+
+  tags = {
+    Environment = "production"
+  }
+}
+```
+
+### AWS PostgreSQL RDS Object-Level Audit Configuration
+
+Monitor specific tables with granular control:
+
+```hcl
+module "postgres_object_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-object"
+
+  # AWS Configuration
+  aws_region                      = "us-east-1"
+  postgres_rds_cluster_identifier = "my-postgres-db"
+  
+  # Database Connection
+  db_host     = "my-postgres-db.example.region.rds.amazonaws.com"
+  db_port     = 5432
+  db_username = "admin"
+  db_password = "password"
+  db_name     = "postgres"
+  
+  # Tables to Monitor
+  tables = [
+    {
+      schema = "public"
+      table  = "users"
+      grants = ["SELECT", "INSERT", "UPDATE", "DELETE"]
+    },
+    {
+      schema = "public"
+      table  = "orders"
+      grants = ["SELECT", "INSERT"]
+    }
+  ]
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  log_export_type    = "Cloudwatch"
+}
+```
+
+### AWS PostgreSQL RDS Session-Level Audit Configuration
+
+Capture all database activity comprehensively:
+
+```hcl
+module "postgres_session_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-postgresql-rds-session"
+
+  # AWS Configuration
+  aws_region                      = "us-east-1"
+  postgres_rds_cluster_identifier = "my-postgres-db"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  log_export_type    = "Cloudwatch"
+}
+```
+
+### AWS Aurora PostgreSQL Object-Level Audit Configuration
+
+Monitor specific tables in Aurora PostgreSQL clusters with granular control:
+
+```hcl
+module "aurora_postgres_object_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-aurora-postgres-object"
+
+  # AWS Configuration
+  aws_region                         = "us-east-1"
+  aurora_postgres_cluster_identifier = "my-aurora-cluster"
+  
+  # Database Connection
+  db_host     = "my-aurora-cluster.cluster-example.region.rds.amazonaws.com"
+  db_port     = 5432
+  db_username = "admin"
+  db_password = "password"
+  db_name     = "postgres"
+  
+  # Tables to Monitor
+  tables = [
+    {
+      schema = "public"
+      table  = "users"
+      grants = ["SELECT", "INSERT", "UPDATE", "DELETE"]
+    },
+    {
+      schema = "public"
+      table  = "orders"
+      grants = ["SELECT", "INSERT"]
+    }
+  ]
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  log_export_type    = "Cloudwatch"
+  
+  # Skip automatic reboot (default: true)
+  skip_reboot = true
+}
+```
+
+### AWS Aurora PostgreSQL Session-Level Audit Configuration
+
+Capture all database activity comprehensively for Aurora PostgreSQL clusters:
+
+```hcl
+module "aurora_postgres_session_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-aurora-postgres-session"
+
+  # AWS Configuration
+  aws_region                         = "us-east-1"
+  aurora_postgres_cluster_identifier = "my-aurora-cluster"
+  
+  # Audit Configuration
+  pg_audit_log = "all"  # Options: all, ddl, write, read, function, role, misc
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  log_export_type    = "Cloudwatch"
+  
+  # Skip automatic reboot (default: true)
+  skip_reboot = true
+}
+```
+
+### AWS Redshift Audit Configuration
+
+Enable comprehensive audit logging for Redshift clusters:
+
+```hcl
+module "redshift_audit" {
+  source = "IBM/datastore-audit/guardium//modules/aws-redshift"
+
+  # AWS Configuration
+  aws_region                  = "us-west-1"
+  redshift_cluster_identifier = "my-redshift-cluster"
+  name_prefix                 = "my-redshift-audit"
+  
+  # Input Type: "cloudwatch" or "s3"
+  input_type = "cloudwatch"
+  
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  
+  # Universal Connector Configuration
+  udc_aws_credential = "aws-credential-name"
+  gdp_mu_host        = "guardium-mu.example.com"
+  
+  # Audit Configuration
+  codec_pattern    = "((^'%{TIMESTAMP_ISO8601:timestamp})|(^(?<action>[^:]*) \\|%{DAY:day}\\, %{MONTHDAY:md} %{MONTH:month} %{YEAR:year} %{TIME:time}))"
+  csv_event_filter = ""
+
+  tags = {
+    Environment = "production"
+    Project     = "data-security"
+  }
+}
+```
 
 ## Examples
 
@@ -261,7 +683,7 @@ Each example includes:
 
 - **Automated Configuration**: Automatically configures audit logging for AWS and Azure datastores and Couchbase Capella
 - **Universal Connector Integration**: Seamlessly integrates with Guardium Universal Connector
-- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, OpenSearch, PostgreSQL RDS, Aurora PostgreSQL, Redshift, and Azure Cosmos DB
+- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, OpenSearch, PostgreSQL RDS, RedShift, Aurora PostgreSQL and Azure Cosmos
 - **Flexible Audit Levels**: Choose between object-level and session-level auditing for PostgreSQL and Aurora PostgreSQL
 - **CloudWatch Integration**: Leverages CloudWatch Logs for centralized log management
 - **Aurora Cluster Support**: Native support for Aurora MySQL and Aurora PostgreSQL clusters with automatic parameter group management
@@ -283,24 +705,24 @@ Each example includes:
 ### Common Issues
 
 1. **CloudTrail Not Capturing Events**:
-  - Verify CloudTrail is configured with data events for the specific datastore
-  - Check IAM permissions for CloudTrail
-  - Ensure CloudWatch Log Group is properly configured
+- Verify CloudTrail is configured with data events for the specific datastore
+- Check IAM permissions for CloudTrail
+- Ensure CloudWatch Log Group is properly configured
 
 2. **Universal Connector Not Processing Logs**:
-  - Verify AWS/Azure credentials are correctly configured in Guardium
-  - Check network connectivity between Guardium and cloud providers
-  - Review Universal Connector logs in Guardium UI
+- Verify AWS/Azure credentials are correctly configured in Guardium
+- Check network connectivity between Guardium and cloud providers
+- Review Universal Connector logs in Guardium UI
 
 3. **Parameter/Option Group Changes Not Applied**:
-  - Some changes require database restart or failover
-  - Check the `force_failover` variable setting
-  - Review AWS RDS events for any errors
+- Some changes require database restart or failover
+- Check the `force_failover` variable setting
+- Review AWS RDS events for any errors
 
 4. **Authentication Errors**:
-  - Verify Guardium OAuth client credentials
-  - Check Guardium user has appropriate permissions
-  - Ensure OAuth client is properly registered via `grdapi register_oauth_client`
+- Verify Guardium OAuth client credentials
+- Check Guardium user has appropriate permissions
+- Ensure OAuth client is properly registered via `grdapi register_oauth_client`
 
 For detailed troubleshooting, refer to the individual module READMEs.
 
