@@ -74,6 +74,8 @@ resource "gdp-middleware-helper_neptune_modify" "enable_audit_logs" {
 # Reboot Neptune cluster instances to apply the parameter group changes
 # Neptune requires a reboot for neptune_enable_audit_log parameter to take effect
 resource "gdp-middleware-helper_neptune_reboot" "reboot_cluster" {
+  count = var.skip_reboot ? 0 : 1
+
   depends_on = [
     gdp-middleware-helper_neptune_modify.enable_audit_logs,
   ]

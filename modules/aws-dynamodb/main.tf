@@ -13,9 +13,11 @@ locals {
   dynamodb_tables           = var.dynamodb_tables == "all" ? data.aws_dynamodb_tables.all.names : split(",", var.dynamodb_tables)
   cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : "/aws/cloudtrail/${var.name_prefix}"
   cloudtrail_name           = var.existing_cloudtrail_name != "" ? var.existing_cloudtrail_name : var.name_prefix
-  # Sanitize name_prefix for S3 bucket (replace underscores with hyphens)
-  sanitized_name_prefix = replace(var.name_prefix, "_", "-")
-  cloudtrail_s3_bucket  = "${local.sanitized_name_prefix}-cloudtrail"
+
+  # Sanitize and truncate names to comply with AWS resource naming character limits
+  sanitized_name_prefix    = replace(var.name_prefix, "_", "-")
+  cloudtrail_s3_bucket     = "${substr(local.sanitized_name_prefix, 0, 52)}-cloudtrail"  # Max 63: 52 + 11
+  dynamodb_monitoring_role = replace("${substr(var.name_prefix, 0, 59)}_role", "-", "_") # Max 64: 59 + 5
 
   # Determine if we're using existing resources
   use_existing_cloudtrail           = var.existing_cloudtrail_name != ""
@@ -25,7 +27,6 @@ locals {
 
   # Format CloudWatch Logs Group ARN for CloudTrail
   formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "${data.aws_cloudwatch_log_group.existing[0].arn}:*" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
-  dynamodb_monitoring_role            = replace("${var.name_prefix}_role", "-", "_")
 }
 
 # Data source for existing CloudWatch Log Group
@@ -130,7 +131,6 @@ resource "aws_iam_role" "dynamodb_monitoring_role" {
   name               = local.dynamodb_monitoring_role
   assume_role_policy = data.aws_iam_policy_document.cloudtrail_assume_role.json
   tags               = var.tags
-
 
   # Add lifecycle configuration to ensure proper destruction
   lifecycle {

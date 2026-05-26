@@ -23,6 +23,7 @@ module "datastore-audit_aws-postgresql-rds-object" {
   aws_region                      = var.aws_region
   postgres_rds_cluster_identifier = var.postgres_rds_cluster_identifier
   force_failover                  = var.force_failover
+  skip_reboot                     = var.skip_reboot
 
   # Database connection details
   db_host     = var.db_host

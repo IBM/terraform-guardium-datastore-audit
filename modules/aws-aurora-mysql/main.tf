@@ -26,7 +26,6 @@ module "common_aurora-mysql-parameter-group" {
   audit_incl_users                = var.audit_incl_users
   audit_excl_users                = var.audit_excl_users
   cloudwatch_logs_exports         = var.cloudwatch_logs_exports
-  force_failover                  = var.force_failover
   aws_region                      = var.aws_region
   tags                            = var.tags
 }
