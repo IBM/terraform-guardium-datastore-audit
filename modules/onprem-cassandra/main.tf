@@ -11,51 +11,14 @@ locals {
   filebeat_commands = [
     # Backup existing filebeat.yml if it exists
     "sudo test -f /etc/filebeat/filebeat.yml && sudo cp /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.backup || true",
-
     # Create Filebeat configuration for Cassandra audit logs
-    "sudo bash -c 'cat > /etc/filebeat/filebeat.yml << EOF",
-    "filebeat.inputs:",
-    "- type: filestream",
-    "  id: cassandra-audit-dse",
-    "  enabled: true",
-    "  paths:",
-    "    - ${var.cassandra_audit_log_path}",
-    "  exclude_lines: [\"AuditLogManager\"]",
-    "  tags: [\"${var.datasource_tag}\"]",
-    "",
-    "  # Multi-line pattern for Cassandra audit logs",
-    "  multiline.type: pattern",
-    "  multiline.pattern: \"^INFO\"",
-    "  multiline.negate: true",
-    "  multiline.match: after",
-    "",
-    "# Output to Guardium Universal Connector",
-    "output.logstash:",
-    "  hosts: [\"${var.gdp_mu_host}:${var.logstash_port}\"]",
-    "",
-    "# Logging configuration",
-    "logging.level: info",
-    "logging.to_files: true",
-    "logging.files:",
-    "  path: /var/log/filebeat",
-    "  name: filebeat",
-    "  keepfiles: 7",
-    "  permissions: 0644",
-    "",
-    "logging.level: debug",
-    "logging.selectors: [\"*\"]",
-    "EOF",
-    "'",
-
+    "sudo bash -c 'cat > /etc/filebeat/filebeat.yml << \"EOF\"\nfilebeat.inputs:\n- type: filestream\n  id: cassandra-audit-dse\n  enabled: true\n  paths:\n    - ${var.cassandra_audit_log_path}\n  exclude_lines: [\"AuditLogManager\"]\n  tags: [\"${var.datasource_tag}\"]\n\n  # Multi-line pattern for Cassandra audit logs\n  multiline.type: pattern\n  multiline.pattern: \"^INFO\"\n  multiline.negate: true\n  multiline.match: after\n\n# Output to Guardium Universal Connector\noutput.logstash:\n  hosts: [\"${var.gdp_mu_host}:${var.logstash_port}\"]\n\n# Logging configuration\nlogging.level: info\nlogging.to_files: true\nlogging.files:\n  path: /var/log/filebeat\n  name: filebeat\n  keepfiles: 7\n  permissions: 0644\n\nlogging.level: debug\nlogging.selectors: [\"*\"]\nEOF\n'",
     # Test Filebeat configuration
     "sudo filebeat test config -c /etc/filebeat/filebeat.yml",
-
     # Restart Filebeat service
     "sudo systemctl restart filebeat",
-
     # Enable Filebeat to start on boot
     "sudo systemctl enable filebeat",
-
     # Verify Filebeat is running
     "sudo systemctl status filebeat --no-pager"
   ]
@@ -70,6 +33,7 @@ resource "null_resource" "cassandra_filebeat_setup" {
     cassandra_audit_log_path   = var.cassandra_audit_log_path
     gdp_mu_host                = var.gdp_mu_host
     logstash_port              = var.logstash_port
+    datasource_tag             = var.datasource_tag
   }
 
   # SSH connection to Cassandra server
@@ -82,8 +46,7 @@ resource "null_resource" "cassandra_filebeat_setup" {
   }
 
   provisioner "remote-exec" {
-    inline     = local.filebeat_commands
-    on_failure = continue
+    inline = local.filebeat_commands
   }
 }
 
