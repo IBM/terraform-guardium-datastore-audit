@@ -29,11 +29,11 @@ resource "null_resource" "cassandra_filebeat_setup" {
 
   # Triggers to force recreation when critical variables change
   triggers = {
-    server_ip                  = var.server_ip
-    cassandra_audit_log_path   = var.cassandra_audit_log_path
-    gdp_mu_host                = var.gdp_mu_host
-    logstash_port              = var.logstash_port
-    datasource_tag             = var.datasource_tag
+    server_ip                = var.server_ip
+    cassandra_audit_log_path = var.cassandra_audit_log_path
+    gdp_mu_host              = var.gdp_mu_host
+    logstash_port            = var.logstash_port
+    datasource_tag           = var.datasource_tag
   }
 
   # SSH connection to Cassandra server
