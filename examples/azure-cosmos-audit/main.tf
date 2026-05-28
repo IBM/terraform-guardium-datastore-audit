@@ -31,13 +31,13 @@ module "datastore-audit_azure-cosmos-audit" {
   enable_partition_ru_logs  = var.enable_partition_ru_logs
 
   # Guardium Configuration
-  gdp_client_id     = var.gdp_client_id
-  gdp_client_secret = var.gdp_client_secret
-  gdp_server        = var.gdp_server
-  gdp_port          = var.gdp_port
-  gdp_username      = var.gdp_username
-  gdp_password      = var.gdp_password
-  gdp_mu_host       = var.gdp_mu_host
+  gdp_client_id        = var.gdp_client_id
+  gdp_client_secret    = var.gdp_client_secret
+  gdp_server           = var.gdp_server
+  gdp_port             = var.gdp_port
+  gdp_username         = var.gdp_username
+  gdp_password         = var.gdp_password
+  gdp_mu_host          = var.gdp_mu_host
 
   # Universal Connector Configuration
   enable_universal_connector = var.enable_universal_connector
@@ -49,4 +49,3 @@ module "datastore-audit_azure-cosmos-audit" {
   # Tags
   tags = var.tags
 }
-
