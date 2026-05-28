@@ -49,3 +49,4 @@ module "datastore-audit_azure-cosmos-audit" {
   # Tags
   tags = var.tags
 }
+
