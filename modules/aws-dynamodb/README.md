@@ -95,12 +95,22 @@ terraform apply
 
 ### CloudTrail Configuration
 
+This module supports two modes of operation:
+
+1. **Create New CloudTrail** (default): The module creates a new CloudTrail, S3 bucket, CloudWatch Log Group, and IAM roles
+2. **Use Existing CloudTrail**: The module uses an existing CloudTrail configuration (recommended when CloudTrail is already configured)
+
 | Parameter | Description | Default | Required |
 |-----------|-------------|---------|:--------:|
-| `create_cloudtrail_s3_bucket` | Whether to create a new S3 bucket for CloudTrail logs (set to false if you want to use an existing bucket) | `true` | No |
-| `aws_log_group` | Name of the CloudWatch log group where CloudTrail logs will be stored | `"dynamodb-logs"` | No |
-| `existing_cloudtrail_name` | Name of an existing CloudTrail to use (if provided, the module will use this CloudTrail instead of creating a new one) | `""` | No |
-| `existing_cloudwatch_log_group_name` | Name of an existing CloudWatch Log Group to use (if provided, the module will use this Log Group instead of creating a new one) | `""` | No |
+| `existing_cloudtrail_name` | Name of an existing CloudTrail to use. **If provided, the module will NOT create CloudTrail, S3 bucket, or IAM roles** | `""` | No |
+| `existing_cloudwatch_log_group_name` | Name of an existing CloudWatch Log Group to use with the existing CloudTrail | `""` | No |
+| `create_cloudtrail_s3_bucket` | Whether to create a new S3 bucket for CloudTrail logs (only used when creating new CloudTrail) | `true` | No |
+| `aws_log_group` | Name of the CloudWatch log group where CloudTrail logs will be stored (only used when creating new CloudTrail) | `"dynamodb-logs"` | No |
+
+**Important Notes:**
+- When `existing_cloudtrail_name` is provided, the module will use the existing CloudTrail and will NOT create any CloudTrail-related resources (S3 bucket, IAM roles, CloudTrail itself)
+- The existing CloudTrail must already be configured to log DynamoDB data events to CloudWatch Logs
+- Use the discovery tool (`terraform-aws-datastore-discover`) to automatically detect existing CloudTrail configurations
 
 ### Universal Connector Configuration
 
@@ -185,7 +195,52 @@ tags = {
 }
 ```
 
-### Using Existing CloudTrail and SQS Resources
+### Using Existing CloudTrail
+
+If you already have a CloudTrail configured for your DynamoDB tables, you can use it instead of creating a new one. This is the recommended approach when CloudTrail is already set up:
+
+```hcl
+# AWS Configuration
+aws_region = "us-east-1"
+name_prefix = "my-dynamodb-monitoring"
+
+# Specify the existing tables to monitor
+dynamodb_tables = "users-table,orders-table"
+
+# Use Existing CloudTrail (recommended when already configured)
+existing_cloudtrail_name           = "my-existing-cloudtrail"
+existing_cloudwatch_log_group_name = "/aws/cloudtrail/my-log-group"
+
+# Universal Connector Configuration
+enable_universal_connector = true
+udc_aws_credential = "my-aws-credential"
+csv_start_position = "end"
+csv_interval = 60
+
+# Guardium Integration Configuration
+gdp_server = "guardium.example.com"
+gdp_username = "admin"
+gdp_password = "password"
+gdp_mu_host = "guardium-mu.example.com"
+gdp_client_id = "client"
+gdp_client_secret = "your-client-secret"
+
+# Tags
+tags = {
+  Environment = "production"
+  Project     = "data-security"
+}
+```
+
+**Benefits of using existing CloudTrail:**
+- Avoids duplicate CloudTrail configurations
+- Reduces costs (no additional S3 storage or CloudTrail charges)
+- Maintains existing compliance and audit configurations
+- Prevents resource naming conflicts
+
+**Note:** The discovery tool (`terraform-aws-datastore-discover`) can automatically detect existing CloudTrail configurations and generate the correct parameters.
+
+### Using Existing CloudTrail and SQS Resources (Legacy)
 
 If you already have CloudTrail and SQS resources set up, you can import them into Terraform and use them with this module:
 

@@ -23,7 +23,7 @@ locals {
   use_existing_cloudtrail           = var.existing_cloudtrail_name != ""
   use_existing_cloudwatch_log_group = var.existing_cloudwatch_log_group_name != ""
 
-  ct_bucket = aws_s3_bucket.dynamodb_monitoring.bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring.arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] : ["${aws_s3_bucket.dynamodb_monitoring.arn}/${aws_s3_bucket.dynamodb_monitoring.bucket_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
+  ct_bucket = !local.use_existing_cloudtrail && aws_s3_bucket.dynamodb_monitoring[0].bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring[0].arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] : !local.use_existing_cloudtrail ? ["${aws_s3_bucket.dynamodb_monitoring[0].arn}/${aws_s3_bucket.dynamodb_monitoring[0].bucket_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] : []
 
   # Format CloudWatch Logs Group ARN for CloudTrail
   formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "${data.aws_cloudwatch_log_group.existing[0].arn}:*" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
@@ -49,6 +49,7 @@ resource "aws_cloudwatch_log_group" "dynamodb_monitoring" {
 
 # S3 Bucket
 resource "aws_s3_bucket" "dynamodb_monitoring" {
+  count         = local.use_existing_cloudtrail ? 0 : 1
   bucket        = local.cloudtrail_s3_bucket
   force_destroy = true
   tags          = var.tags
@@ -60,6 +61,8 @@ resource "aws_s3_bucket" "dynamodb_monitoring" {
 }
 
 data "aws_iam_policy_document" "dynamodb_monitoring" {
+  count = local.use_existing_cloudtrail ? 0 : 1
+
   statement {
     sid     = "AWSCloudTrailAclCheck"
     effect  = "Allow"
@@ -70,7 +73,7 @@ data "aws_iam_policy_document" "dynamodb_monitoring" {
       identifiers = ["cloudtrail.amazonaws.com"]
     }
 
-    resources = [aws_s3_bucket.dynamodb_monitoring.arn]
+    resources = [aws_s3_bucket.dynamodb_monitoring[0].arn]
 
     condition {
       test     = "StringEquals"
@@ -105,8 +108,9 @@ data "aws_iam_policy_document" "dynamodb_monitoring" {
 }
 
 resource "aws_s3_bucket_policy" "dynamodb_monitoring" {
-  bucket = aws_s3_bucket.dynamodb_monitoring.id
-  policy = data.aws_iam_policy_document.dynamodb_monitoring.json
+  count  = local.use_existing_cloudtrail ? 0 : 1
+  bucket = aws_s3_bucket.dynamodb_monitoring[0].id
+  policy = data.aws_iam_policy_document.dynamodb_monitoring[0].json
 
   # Add lifecycle configuration to ensure proper destruction
   lifecycle {
@@ -116,6 +120,8 @@ resource "aws_s3_bucket_policy" "dynamodb_monitoring" {
 
 # IAM for CloudTrail -> CW Logs
 data "aws_iam_policy_document" "cloudtrail_assume_role" {
+  count = local.use_existing_cloudtrail ? 0 : 1
+
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
@@ -128,8 +134,9 @@ data "aws_iam_policy_document" "cloudtrail_assume_role" {
 }
 
 resource "aws_iam_role" "dynamodb_monitoring_role" {
+  count              = local.use_existing_cloudtrail ? 0 : 1
   name               = local.dynamodb_monitoring_role
-  assume_role_policy = data.aws_iam_policy_document.cloudtrail_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.cloudtrail_assume_role[0].json
   tags               = var.tags
 
   # Add lifecycle configuration to ensure proper destruction
@@ -139,6 +146,8 @@ resource "aws_iam_role" "dynamodb_monitoring_role" {
 }
 
 data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs" {
+  count = local.use_existing_cloudtrail ? 0 : 1
+
   statement {
     sid    = "WriteCloudWatchLogs"
     effect = "Allow"
@@ -152,8 +161,9 @@ data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs" {
 }
 
 resource "aws_iam_policy" "cloudtrail_cloudwatch_logs" {
+  count  = local.use_existing_cloudtrail ? 0 : 1
   name   = replace("${local.cloudtrail_name}_cloudtrail_cloudwatch", "-", "_")
-  policy = data.aws_iam_policy_document.cloudtrail_cloudwatch_logs.json
+  policy = data.aws_iam_policy_document.cloudtrail_cloudwatch_logs[0].json
   tags   = var.tags
 
   # Add lifecycle configuration to ensure proper destruction
@@ -163,9 +173,10 @@ resource "aws_iam_policy" "cloudtrail_cloudwatch_logs" {
 }
 
 resource "aws_iam_policy_attachment" "main" {
+  count      = local.use_existing_cloudtrail ? 0 : 1
   name       = replace("${local.cloudtrail_name}_cloudtrail_cloudwatch-attachment", "-", "_")
-  policy_arn = aws_iam_policy.cloudtrail_cloudwatch_logs.arn
-  roles      = [aws_iam_role.dynamodb_monitoring_role.name]
+  policy_arn = aws_iam_policy.cloudtrail_cloudwatch_logs[0].arn
+  roles      = [aws_iam_role.dynamodb_monitoring_role[0].name]
 
   # Add lifecycle configuration to ensure proper destruction
   lifecycle {
@@ -183,10 +194,10 @@ resource "aws_cloudtrail" "dynamodb_monitoring" {
   ]
 
   name                          = local.cloudtrail_name
-  s3_bucket_name                = aws_s3_bucket.dynamodb_monitoring.id
+  s3_bucket_name                = aws_s3_bucket.dynamodb_monitoring[0].id
   include_global_service_events = false
   cloud_watch_logs_group_arn    = local.formatted_cloudwatch_logs_group_arn
-  cloud_watch_logs_role_arn     = aws_iam_role.dynamodb_monitoring_role.arn
+  cloud_watch_logs_role_arn     = aws_iam_role.dynamodb_monitoring_role[0].arn
 
   event_selector {
     read_write_type           = "All"

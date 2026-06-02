@@ -29,11 +29,11 @@ output "cloudtrail_name" {
 }
 
 output "cloudtrail_s3_bucket" {
-  value       = aws_s3_bucket.dynamodb_monitoring.bucket
+  value       = local.use_existing_cloudtrail ? null : aws_s3_bucket.dynamodb_monitoring[0].bucket
   description = "Name of the S3 bucket for CloudTrail logs"
 }
 
 output "iam_role_arn" {
-  value       = aws_iam_role.dynamodb_monitoring_role.arn
+  value       = local.use_existing_cloudtrail ? null : aws_iam_role.dynamodb_monitoring_role[0].arn
   description = "ARN of the IAM role for CloudTrail"
 }
