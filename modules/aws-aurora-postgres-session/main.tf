@@ -49,6 +49,7 @@ module "aurora-postgres-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
   source = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
 
+  aws_region                         = var.aws_region
   aws_account_id                     = module.aws_configuration.aws_account_id
   gdp_client_id                      = var.gdp_client_id
   gdp_client_secret                  = var.gdp_client_secret
