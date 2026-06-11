@@ -11,9 +11,7 @@
  *
  * ## Usage
  *
- * This example assumes you have already deployed AlloyDB infrastructure using the
- * `guardium-terraform/setup-middleware/gcp-alloydb` module, which creates:
- * - AlloyDB cluster with audit logging enabled
+ * This example uses an existing AlloyDB deployment.
  *
  * This module creates the Pub/Sub topic, Pub/Sub subscription, and Cloud Logging sink,
  * then registers the AlloyDB cluster with Guardium for monitoring.
