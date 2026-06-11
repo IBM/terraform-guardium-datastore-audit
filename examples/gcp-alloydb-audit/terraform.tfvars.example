@@ -2,21 +2,23 @@
 # GCP CONFIGURATION - CRITICAL
 # =====================================================================
 # REQUIRED: Your GCP project ID - MUST match where your AlloyDB cluster is deployed
-gcp_project_id = "charged-mind-281913"  # CHANGE THIS to your actual GCP project ID
+gcp_project_id = "project-id"  # CHANGE THIS to your actual GCP project ID
 
 # The GCP region where your AlloyDB cluster is deployed
 gcp_region = "us-central1"  # CHANGE THIS to your actual region (e.g., "us-east1")
 
 # The identifier of your AlloyDB cluster (found in AlloyDB console)
-alloydb_cluster_id = "nida-terraform-alloydb-primary"
+alloydb_cluster_id = "alloydb-cluster"
 
 # The Pub/Sub topic ID to create for AlloyDB audit logs
-pubsub_topic_id = "nida-terraform-alloydb-audit-logs"
+pubsub_topic_id = "alloydb-topic-name"
 
 # The Pub/Sub subscription ID to create for AlloyDB audit logs
-pubsub_subscription_id = "nida-terraform-alloydb-audit-logs-sub"
+pubsub_subscription_id = "alloydb-subscription-name"
 
-# Create the AlloyDB Pub/Sub topic, subscription, and Cloud Logging sink in this module
+# Whether this module should create the Pub/Sub topic, subscription, and Cloud Logging sink
+# - true: create and manage those resources in this module
+# - false: use existing Pub/Sub topic/subscription IDs that you provide above
 enable_audit_logging = true
 
 # Optional: override the sink name; leave empty to use <alloydb_cluster_id>-audit-sink
@@ -36,18 +38,18 @@ udc_name = "alloydb-audit-connector"
 udc_gcp_credential = "gcp"
 
 # REQUIRED: Guardium server hostname/IP and connection details
-gdp_server = "nexus-cm-trunk.dev.fyre.ibm.com"
+gdp_server = "guardium-cm-example.com"
 gdp_port = "8443"
 gdp_username = "admin"                 # Replace with your Guardium username
-gdp_password = "!QAZ2wsx"              # Replace with your Guardium password
+gdp_password = "password"              # Replace with your Guardium password
 
 # REQUIRED: OAuth client credentials for Guardium API access
 # These are obtained by running the "grdapi register_oauth_client" command
-gdp_client_id = "nida"              # Replace with your client ID
-gdp_client_secret = "2d91ccc1-9586-46b1-ba1b-82240d821078"    # Replace with your client secret
+gdp_client_id = "your-client-id"              # Replace with your client ID
+gdp_client_secret = "your-client-secret"    # Replace with your client secret
 
 # Comma-separated list of Guardium Managed Units to deploy the profile to
-gdp_mu_host = "nexus-mu1-trunk.dev.fyre.ibm.com"
+gdp_mu_host = "guardium-mu-example.com"
 
 # =====================================================================
 # UNIVERSAL CONNECTOR CONFIGURATION

@@ -1,83 +1,49 @@
 # GCP AlloyDB Audit Example
 
-This example demonstrates how to configure audit logging for a GCP AlloyDB cluster and register it with Guardium Data Protection using Pub/Sub.
+This example configures audit transport resources for AlloyDB PostgreSQL logs and registers the datasource with Guardium.
 
-## Overview
+## What this example does
 
-This example shows the complete workflow for monitoring AlloyDB with Guardium:
+Use this example with an existing AlloyDB deployment.
 
-1. **Infrastructure Setup** (prerequisite): Deploy AlloyDB using `guardium-terraform/setup-middleware/gcp-alloydb`
-2. **Audit Transport + Registration** (this example): Create the Pub/Sub topic, Pub/Sub subscription, and Cloud Logging sink, then register the AlloyDB cluster with Guardium Universal Connector
+It:
+- creates the Pub/Sub topic and subscription for audit delivery
+- creates the Cloud Logging sink for AlloyDB PostgreSQL logs
+- grants the sink permission to publish to Pub/Sub
+- registers the AlloyDB datasource with Guardium Universal Connector
+
+It does not create the AlloyDB cluster itself.
 
 ## Prerequisites
 
-### 1. AlloyDB Infrastructure
+You need:
+- an existing AlloyDB cluster
+- a GCP credential in Guardium with access to the Pub/Sub subscription
+- a Guardium OAuth client for API-based registration
 
-First, deploy the AlloyDB infrastructure using the setup-middleware module:
-
-```bash
-cd ../../../guardium-terraform/setup-middleware/gcp-alloydb
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your values
-terraform init
-terraform apply
-```
-
-This creates:
-- AlloyDB cluster with audit logging enabled
-- All necessary networking and IAM for AlloyDB itself
-
-### 2. GCP Credentials in Guardium
-
-Configure GCP service account credentials in Guardium:
-
-1. Create a GCP service account with permissions:
-   - `pubsub.subscriptions.consume`
-   - `pubsub.subscriptions.get`
-
-2. Download the service account key JSON
-
-3. In Guardium, navigate to: **Setup → Tools → Credentials**
-
-4. Add new GCP credential with the service account key
-
-### 3. Guardium OAuth Client
-
-Register an OAuth client for API access:
+Example OAuth client registration:
 
 ```bash
-grdapi register_oauth_client \
-  --client-id client4 \
-  --guardium-host guardium.example.com \
-  --guardium-port 8443 \
-  --guardium-user admin
+grdapi register_oauth_client client_id="{YOUR_CLIENT_ID}}"
 ```
-
-Save the client secret returned.
 
 ## Usage
 
-### Step 1: Configure Variables
-
-Copy the example configuration:
+### 1. Configure variables
 
 ```bash
 cp terraform.tfvars.example terraform.tfvars
 ```
 
-Edit `terraform.tfvars` with your values:
+Set values such as:
 
 ```hcl
-# GCP Configuration
 gcp_project_id         = "my-gcp-project"
 gcp_region             = "us-central1"
 alloydb_cluster_id     = "guardium-alloydb-cluster"
-pubsub_topic_id        = "guardium-alloydb-cluster-audit-logs"
-pubsub_subscription_id = "guardium-alloydb-cluster-audit-logs-sub"
-enable_audit_logging   = true
-pubsub_ack_deadline    = 60
+pubsub_topic_id        = "guardium-alloydb-audit-logs"
+pubsub_subscription_id = "guardium-alloydb-audit-logs-sub"
 
-# Guardium Configuration
 udc_gcp_credential = "gcp-service-account"
 gdp_server         = "guardium.example.com"
 gdp_username       = "admin"
@@ -87,213 +53,57 @@ gdp_client_secret  = "your-client-secret"
 gdp_mu_host        = "mu1.example.com,mu2.example.com"
 ```
 
-### Step 2: Initialize Terraform
+### 2. Apply
 
 ```bash
 terraform init
-```
-
-### Step 3: Review the Plan
-
-```bash
 terraform plan
-```
-
-### Step 4: Apply the Configuration
-
-```bash
 terraform apply
 ```
 
-This will:
-- Create the Pub/Sub topic for AlloyDB audit logs
-- Create the Pub/Sub subscription for Guardium
-- Create the Cloud Logging sink for AlloyDB postgres logs
-- Grant Pub/Sub publisher access to the sink writer identity
-- Register the AlloyDB cluster with Guardium
-- Configure the Universal Connector
-- Start monitoring audit logs via Pub/Sub
+## Verify
 
-### Step 5: Verify in Guardium
-
-1. Navigate to **Setup → Tools → Universal Connector**
-2. Find your AlloyDB connector
-3. Verify status is "Running"
-4. Check that messages are being received
-
-## Configuration Options
-
-### Pub/Sub Settings
-
-Adjust these based on your audit log volume:
-
-```hcl
-# For high-volume environments
-threads      = 16
-max_messages = 500
-ack_deadline = 120
-
-# For low-volume environments
-threads      = 4
-max_messages = 50
-ack_deadline = 30
-```
-
-### Start Position
-
-```hcl
-# Process only new logs (recommended for production)
-csv_start_position = "end"
-
-# Process all historical logs (use with caution)
-csv_start_position = "beginning"
-```
-
-## Monitoring
-
-### Check Audit Logs
-
-View audit logs in Cloud Logging:
+### Check Cloud Logging
 
 ```bash
 gcloud logging read \
-  '((resource.type="alloydb.googleapis.com/Instance" logName="projects/my-gcp-project/logs/alloydb.googleapis.com%2Fpostgres.log" ))' \
+  'resource.type="alloydb.googleapis.com/Instance" AND logName="projects/my-gcp-project/logs/alloydb.googleapis.com%2Fpostgres.log"' \
   --project=my-gcp-project \
   --limit=10
 ```
 
-### Check Pub/Sub Messages
-
-View messages in the subscription:
+### Check Pub/Sub delivery
 
 ```bash
 gcloud pubsub subscriptions pull \
-  guardium-alloydb-cluster-audit-logs-sub \
+  guardium-alloydb-audit-logs-sub \
   --project=my-gcp-project \
   --limit=5
 ```
 
-### Monitor Universal Connector
+### Check Guardium
 
-In Guardium:
-1. Go to **Setup → Tools → Universal Connector**
-2. Select your AlloyDB connector
-3. View:
-   - Connection status
-   - Messages received
-   - Error count
-   - Last activity timestamp
+In Guardium, go to **Setup → Tools → Universal Connector** and verify the AlloyDB connector is running and receiving messages.
 
 ## Troubleshooting
 
-### No Audit Logs Appearing
+### No logs in Pub/Sub
+- confirm the AlloyDB cluster exists and is producing PostgreSQL logs
+- confirm the required AlloyDB audit-related database flags are enabled
+- confirm the logging sink exists and is targeting the expected Pub/Sub topic
 
-1. **Verify AlloyDB Configuration**:
-   ```bash
-   gcloud alloydb instances describe INSTANCE_NAME \
-     --cluster=CLUSTER_NAME \
-     --region=REGION \
-     --project=PROJECT_ID
-   ```
-   Check that audit logging flags are enabled.
-
-2. **Check Log Sink**:
-   ```bash
-   gcloud logging sinks describe SINK_NAME \
-     --project=PROJECT_ID
-   ```
-   Verify the sink is active and uses this inclusion filter:
-   `((resource.type="alloydb.googleapis.com/Instance" logName="projects/PROJECT_ID/logs/alloydb.googleapis.com%2Fpostgres.log" ))`
-
-3. **Verify Pub/Sub Topic**:
-   ```bash
-   gcloud pubsub topics list --project=PROJECT_ID
-   ```
-   Ensure the topic exists and has messages.
-
-### Universal Connector Not Receiving Messages
-
-1. **Check GCP Credentials**: Verify credentials in Guardium are correct
-2. **Check IAM Permissions**: Ensure service account has required permissions
-3. **Review UC Logs**: Check Guardium logs for connection errors
-4. **Test Subscription**: Pull messages manually to verify they exist
-
-### High Message Latency
-
-1. Increase `threads` value (e.g., 16 or 32)
-2. Increase `max_messages` value (e.g., 500)
-3. Increase `ack_deadline` if processing is slow
-4. Check Guardium system resources
-
-## Complete Example with Infrastructure
-
-For a complete end-to-end example including infrastructure setup:
-
-```hcl
-# Step 1: Deploy AlloyDB infrastructure
-module "alloydb_setup" {
-  source = "../../../guardium-terraform/setup-middleware/gcp-alloydb"
-
-  gcp_project_id = "my-gcp-project"
-  gcp_region     = "us-central1"
-  cluster_name   = "guardium-alloydb"
-  db_password    = var.db_password
-}
-
-# Step 2: Register with Guardium
-module "alloydb_audit" {
-  source = "../../modules/gcp-alloydb-audit"
-
-  gcp_project_id         = module.alloydb_setup.gcp_project_id
-  gcp_region             = module.alloydb_setup.gcp_region
-  alloydb_cluster_id     = module.alloydb_setup.cluster_name
-  pubsub_topic_id        = "guardium-alloydb-audit-logs"
-  pubsub_subscription_id = "guardium-alloydb-audit-logs-sub"
-  enable_audit_logging   = true
-
-  udc_gcp_credential = "gcp-service-account"
-  gdp_client_id      = var.gdp_client_id
-  gdp_client_secret  = var.gdp_client_secret
-  gdp_server         = var.gdp_server
-  gdp_username       = var.gdp_username
-  gdp_password       = var.gdp_password
-  gdp_mu_host        = var.gdp_mu_host
-}
-```
+### Guardium not receiving messages
+- confirm the Guardium GCP credential is valid
+- confirm the subscription contains messages
+- review Universal Connector logs in Guardium
 
 ## Cleanup
-
-To remove the audit configuration:
 
 ```bash
 terraform destroy
 ```
 
-**Note**: This removes the Guardium registration and the Pub/Sub/Cloud Logging audit transport resources created by this example. To delete the AlloyDB infrastructure itself, run `terraform destroy` in the setup-middleware directory.
-
-## Security Best Practices
-
-1. **Credentials**: Store sensitive values in environment variables or secret management systems
-2. **Service Account**: Use dedicated service account with minimal permissions
-3. **Network**: Keep AlloyDB in private network
-4. **Monitoring**: Set up alerts for UC failures
-5. **Audit**: Regularly review audit logs for suspicious activity
-
-## Related Documentation
-
-- [AlloyDB Documentation](https://cloud.google.com/alloydb/docs)
-- [Guardium Data Protection](https://www.ibm.com/docs/en/guardium)
-- [GCP Pub/Sub](https://cloud.google.com/pubsub/docs)
-- [Setup Middleware Module](../../../guardium-terraform/setup-middleware/gcp-alloydb/README.md)
-- [Audit Module](../../modules/gcp-alloydb-audit/README.md)
-
-## Support
-
-For issues or questions:
-- Check the troubleshooting section above
-- Review Guardium logs
-- Consult GCP Cloud Logging
-- Contact IBM Guardium support
+This removes the Pub/Sub, Cloud Logging, and Guardium registration resources created by this example.
 
 ## License
 

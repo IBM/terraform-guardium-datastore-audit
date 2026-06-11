@@ -37,7 +37,7 @@ variable "pubsub_subscription_id" {
 
 variable "enable_audit_logging" {
   type        = bool
-  description = "Whether to create the Pub/Sub topic, Pub/Sub subscription, and Cloud Logging sink for AlloyDB postgres audit logs"
+  description = "Whether to create the Pub/Sub topic, Pub/Sub subscription, and Cloud Logging sink for AlloyDB PostgreSQL logs. If false, provide existing Pub/Sub topic and subscription IDs."
   default     = true
 }
 
