@@ -1,0 +1,113 @@
+#
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
+#
+
+##############################
+# Cassandra Instance Configuration
+##############################
+
+# Unique identifier for your Cassandra instance
+cassandra_instance_identifier = "prod-cassandra-01"
+
+# Hostname or IP address of your Cassandra server
+cassandra_host = "192.168.1.100"
+
+# Path to Cassandra audit log file
+# Default: "/var/log/cassandra/audit/audit.log"
+cassandra_audit_log_path = "/var/log/cassandra/audit/audit.log"
+
+# Datasource tag for identifying the Cassandra instance in Guardium (REQUIRED)
+# This tag helps identify and group audit logs from this Cassandra instance
+datasource_tag = "prod-cassandra-cluster"
+
+##############################
+# Filebeat Configuration
+##############################
+
+# Enable Filebeat configuration on Cassandra server
+# Set to true to install and configure Filebeat
+# Set to false to skip Filebeat setup (only configure Guardium connector)
+enable_filebeat_setup = true
+
+# Server IP address or hostname for SSH connection
+# REQUIRED when enable_filebeat_setup = true
+server_ip = "192.168.1.100"
+
+# Username for SSH connection to Cassandra server
+# REQUIRED when enable_filebeat_setup = true
+server_username = "cassandra"
+
+# Password for SSH connection
+# REQUIRED when enable_filebeat_setup = true
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_server_password="your-secure-password"
+server_password = "your-secure-password"
+
+##############################
+# Guardium Configuration
+##############################
+
+# Guardium Central Manager hostname or IP address
+gdp_server = "guardium.example.com"
+
+# Guardium Central Manager port (default: 8443)
+gdp_port = "8443"
+
+# Guardium Web UI username
+gdp_username = "admin"
+
+# Guardium Web UI password
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_gdp_password="your-secure-password"
+gdp_password = "your-secure-password"
+
+# OAuth client ID from Guardium
+# Obtain this by running: grdapi register_oauth_client
+gdp_client_id = "your-client-id"
+
+# OAuth client secret from Guardium
+# IMPORTANT: Use environment variables or secure secret management for production
+# Example: export TF_VAR_gdp_client_secret="your-client-secret"
+gdp_client_secret = "your-client-secret"
+
+# Comma-separated list of Guardium Managed Units to deploy the profile
+# Leave empty to deploy to all managed units
+gdp_mu_host = "guardium-mu-01"
+
+##############################
+# Universal Connector Configuration
+##############################
+
+# Name for the Universal Connector
+# If not provided, will be auto-generated as: onprem-cassandra-<instance_identifier>
+udc_name = "cassandra-prod-filebeat"
+
+# Enable or disable the Universal Connector
+# Set to false to skip connector creation
+enable_universal_connector = true
+
+# Description for the UDC connector
+csv_description = "Guardium connector for production Cassandra cluster"
+
+##############################
+# Logstash Configuration
+##############################
+
+# Port number for Logstash to listen for Filebeat messages from Cassandra (REQUIRED)
+# This port is used in both Filebeat configuration and Guardium UDC template
+# Default: 5044 (standard Filebeat port)
+logstash_port = "5044"
+
+##############################
+# Tags
+##############################
+
+# Tags to apply to resources
+# Useful for organization, cost tracking, and automation
+tags = {
+  Environment = "production"
+  Application = "cassandra-audit"
+  ManagedBy   = "terraform"
+  Owner       = "database-team"
+}

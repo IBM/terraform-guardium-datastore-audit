@@ -1,14 +1,14 @@
 # Guardium Datastore Audit Configuration Terraform Module
 
-Terraform module which configures AWS datastores and Couchbase Capella for audit logging and integrates them with IBM Guardium Data Protection via Universal Connector.
+Terraform module which configures AWS, Azure datastores and Couchbase Capella for audit logging and integrates them with IBM Guardium Data Protection via Universal Connector.
 
 ## Scope
 
-This module automates the configuration of audit logging for various AWS datastores (DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, PostgreSQL RDS, Aurora PostgreSQL, Redshift) and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
+This module automates the configuration of audit logging for various AWS and Azure datastores (AWS: DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, OpenSearch, PostgreSQL RDS, Aurora PostgreSQL, Redshift; Azure: Cosmos DB) and Couchbase Capella, and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
 
 ## High-Level Architecture
 
-The following diagram illustrates how this module orchestrates the configuration of AWS datastores and their integration with Guardium Data Protection:
+The following diagram illustrates how this module orchestrates the configuration of AWS and Azure datastores and their integration with Guardium Data Protection:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -19,46 +19,56 @@ The following diagram illustrates how this module orchestrates the configuration
                                         │
                                         │ Orchestrates
                                         ▼
-        ┌───────────────────────────────────────────────────────────┐
-        │                                                           │
-        │              AWS Datastore Configuration                  │
-        │                                                           │
-        │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐   │
-        │  │  DynamoDB   │  │  DocumentDB  │  │  MariaDB RDS    │   │
-        │  │ + CloudTrail│  │  + Audit Logs│  │  + Audit Plugin │   │
-        │  └─────────────┘  └──────────────┘  └─────────────────┘   │
-        │                                                           │
-        │  ┌─────────────────┐  ┌──────────────────────────────┐    │
-        │  │  MySQL RDS      │  │  Aurora MySQL                │    │
-        │  │  + Audit Plugin │  │  + Audit Plugin              │    │
-        │  └─────────────────┘  └──────────────────────────────┘    │
-        │                                                           │
-        │  ┌────────────────────────────┐                           │
-        │  │  Neptune                   │                           │
-        │  │  + Audit Logs              │                           │
-        │  └────────────────────────────┘                           │
-        │                                                           │
-        │  ┌────────────────────────────┐                           │
-        │  │  OpenSearch                │                           │
-        │  │  + Audit Logs              │                           │
-        │  └────────────────────────────┘                           │
-        │                                                           │
-        │  ┌────────────────────────────┐                           │
-        │  │  PostgreSQL RDS            │                           │
-        │  │  + pgAudit (Object/Session)│                           │
-        │  └────────────────────────────┘                           │
-        │                                                           │
-        │  ┌──────────────────────────────────────────────────┐     │
-        │  │  Aurora PostgreSQL                               │     │
-        │  │  + pgAudit (Object/Session)                      │     │
-        │  └──────────────────────────────────────────────────┘     │
-        │                                                           │
-        │  ┌──────────────────────────────────────────────────┐     │
-        │  │  Redshift                                        │     │
-        │  │  + Connection & User Activity Logs               │     │
-        │  └──────────────────────────────────────────────────┘     │
-        │                                                           │
-        └───────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                    Cloud Datastore Configuration                                   │
+│                                                                                                    │
+│  ┌───────────────────────────────────────────────────────────┐  ┌────────────────────────────────┐ │
+│  │   AWS Datastore Configuration                             │  │  Azure Datastore Config        │ │
+│  │                                                           │  │                                │ │
+│  │  ┌──────────────┐  ┌──────────────┐                       │  │  ┌──────────────────────────┐  │ │
+│  │  │  DynamoDB    │  │  DocumentDB  │                       │  │  │  Azure Cosmos DB         │  │ │
+│  │  │  + CloudTrail│  │  + Audit Logs│                       │  │  │  + Diagnostic Settings   │  │ │
+│  │  └──────────────┘  └──────────────┘                       │  │  │  → Event Hub             │  │ │
+│  │                                                           │  │  └──────────────────────────┘  │ │
+│  │  ┌──────────────┐  ┌──────────────┐                       │  │                                │ │
+│  │  │  MariaDB RDS │  │  MySQL RDS   │                       │  │                                │ │
+│  │  │  + Audit     │  │  + Audit     │                       │  │                                │ │
+│  │  │    Plugin    │  │    Plugin    │                       │  │                                │ │
+│  │  └──────────────┘  └──────────────┘                       │  │                                │ │
+│  │                                                           │  │                                │ │
+│  │  ┌──────────────┐  ┌──────────────┐                       │  │                                │ │
+│  │  │  Aurora MySQL│  │  Neptune     │                       │  │                                │ │
+│  │  │  + Audit     │  │  + Audit     │                       │  │                                │ │
+│  │  │    Plugin    │  │    Logs      │                       │  │                                │ │
+│  │  └──────────────┘  └──────────────┘                       │  │                                │ │
+│  │                                                           │  │                                │ │
+│  │  ┌──────────────┐  ┌─────────────────────┐                │  │                                │ │
+│  │  │  OpenSearch  │  │  PostgreSQL         │                │  │                                │ │
+│  │  │  + Audit     │  │  RDS                │                │  │                                │ │
+│  │  │    Logs      │  │  + pgAudit          │                │  │                                │ │
+│  │  │              │  │    (Object/Session) │                │  │                                │ │
+│  │  └──────────────┘  └─────────────────────┘                │  │                                │ │
+│  │                                                           │  │                                │ │
+│  │  ┌─────────────────────┐  ┌──────────────────────┐        │  │                                │ │
+│  │  │  Aurora             │  │  Redshift            │        │  │                                │ │
+│  │  │  PostgreSQL         │  │  + Connection        │        │  │                                │ │
+│  │  │  + pgAudit          │  │    &                 │        │  │                                │ │
+│  │  │    (Object/Session) │  │    User Activty Logs │        │  │                                │ │
+│  │  └─────────────────────┘  └──────────────────────┘        │  │                                │ │
+│  │                                                           │  │                                │ │
+│  └───────────────────────────────────────────────────────────┘  └────────────────────────────────┘ │
+│                                                                                                    │
+│  ┌────────────────────────────────────────────┐                                                    │
+│  │   Couchbase Capella Configuration          │                                                    │
+│  │                                            │                                                    │
+│  │  ┌──────────────────────────────────────┐  │                                                    │
+│  │  │  Couchbase Capella                   │  │                                                    │
+│  │  │  + Audit Logs via API                │  │                                                    │
+│  │  └──────────────────────────────────────┘  │                                                    │
+│  │                                            │                                                    │
+│  └────────────────────────────────────────────┘                                                    │
+│                                                                                                    │
+└────────────────────────────────────────────────────────────────────────────────────────────────────┘
                                         │
                                         │ Audit Logs
                                         ▼
@@ -103,38 +113,54 @@ The following diagram illustrates how this module orchestrates the configuration
 ### Architecture Flow
 
 1. **Datastore Configuration**: The module configures each datastore to enable audit logging:
-  - **DynamoDB**: Enables CloudTrail data events to capture API calls
-  - **DocumentDB**: Enables audit and profiler logs via parameter groups
-  - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
-  - **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
-  - **Aurora MySQL**: Enables server audit logging via cluster parameter groups for Aurora MySQL clusters
-  - **Neptune**: Enables audit logs via parameter groups
-  - **OpenSearch**: Enables audit logs via domain configuration and security plugin
-  - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
-  - **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
-  - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
-  - **Couchbase Capella**: Enables audit logging via Capella API for cloud-native deployments
 
-2. **Log Aggregation**: Audit logs are collected in AWS:
-  - CloudWatch Log Groups store structured logs
-  - S3 buckets provide long-term storage for CloudTrail logs
-  - IAM roles and policies ensure secure access
+**AWS Datastores:**
+- **DynamoDB**: Enables CloudTrail data events to capture API calls
+- **DocumentDB**: Enables audit and profiler logs via parameter groups
+- **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
+- **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
+- **Aurora MySQL**: Enables server audit logging via cluster parameter groups for Aurora MySQL clusters
+- **Neptune**: Enables audit logs via parameter groups
+- **OpenSearch**: Enables audit logs via domain configuration and security plugin
+- **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
+- **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
+- **Redshift**: Enables connection and user activity logging to CloudWatch or S3
+
+**Azure Datastores:**
+- **Cosmos DB**: Enables diagnostic settings to capture data plane, query runtime, and control plane logs
+
+**Cloud-Native Datastores:**
+- **Couchbase Capella**: Enables audit logging via Capella API for cloud-native deployments
+
+2. **Log Aggregation**: Audit logs are collected in cloud platforms:
+
+**AWS:**
+- CloudWatch Log Groups store structured logs
+- S3 buckets provide long-term storage for CloudTrail logs
+- IAM roles and policies ensure secure access
+
+**Azure:**
+- Event Hub receives real-time diagnostic logs
+- Storage accounts provide checkpointing for Event Hub consumers
+- Azure RBAC ensures secure access
 
 3. **Universal Connector**: The module deploys and configures Guardium Universal Connector:
-  - Establishes connection to CloudWatch Logs or S3
-  - Uses AWS credentials configured in Guardium
-  - Applies parsing rules specific to each datastore type
-  - Streams processed data to Guardium Data Protection
+- Establishes connection to CloudWatch Logs, S3, or Azure Event Hub
+- Uses AWS or Azure credentials configured in Guardium
+- Applies parsing rules specific to each datastore type
+- Streams processed data to Guardium Data Protection
 
 4. **Guardium Integration**: Audit data flows into Guardium for:
-  - Real-time security monitoring
-  - Compliance reporting (PCI-DSS, HIPAA, GDPR, etc.)
-  - Threat detection and alerting
-  - Forensic analysis and investigation
+- Real-time security monitoring
+- Compliance reporting (PCI-DSS, HIPAA, GDPR, etc.)
+- Threat detection and alerting
+- Forensic analysis and investigation
 
 ## Supported Datastores
 
-This module provides audit configuration for the following datastores:
+This module provides audit configuration for the following AWS and Azure datastores:
+
+### AWS Datastores
 
 | Datastore | Module Path | Audit Method | Log Destination |
 |-----------|-------------|--------------|-----------------|
@@ -153,25 +179,42 @@ This module provides audit configuration for the following datastores:
 | Couchbase Capella | `modules/couchbase-capella` | Capella Audit Logs | REST API |
 | MySQL over Syslog| `modules/onprem-mysql` | MySQL Audit Plugin | Syslog |
 
+### Azure Datastores
+
+| Datastore | Module Path | Audit Method | Log Destination |
+|-----------|-------------|--------------|-----------------|
+| Azure Cosmos DB | `modules/azure-cosmos-audit` | Diagnostic Settings | Azure Event Hub |
+
 ## Prerequisites
 
 Before using this module, ensure you have:
 
-1. **AWS Account**: With appropriate permissions to create and manage:
-  - CloudTrail and CloudWatch resources
-  - IAM roles and policies
-  - S3 buckets
-  - Database parameter/option groups
-  - SQS queues (for PostgreSQL modules)
+1. **Cloud Account**: With appropriate permissions to create and manage resources:
+
+**For AWS:**
+- CloudTrail and CloudWatch resources
+- IAM roles and policies
+- S3 buckets
+- Database parameter/option groups
+- SQS queues (for PostgreSQL modules)
+
+**For Azure:**
+- Diagnostic settings
+- Event Hub namespaces and Event Hubs
+- Storage accounts
+- Azure RBAC permissions
 
 2. **Guardium Data Protection Instance**: A running GDP cluster (version 12.2.1 or above) with:
-  - Web UI credentials with appropriate permissions
-  - OAuth client registered via `grdapi register_oauth_client`
-  - AWS credentials configured in Universal Connector
+- Web UI credentials with appropriate permissions
+- OAuth client registered via `grdapi register_oauth_client`
+- AWS credentials configured in Universal Connector (for AWS datastores)
+- Azure credentials configured in Universal Connector (for Azure datastores)
 
 3. **Terraform**: Version 1.0.0 or later
 
-4. **AWS CLI**: Configured with appropriate credentials
+4. **Cloud CLI**: Configured with appropriate credentials
+- **AWS CLI** for AWS datastores
+- **Azure CLI** for Azure datastores
 
 ## Guardium Data Protection Version Compatibility
 
@@ -609,6 +652,8 @@ module "redshift_audit" {
 
 Complete working examples are available in the `examples/` directory:
 
+### AWS Examples
+
 - [aws-aurora-mysql-audit](examples/aws-aurora-mysql-audit) - Aurora MySQL audit configuration with Universal Connector
 - [amazon-opensearch-audit](examples/amazon-opensearch-audit) - OpenSearch audit configuration with Universal Connector
 - [aws-aurora-postgres-object](examples/aws-aurora-postgres-object) - Aurora PostgreSQL object-level auditing
@@ -625,6 +670,10 @@ Complete working examples are available in the `examples/` directory:
 - [couchbase-capella](examples/couchbase-capella) - Couchbase Capella audit configuration with Universal Connector
 - [onprem-mysql](examples/onprem-mysql) - On-premises MySQL audit configuration with syslog
 
+### Azure Examples
+
+- [azure-cosmos-audit](examples/azure-cosmos-audit) - Azure Cosmos DB audit configuration with Event Hub and Universal Connector
+
 Each example includes:
 - Complete Terraform configuration
 - `terraform.tfvars.example` file with all required variables
@@ -632,13 +681,13 @@ Each example includes:
 
 ## Key Features
 
-- **Automated Configuration**: Automatically configures audit logging for AWS datastores and Couchbase Capella
+- **Automated Configuration**: Automatically configures audit logging for AWS and Azure datastores and Couchbase Capella
 - **Universal Connector Integration**: Seamlessly integrates with Guardium Universal Connector
-- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, PostgreSQL RDS, and Aurora PostgreSQL
+- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, OpenSearch, PostgreSQL RDS, RedShift, Aurora PostgreSQL and Azure Cosmos
 - **Flexible Audit Levels**: Choose between object-level and session-level auditing for PostgreSQL and Aurora PostgreSQL
 - **CloudWatch Integration**: Leverages CloudWatch Logs for centralized log management
 - **Aurora Cluster Support**: Native support for Aurora MySQL and Aurora PostgreSQL clusters with automatic parameter group management
-- **Cloud-Native Support**: Includes support for Couchbase Capella cloud-native database platform
+- **Cloud-Native Support**: Includes support for Couchbase Capella cloud-native database platform and Azure Cosmos DB
 - **Compliance Ready**: Supports compliance requirements (PCI-DSS, HIPAA, GDPR, SOC 2)
 - **Terraform Native**: Fully declarative infrastructure as code approach
 
@@ -649,31 +698,31 @@ Each example includes:
 - **IAM Permissions**: Follow the principle of least privilege for all IAM roles and policies
 - **Network Security**: Configure security groups and network ACLs appropriately
 - **Encryption**: Enable encryption for CloudWatch Logs, S3 buckets, and data in transit
-- **Access Control**: Implement proper access controls for Guardium and AWS resources
+- **Access Control**: Implement proper access controls for Guardium and AWS/Azure resources
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **CloudTrail Not Capturing Events**:
-  - Verify CloudTrail is configured with data events for the specific datastore
-  - Check IAM permissions for CloudTrail
-  - Ensure CloudWatch Log Group is properly configured
+- Verify CloudTrail is configured with data events for the specific datastore
+- Check IAM permissions for CloudTrail
+- Ensure CloudWatch Log Group is properly configured
 
 2. **Universal Connector Not Processing Logs**:
-  - Verify AWS credentials are correctly configured in Guardium
-  - Check network connectivity between Guardium and AWS
-  - Review Universal Connector logs in Guardium UI
+- Verify AWS/Azure credentials are correctly configured in Guardium
+- Check network connectivity between Guardium and cloud providers
+- Review Universal Connector logs in Guardium UI
 
 3. **Parameter/Option Group Changes Not Applied**:
-  - Some changes require database restart or failover
-  - Check the `force_failover` variable setting
-  - Review AWS RDS events for any errors
+- Some changes require database restart or failover
+- Check the `force_failover` variable setting
+- Review AWS RDS events for any errors
 
 4. **Authentication Errors**:
-  - Verify Guardium OAuth client credentials
-  - Check Guardium user has appropriate permissions
-  - Ensure OAuth client is properly registered via `grdapi register_oauth_client`
+- Verify Guardium OAuth client credentials
+- Check Guardium user has appropriate permissions
+- Ensure OAuth client is properly registered via `grdapi register_oauth_client`
 
 For detailed troubleshooting, refer to the individual module READMEs.
 
@@ -709,4 +758,6 @@ Module is maintained by IBM with help from [these awesome contributors](https://
 - [AWS CloudTrail Documentation](https://docs.aws.amazon.com/cloudtrail/)
 - [AWS CloudWatch Logs Documentation](https://docs.aws.amazon.com/cloudwatch/latest/logs/)
 - [Terraform AWS Provider Documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- [Azure Monitor Documentation](https://docs.microsoft.com/azure/azure-monitor/)
+- [Azure Event Hubs Documentation](https://docs.microsoft.com/azure/event-hubs/)
 - [Couchbase Capella Documentation](https://docs.couchbase.com/cloud/)

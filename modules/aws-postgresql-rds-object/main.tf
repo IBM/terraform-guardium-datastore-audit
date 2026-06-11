@@ -73,6 +73,7 @@ module "common_rds-postgres-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
   source = "IBM/common/guardium//modules/rds-postgres-cloudwatch-registration"
 
+  aws_region          = var.aws_region
   aws_account_id      = local.aws_account_id
   gdp_client_id       = var.gdp_client_id
   gdp_client_secret   = var.gdp_client_secret
