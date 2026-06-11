@@ -26,13 +26,13 @@ variable "alloydb_cluster_id" {
 variable "pubsub_topic_id" {
   type        = string
   description = "Pub/Sub topic ID for AlloyDB audit logs"
-  default     = "nida-terraform-alloydb-audit-logs"
+  default     = "guardium-alloydb-audit-logs"
 }
 
 variable "pubsub_subscription_id" {
   type        = string
   description = "Pub/Sub subscription ID for AlloyDB audit logs"
-  default     = "nida-terraform-alloydb-audit-logs-sub"
+  default     = "guardium-alloydb-audit-logs-sub"
 }
 
 variable "enable_audit_logging" {
