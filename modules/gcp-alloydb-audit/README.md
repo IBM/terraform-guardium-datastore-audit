@@ -6,7 +6,9 @@ This module configures audit logging for Google Cloud AlloyDB clusters and regis
 
 This module integrates an existing AlloyDB cluster with Guardium Data Protection by:
 - Connecting to an existing AlloyDB cluster
-- Using a pre-configured Pub/Sub subscription for audit logs
+- Creating the Pub/Sub topic and subscription for AlloyDB audit logs
+- Creating a Cloud Logging sink for AlloyDB postgres audit logs
+- Granting Pub/Sub publisher access to the sink writer identity
 - Registering the cluster with Guardium Universal Connector
 - Enabling real-time audit log monitoring
 
@@ -14,8 +16,11 @@ This module integrates an existing AlloyDB cluster with Guardium Data Protection
 
 1. **AlloyDB Infrastructure**: Use the `guardium-terraform/setup-middleware/gcp-alloydb` module to create:
    - AlloyDB cluster with audit logging enabled
-   - Pub/Sub topic and subscription
-   - Cloud Logging sink configuration
+
+2. **Audit Transport Resources**: This module creates:
+   - Pub/Sub topic
+   - Pub/Sub subscription
+   - Cloud Logging sink with the AlloyDB postgres log inclusion filter
 
 2. **GCP Credentials**: Service account configured in Guardium with permissions:
    - `pubsub.subscriptions.consume`
@@ -41,15 +46,16 @@ module "alloydb_setup" {
   db_password    = var.db_password
 }
 
-# Step 2: Configure audit logging and register with Guardium
+# Step 2: Create audit transport resources and register with Guardium
 module "alloydb_audit" {
   source = "path/to/terraform-guardium-datastore-audit/modules/gcp-alloydb-audit"
 
-  # Use outputs from setup module
   gcp_project_id         = module.alloydb_setup.gcp_project_id
   gcp_region             = module.alloydb_setup.gcp_region
   alloydb_cluster_id     = module.alloydb_setup.cluster_name
-  pubsub_subscription_id = module.alloydb_setup.pubsub_subscription_name
+  pubsub_topic_id        = "guardium-alloydb-audit-logs"
+  pubsub_subscription_id = "guardium-alloydb-audit-logs-sub"
+  enable_audit_logging   = true
 
   # Guardium Configuration
   udc_gcp_credential = "gcp-service-account"
@@ -64,7 +70,7 @@ module "alloydb_audit" {
 
 ### Using with Existing AlloyDB Cluster
 
-If you already have an AlloyDB cluster with Pub/Sub configured:
+If you already have an AlloyDB cluster and want this module to create the audit transport resources:
 
 ```hcl
 module "alloydb_audit" {
@@ -74,7 +80,9 @@ module "alloydb_audit" {
   gcp_project_id         = "my-gcp-project"
   gcp_region             = "us-central1"
   alloydb_cluster_id     = "existing-alloydb-cluster"
+  pubsub_topic_id        = "existing-audit-logs"
   pubsub_subscription_id = "existing-audit-logs-sub"
+  enable_audit_logging   = true
 
   # Guardium Configuration
   udc_gcp_credential = "gcp-service-account"
@@ -86,9 +94,8 @@ module "alloydb_audit" {
   gdp_mu_host        = "guardium-mu-1,guardium-mu-2"
 
   # Optional: Pub/Sub Configuration
-  threads      = 8
-  max_messages = 100
-  ack_deadline = 60
+  pubsub_ack_deadline = 60
+  max_messages        = 100
 }
 ```
 
@@ -100,6 +107,7 @@ module "alloydb_audit" {
 |------|-------------|------|
 | `gcp_project_id` | GCP project ID | `string` |
 | `alloydb_cluster_id` | AlloyDB cluster identifier | `string` |
+| `pubsub_topic_id` | Pub/Sub topic ID | `string` |
 | `pubsub_subscription_id` | Pub/Sub subscription ID | `string` |
 | `udc_gcp_credential` | GCP credential name in Guardium | `string` |
 | `gdp_client_id` | Guardium OAuth client ID | `string` |
@@ -116,18 +124,22 @@ module "alloydb_audit" {
 | `udc_name` | Universal connector name | `string` | `"alloydb-audit"` |
 | `gdp_port` | Guardium port | `string` | `"8443"` |
 | `gdp_mu_host` | Guardium Managed Units | `string` | `""` |
+| `enable_audit_logging` | Create AlloyDB Pub/Sub topic, subscription, and Cloud Logging sink | `bool` | `true` |
+| `audit_log_sink_name` | Optional sink name override | `string` | `""` |
+| `pubsub_ack_deadline` | Ack deadline for the created subscription | `number` | `60` |
 | `enable_universal_connector` | Enable UC | `bool` | `true` |
 | `csv_start_position` | Start position | `string` | `"end"` |
-| `threads` | Pub/Sub threads | `number` | `8` |
 | `max_messages` | Max messages per pull | `number` | `100` |
-| `ack_deadline` | Ack deadline (seconds) | `number` | `60` |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | `alloydb_cluster_id` | AlloyDB cluster identifier |
+| `pubsub_topic_name` | Pub/Sub topic name |
 | `pubsub_subscription_id` | Pub/Sub subscription ID |
+| `log_sink_name` | Cloud Logging sink name |
+| `log_sink_writer_identity` | Cloud Logging sink writer identity |
 | `gcp_project_id` | GCP project ID |
 | `gcp_region` | GCP region |
 | `universal_connector_enabled` | UC enabled status |
@@ -148,24 +160,15 @@ Guardium Data Protection
 
 ## Audit Log Configuration
 
-The AlloyDB cluster should be configured with these database flags (handled by setup-middleware):
+The AlloyDB cluster should be configured with supported AlloyDB/PostgreSQL audit flags.
 
-```hcl
-database_flags = {
-  "cloudsql.enable_pgaudit"           = "on"
-  "pgaudit.log"                       = "all"
-  "pgaudit.log_catalog"               = "on"
-  "pgaudit.log_parameter"             = "on"
-  "pgaudit.log_relation"              = "on"
-  "pgaudit.log_statement_once"        = "off"
-  "log_connections"                   = "on"
-  "log_disconnections"                = "on"
-  "log_duration"                      = "on"
-  "log_lock_waits"                    = "on"
-  "log_statement"                     = "all"
-  "log_min_duration_statement"        = "0"
-}
+When `enable_audit_logging = true`, this module creates a Cloud Logging sink with this inclusion filter:
+
+```text
+((resource.type="alloydb.googleapis.com/Instance" logName="projects/<project-name>/logs/alloydb.googleapis.com%2Fpostgres.log" ))
 ```
+
+The `<project-name>` portion is rendered from `gcp_project_id`.
 
 ## Monitoring
 

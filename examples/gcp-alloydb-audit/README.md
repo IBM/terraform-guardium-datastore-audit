@@ -6,8 +6,8 @@ This example demonstrates how to configure audit logging for a GCP AlloyDB clust
 
 This example shows the complete workflow for monitoring AlloyDB with Guardium:
 
-1. **Infrastructure Setup** (prerequisite): Deploy AlloyDB with audit logging using `guardium-terraform/setup-middleware/gcp-alloydb`
-2. **Audit Registration** (this example): Register the AlloyDB cluster with Guardium Universal Connector
+1. **Infrastructure Setup** (prerequisite): Deploy AlloyDB using `guardium-terraform/setup-middleware/gcp-alloydb`
+2. **Audit Transport + Registration** (this example): Create the Pub/Sub topic, Pub/Sub subscription, and Cloud Logging sink, then register the AlloyDB cluster with Guardium Universal Connector
 
 ## Prerequisites
 
@@ -25,9 +25,7 @@ terraform apply
 
 This creates:
 - AlloyDB cluster with audit logging enabled
-- Pub/Sub topic and subscription
-- Cloud Logging sink
-- All necessary networking and IAM
+- All necessary networking and IAM for AlloyDB itself
 
 ### 2. GCP Credentials in Guardium
 
@@ -74,7 +72,10 @@ Edit `terraform.tfvars` with your values:
 gcp_project_id         = "my-gcp-project"
 gcp_region             = "us-central1"
 alloydb_cluster_id     = "guardium-alloydb-cluster"
+pubsub_topic_id        = "guardium-alloydb-cluster-audit-logs"
 pubsub_subscription_id = "guardium-alloydb-cluster-audit-logs-sub"
+enable_audit_logging   = true
+pubsub_ack_deadline    = 60
 
 # Guardium Configuration
 udc_gcp_credential = "gcp-service-account"
@@ -105,6 +106,10 @@ terraform apply
 ```
 
 This will:
+- Create the Pub/Sub topic for AlloyDB audit logs
+- Create the Pub/Sub subscription for Guardium
+- Create the Cloud Logging sink for AlloyDB postgres logs
+- Grant Pub/Sub publisher access to the sink writer identity
 - Register the AlloyDB cluster with Guardium
 - Configure the Universal Connector
 - Start monitoring audit logs via Pub/Sub
@@ -152,8 +157,7 @@ View audit logs in Cloud Logging:
 
 ```bash
 gcloud logging read \
-  "resource.type=alloydb.googleapis.com/Instance
-   resource.labels.cluster_id=guardium-alloydb-cluster" \
+  '((resource.type="alloydb.googleapis.com/Instance" logName="projects/my-gcp-project/logs/alloydb.googleapis.com%2Fpostgres.log" ))' \
   --project=my-gcp-project \
   --limit=10
 ```
@@ -198,7 +202,8 @@ In Guardium:
    gcloud logging sinks describe SINK_NAME \
      --project=PROJECT_ID
    ```
-   Verify the sink is active and filter is correct.
+   Verify the sink is active and uses this inclusion filter:
+   `((resource.type="alloydb.googleapis.com/Instance" logName="projects/PROJECT_ID/logs/alloydb.googleapis.com%2Fpostgres.log" ))`
 
 3. **Verify Pub/Sub Topic**:
    ```bash
@@ -242,7 +247,9 @@ module "alloydb_audit" {
   gcp_project_id         = module.alloydb_setup.gcp_project_id
   gcp_region             = module.alloydb_setup.gcp_region
   alloydb_cluster_id     = module.alloydb_setup.cluster_name
-  pubsub_subscription_id = module.alloydb_setup.pubsub_subscription_name
+  pubsub_topic_id        = "guardium-alloydb-audit-logs"
+  pubsub_subscription_id = "guardium-alloydb-audit-logs-sub"
+  enable_audit_logging   = true
 
   udc_gcp_credential = "gcp-service-account"
   gdp_client_id      = var.gdp_client_id
@@ -262,7 +269,7 @@ To remove the audit configuration:
 terraform destroy
 ```
 
-**Note**: This only removes the Guardium registration. To delete the AlloyDB infrastructure, run `terraform destroy` in the setup-middleware directory.
+**Note**: This removes the Guardium registration and the Pub/Sub/Cloud Logging audit transport resources created by this example. To delete the AlloyDB infrastructure itself, run `terraform destroy` in the setup-middleware directory.
 
 ## Security Best Practices
 

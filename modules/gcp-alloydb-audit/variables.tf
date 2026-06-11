@@ -25,12 +25,32 @@ variable "alloydb_cluster_id" {
 
 variable "pubsub_topic_id" {
   type        = string
-  description = "Pub/Sub topic ID for AlloyDB audit logs (created by setup-middleware)"
+  description = "Pub/Sub topic ID for AlloyDB audit logs"
+  default     = ""
 }
 
 variable "pubsub_subscription_id" {
   type        = string
-  description = "Pub/Sub subscription ID for AlloyDB audit logs (created by setup-middleware)"
+  description = "Pub/Sub subscription ID for AlloyDB audit logs"
+  default     = ""
+}
+
+variable "enable_audit_logging" {
+  type        = bool
+  description = "Whether to create the Pub/Sub topic, Pub/Sub subscription, and Cloud Logging sink for AlloyDB postgres audit logs"
+  default     = true
+}
+
+variable "audit_log_sink_name" {
+  type        = string
+  description = "Optional Cloud Logging sink name. If empty, defaults to <alloydb_cluster_id>-audit-sink"
+  default     = ""
+}
+
+variable "pubsub_ack_deadline" {
+  type        = number
+  description = "Acknowledgement deadline in seconds for the AlloyDB audit Pub/Sub subscription"
+  default     = 60
 }
 
 //////
