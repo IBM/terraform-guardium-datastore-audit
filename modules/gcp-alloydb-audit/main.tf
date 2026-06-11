@@ -60,7 +60,7 @@ resource "google_pubsub_topic_iam_member" "alloydb_audit_sink_publisher" {
 
 # Module to register AlloyDB with Guardium via Pub/Sub
 module "alloydb-pubsub-registration" {
-  source = "/Users/nida/GuardiumInsights/TForm/Terraform/terraform-guardium-common/modules/alloydb-pubsub-registration"
+  source = "IBM/common/guardium//modules/alloydb-pubsub-registration"
 
   # GCP Configuration
   gcp_project_id         = var.gcp_project_id
