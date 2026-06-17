@@ -5,7 +5,7 @@
 
 output "profile_csv" {
   description = "Universal Connector profile CSV"
-  value       = module.common_azure-cosmos-eventhub-registration.profile_csv
+  value       = module.common_azure-eventhub-registration.profile_csv
 }
 
 output "udc_name" {

@@ -26,7 +26,7 @@ data "azurerm_storage_account" "checkpoint" {
 
 # Call diagnostic settings common module
 module "common_azure-cosmos-diagnostic-settings" {
-  source = "IBM/common/guardium//modules/azure-cosmos-diagnostic-settings"
+  source = "../../../terraform-guardium-common/modules/azure-cosmos-diagnostic-settings"
 
   cosmos_account_name              = var.cosmos_account_name
   resource_group_name              = var.resource_group_name
@@ -62,8 +62,13 @@ locals {
   )
 }
 
-module "common_azure-cosmos-eventhub-registration" {
-  source = "IBM/common/guardium//modules/azure-cosmos-eventhub-registration"
+module "common_azure-eventhub-registration" {
+  source = "../../../terraform-guardium-common/modules/azure-eventhub-registration"
+
+  # Profile Configuration
+  profile_definition_name = "Azure Cosmos over Event Hub"
+  udc_name                = var.cosmos_account_name
+  description             = "GDP Azure Cosmos DB connector for ${var.cosmos_account_name}"
 
   # Azure Configuration
   azure_region          = var.azure_region
@@ -75,7 +80,6 @@ module "common_azure-cosmos-eventhub-registration" {
   consumer_group        = var.consumer_group
 
   # Guardium Configuration
-  udc_name                   = var.cosmos_account_name
   gdp_client_id              = var.gdp_client_id
   gdp_client_secret          = var.gdp_client_secret
   gdp_server                 = var.gdp_server
