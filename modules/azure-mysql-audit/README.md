@@ -115,7 +115,7 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| azure_region | Azure region where resources are deployed (should match resource group location) | `string` | `"eastus"` | no |
+| azure_region | Azure region hint (actual region is detected from resource group location) | `string` | `"eastus"` | no |
 | resource_group_name | Name of the Azure resource group | `string` | n/a | yes |
 | mysql_server_name | Name of the MySQL Flexible Server | `string` | n/a | yes |
 | eventhub_namespace_name | Name of the Event Hub namespace | `string` | n/a | yes |
@@ -154,7 +154,7 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 | eventhub_namespace_name | Name of the Event Hub namespace |
 | eventhub_name | Name of the Event Hub |
 | storage_account_name | Name of the storage account |
-| azure_region | Azure region where resources are deployed |
+| azure_region | Actual Azure region where the resource group is located |
 | subscription_id | Azure subscription ID |
 | resource_group_name | Name of the resource group |
 | diagnostic_setting_name | Name of the diagnostic setting |

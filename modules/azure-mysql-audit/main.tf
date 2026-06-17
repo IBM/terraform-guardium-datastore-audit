@@ -6,10 +6,14 @@
 locals {
   udc_name        = format("%s-%s", var.mysql_server_name, local.subscription_id)
   subscription_id = data.azurerm_client_config.current.subscription_id
-  azure_region    = var.azure_region
+  azure_region    = data.azurerm_resource_group.rg.location
 }
 
 data "azurerm_client_config" "current" {}
+
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
+}
 
 # Get Event Hub authorization rule for connection string
 data "azurerm_eventhub_namespace_authorization_rule" "eventhub_auth" {
