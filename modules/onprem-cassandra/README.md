@@ -157,7 +157,3 @@ module "cassandra_audit" {
 - The module creates a backup of the existing `filebeat.yml` before modification
 - SSL/TLS is recommended for production environments
 
-## License
-
-Copyright IBM Corp. 2026
-SPDX-License-Identifier: Apache-2.0

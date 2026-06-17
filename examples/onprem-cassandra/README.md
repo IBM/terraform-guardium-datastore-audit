@@ -16,7 +16,6 @@ This example sets up:
 2. **Cassandra Audit Logging Enabled**: Audit logging must be enabled before running this example
 3. **Filebeat Installed**: Filebeat must be installed on the Cassandra server
 4. **SSH Access**: SSH access to the Cassandra server
-5. **Guardium Data Protection**: Version 12.2.1 or above
 6. **Network Connectivity**: Cassandra server must be able to send logs to Guardium Logstash
 7. **Guardium Credentials**: OAuth client credentials and Web UI credentials
 
@@ -75,10 +74,6 @@ audit_logging_options:
 ```
 
 After saving the files, restart Cassandra:
-
-```bash
-sudo systemctl restart cassandra
-```
 
 ## Usage
 
@@ -232,42 +227,3 @@ If Filebeat fails to start:
 - Check `/var/log/filebeat/filebeat` for errors
 - Verify the audit log path is correct
 - Ensure Filebeat has read permissions on the audit log file
-
-### SSL/TLS Issues
-
-If experiencing SSL/TLS connection problems:
-- Verify the certificate path is correct on the Cassandra server
-- Check certificate validity and expiration
-- Try disabling SSL verification temporarily for testing (not recommended for production)
-
-### Performance Issues
-
-If experiencing high load:
-- Monitor Filebeat resource usage
-- Adjust Cassandra audit settings to reduce log volume
-- Consider filtering out noisy queries or keyspaces
-- Use bulk_max_size in Filebeat configuration to batch events
-
-## Cleanup
-
-To remove the configuration:
-
-```bash
-terraform destroy
-```
-
-**Note**: This will remove the Guardium configuration and Filebeat setup. It will not affect your Cassandra instance or its Cassandra audit logging configuration.
-
-## Additional Resources
-
-- [Apache Cassandra Audit Logging Documentation](https://cassandra.apache.org/doc/latest/cassandra/operating/audit_logging.html)
-- [Filebeat Documentation](https://www.elastic.co/guide/en/beats/filebeat/current/index.html)
-- [Guardium Data Protection Documentation](https://www.ibm.com/docs/en/guardium)
-- [Filebeat Logstash Output](https://www.elastic.co/guide/en/beats/filebeat/current/logstash-output.html)
-
-## Support
-
-For issues or questions:
-- Check the main module [README](../../modules/onprem-cassandra/README.md)
-- Review Guardium documentation
-- Contact your Guardium administrator
