@@ -1,17 +1,19 @@
 # Apache Cassandra Audit Module
 
-This Terraform module automates the configuration of Apache Cassandra audit logging with Guardium Data Protection using Filebeat.
+This Terraform module automates the configuration of Apache Cassandra audit log forwarding to Guardium Data Protection using Filebeat. This module configures Filebeat only; you must enable Cassandra audit logging separately before running Terraform.
 
 ## Overview
 
 This module:
-1. Configures Filebeat on the Cassandra server to collect audit logs
+1. Configures Filebeat on the Cassandra server to collect Cassandra audit logs
 2. Forwards audit logs to Guardium via Logstash
 3. Registers the Cassandra instance as a Universal Connector datasource in Guardium
+4. Does not enable Cassandra audit logging in Cassandra itself
 
 ## Prerequisites
 
-- Apache Cassandra instance with audit logging enabled
+- Apache Cassandra instance
+- Cassandra audit logging enabled before running this module
 - Filebeat installed on the Cassandra server
 - SSH access to the Cassandra server
 - Guardium Data Protection instance with Universal Connector configured
@@ -19,7 +21,19 @@ This module:
 
 ## Cassandra Audit Configuration
 
-Before using this module, ensure Cassandra audit logging is enabled in `cassandra.yaml`:
+This module enables Filebeat log collection only. It does **not** enable Cassandra audit logging for you. Before using this module, explicitly enable Cassandra audit logging on the Cassandra server.
+
+### Steps to enable Cassandra audit logging
+
+1. Edit `/etc/cassandra/conf/cassandra.yaml`.
+2. In `audit_logging_options`, change `enabled: false` to `enabled: true`.
+3. Set the logger class to `FileAuditLogger`.
+4. Edit `/etc/cassandra/conf/logback.xml`.
+5. Uncomment the `AUDIT` appender and `org.apache.cassandra.audit` logger configuration shown below.
+6. Save the files.
+7. Restart the Cassandra service.
+
+#### Example `cassandra.yaml` configuration
 
 ```yaml
 audit_logging_options:
@@ -35,6 +49,36 @@ audit_logging_options:
     excluded_users: ""
 ```
 
+#### Example `logback.xml` configuration
+
+```xml
+<appender name="AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  <file>${cassandra.logdir}/audit/audit.log</file>
+  <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+    <!-- rollover daily -->
+    <fileNamePattern>${cassandra.logdir}/audit/audit.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+    <!-- each file should be at most 50MB, keep 30 days worth of history, but at most 5GB -->
+    <maxFileSize>50MB</maxFileSize>
+    <maxHistory>30</maxHistory>
+    <totalSizeCap>5GB</totalSizeCap>
+  </rollingPolicy>
+  <encoder>
+    <pattern>%-5level [%thread] %date{ISO8601} %F:%L - %msg%n</pattern>
+  </encoder>
+</appender>
+
+<!-- Audit Logging additivity to redirect audit logging events to audit/audit.log -->
+<logger name="org.apache.cassandra.audit" additivity="false" level="INFO">
+  <appender-ref ref="AUDIT"/>
+</logger>
+```
+
+After saving the files, restart Cassandra:
+
+```bash
+sudo systemctl restart cassandra
+```
+
 ## Usage
 
 ```hcl
@@ -42,6 +86,7 @@ module "cassandra_audit" {
   source = "path/to/modules/onprem-cassandra"
 
   # Cassandra Configuration
+  # Audit logging must already be enabled in cassandra.yaml and logback.xml
   cassandra_instance_identifier = "prod-cassandra-01"
   cassandra_host                = "10.0.1.100"
   cassandra_audit_log_path      = "/var/log/cassandra/audit/audit.log"
@@ -107,6 +152,7 @@ module "cassandra_audit" {
 ## Notes
 
 - The module uses SSH to configure Filebeat on the Cassandra server
+- Ensure Cassandra audit logging is enabled in both `cassandra.yaml` and `logback.xml` before running this module
 - Ensure the Cassandra server has Filebeat installed before running this module
 - The module creates a backup of the existing `filebeat.yml` before modification
 - SSL/TLS is recommended for production environments

@@ -1,26 +1,40 @@
 # On-Premises Apache Cassandra Example
 
-This example demonstrates how to configure on-premises Apache Cassandra audit logging with IBM Guardium Data Protection using Filebeat.
+This example demonstrates how to configure on-premises Apache Cassandra audit log forwarding with IBM Guardium Data Protection using Filebeat. This example configures Filebeat only; you must enable Cassandra audit logging separately before running Terraform.
 
 ## Overview
 
 This example sets up:
-- Filebeat configuration on the Cassandra server to collect audit logs
+- Filebeat configuration on the Cassandra server to collect Cassandra audit logs
 - Guardium Universal Connector to receive Cassandra audit logs via Logstash
 - Automatic forwarding of audit logs from Cassandra to Guardium
+- Explicit prerequisite configuration to enable Cassandra audit logging before Terraform runs
 
 ## Prerequisites
 
-1. **On-premises Cassandra Instance**: Apache Cassandra server with audit logging enabled
-2. **Filebeat Installed**: Filebeat must be installed on the Cassandra server
-3. **SSH Access**: SSH access to the Cassandra server
-4. **Guardium Data Protection**: Version 12.2.1 or above
-5. **Network Connectivity**: Cassandra server must be able to send logs to Guardium Logstash
-6. **Guardium Credentials**: OAuth client credentials and Web UI credentials
+1. **On-premises Cassandra Instance**: Apache Cassandra server
+2. **Cassandra Audit Logging Enabled**: Audit logging must be enabled before running this example
+3. **Filebeat Installed**: Filebeat must be installed on the Cassandra server
+4. **SSH Access**: SSH access to the Cassandra server
+5. **Guardium Data Protection**: Version 12.2.1 or above
+6. **Network Connectivity**: Cassandra server must be able to send logs to Guardium Logstash
+7. **Guardium Credentials**: OAuth client credentials and Web UI credentials
 
 ## Cassandra Audit Configuration
 
-Before using this module, ensure Cassandra audit logging is enabled in `cassandra.yaml`:
+This example enables Filebeat log collection only. It does **not** enable Cassandra audit logging for you. Before using this example, explicitly enable Cassandra audit logging on the Cassandra server.
+
+### Steps to enable Cassandra audit logging
+
+1. Edit `/etc/cassandra/conf/cassandra.yaml`.
+2. In `audit_logging_options`, change `enabled: false` to `enabled: true`.
+3. Set the logger class to `FileAuditLogger`.
+4. Edit `/etc/cassandra/conf/logback.xml`.
+5. Uncomment the `AUDIT` appender and `org.apache.cassandra.audit` logger configuration shown below.
+6. Save the files.
+7. Restart the Cassandra service.
+
+#### Example `cassandra.yaml` configuration
 
 ```yaml
 audit_logging_options:
@@ -36,14 +50,39 @@ audit_logging_options:
     excluded_users: ""
 ```
 
-After configuring, restart Cassandra:
+#### Example `logback.xml` configuration
+
+```xml
+<appender name="AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  <file>${cassandra.logdir}/audit/audit.log</file>
+  <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+    <!-- rollover daily -->
+    <fileNamePattern>${cassandra.logdir}/audit/audit.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+    <!-- each file should be at most 50MB, keep 30 days worth of history, but at most 5GB -->
+    <maxFileSize>50MB</maxFileSize>
+    <maxHistory>30</maxHistory>
+    <totalSizeCap>5GB</totalSizeCap>
+  </rollingPolicy>
+  <encoder>
+    <pattern>%-5level [%thread] %date{ISO8601} %F:%L - %msg%n</pattern>
+  </encoder>
+</appender>
+
+<!-- Audit Logging additivity to redirect audit logging events to audit/audit.log -->
+<logger name="org.apache.cassandra.audit" additivity="false" level="INFO">
+  <appender-ref ref="AUDIT"/>
+</logger>
+```
+
+After saving the files, restart Cassandra:
+
 ```bash
 sudo systemctl restart cassandra
 ```
 
 ## Usage
 
-**Note:** This module will automatically configure Filebeat on your Cassandra server. You don't need to manually configure Filebeat before running Terraform.
+**Note:** This example will automatically configure Filebeat on your Cassandra server. You do not need to manually configure Filebeat before running Terraform, but you must manually enable Cassandra audit logging first.
 
 ## Configuration
 
@@ -55,6 +94,7 @@ sudo systemctl restart cassandra
 2. Edit `terraform.tfvars` with your specific values:
    ```hcl
    # Cassandra Instance Configuration
+   # Audit logging must already be enabled in cassandra.yaml and logback.xml
    cassandra_instance_identifier = "prod-cassandra-01"
    cassandra_host                = "192.168.1.100"
    cassandra_audit_log_path      = "/var/log/cassandra/audit/audit.log"
@@ -110,10 +150,11 @@ sudo systemctl restart cassandra
 ## What Gets Configured
 
 This example will:
-1. Configure Filebeat on your Cassandra server to monitor audit logs
-2. Set up Filebeat to forward logs to Guardium Logstash
-3. Create a Guardium Universal Connector to receive the logs
-4. Enable SSL/TLS encryption for secure log transmission (optional)
+1. Assume Cassandra audit logging is already enabled on the server
+2. Configure Filebeat on your Cassandra server to monitor audit logs
+3. Set up Filebeat to forward logs to Guardium Logstash
+4. Create a Guardium Universal Connector to receive the logs
+5. Enable SSL/TLS encryption for secure log transmission (optional)
 
 ## Verification
 
@@ -215,7 +256,7 @@ To remove the configuration:
 terraform destroy
 ```
 
-**Note**: This will remove the Guardium configuration and Filebeat setup. It will not affect your Cassandra instance or its audit logging configuration.
+**Note**: This will remove the Guardium configuration and Filebeat setup. It will not affect your Cassandra instance or its Cassandra audit logging configuration.
 
 ## Additional Resources
 
