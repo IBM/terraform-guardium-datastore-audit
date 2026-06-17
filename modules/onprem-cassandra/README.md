@@ -21,63 +21,9 @@ This module:
 
 ## Cassandra Audit Configuration
 
-This module enables Filebeat log collection only. It does **not** enable Cassandra audit logging for you. Before using this module, explicitly enable Cassandra audit logging on the Cassandra server.
+This module enables Filebeat log collection only. It does **not** enable Cassandra audit logging for you. Before using this module, you must enable Cassandra audit logging on the Cassandra server.
 
-### Steps to enable Cassandra audit logging
-
-1. Edit `/etc/cassandra/conf/cassandra.yaml`.
-2. In `audit_logging_options`, change `enabled: false` to `enabled: true`.
-3. Set the logger class to `FileAuditLogger`.
-4. Edit `/etc/cassandra/conf/logback.xml`.
-5. Uncomment the `AUDIT` appender and `org.apache.cassandra.audit` logger configuration shown below.
-6. Save the files.
-7. Restart the Cassandra service.
-
-#### Example `cassandra.yaml` configuration
-
-```yaml
-audit_logging_options:
-    enabled: true
-    logger:
-      - class_name: FileAuditLogger
-    audit_logs_dir: /var/log/cassandra/audit
-    included_keyspaces: ""
-    excluded_keyspaces: "system,system_schema,system_virtual_schema"
-    included_categories: ""
-    excluded_categories: ""
-    included_users: ""
-    excluded_users: ""
-```
-
-#### Example `logback.xml` configuration
-
-```xml
-<appender name="AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
-  <file>${cassandra.logdir}/audit/audit.log</file>
-  <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-    <!-- rollover daily -->
-    <fileNamePattern>${cassandra.logdir}/audit/audit.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
-    <!-- each file should be at most 50MB, keep 30 days worth of history, but at most 5GB -->
-    <maxFileSize>50MB</maxFileSize>
-    <maxHistory>30</maxHistory>
-    <totalSizeCap>5GB</totalSizeCap>
-  </rollingPolicy>
-  <encoder>
-    <pattern>%-5level [%thread] %date{ISO8601} %F:%L - %msg%n</pattern>
-  </encoder>
-</appender>
-
-<!-- Audit Logging additivity to redirect audit logging events to audit/audit.log -->
-<logger name="org.apache.cassandra.audit" additivity="false" level="INFO">
-  <appender-ref ref="AUDIT"/>
-</logger>
-```
-
-After saving the files, restart Cassandra:
-
-```bash
-sudo systemctl restart cassandra
-```
+For detailed instructions on enabling Cassandra audit logging, see the [Cassandra Guardium documentation](https://github.com/IBM/universal-connectors/blob/main/filter-plugin/logstash-filter-cassandra-guardium/README.md).
 
 ## Usage
 
