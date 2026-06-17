@@ -78,6 +78,9 @@ module "common_azure-eventhub-registration" {
   event_hub_connections = local.event_hub_connection
   storage_connection    = local.storage_connection
   consumer_group        = var.consumer_group
+  config_mode           = var.config_mode
+  threads               = var.threads
+  decorate_events       = var.decorate_events
 
   # Guardium Configuration
   gdp_client_id              = var.gdp_client_id

@@ -4,7 +4,7 @@
 #
 
 locals {
-  udc_name        = format("%s-%s-%s", var.azure_region, var.mysql_server_name, local.subscription_id)
+  udc_name        = format("%s-%s", var.mysql_server_name, local.subscription_id)
   subscription_id = data.azurerm_client_config.current.subscription_id
   azure_region    = var.azure_region
 }
@@ -37,6 +37,7 @@ module "common_azure-mysql-diagnostic-settings" {
   diagnostic_setting_name          = var.diagnostic_setting_name
   enable_mysql_audit_logs          = var.enable_mysql_audit_logs
   enable_slow_query_logs           = var.enable_slow_query_logs
+  audit_log_events                 = var.audit_log_events
 }
 
 //////
@@ -75,6 +76,9 @@ module "common_azure-eventhub-registration" {
   event_hub_connections = local.event_hub_connection
   storage_connection    = local.storage_connection
   consumer_group        = var.consumer_group
+  config_mode           = var.config_mode
+  threads               = var.threads
+  decorate_events       = var.decorate_events
 
   # Guardium Configuration
   gdp_client_id              = var.gdp_client_id

@@ -191,7 +191,7 @@ MySQL diagnostic settings capture:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| azure_region | Azure region where resources are located | `string` | `"eastus"` | no |
+| azure_region | Azure region where resources are located (should match resource group location) | `string` | `"eastus"` | no |
 | resource_group_name | Name of the Azure resource group | `string` | n/a | yes |
 | mysql_server_name | Name of the MySQL Flexible Server to be monitored | `string` | n/a | yes |
 | eventhub_namespace_name | Name of the Event Hub namespace | `string` | n/a | yes |
@@ -217,7 +217,7 @@ MySQL diagnostic settings capture:
 
 | Name | Description |
 |------|-------------|
-| udc_name | Name of the Universal Connector |
+| udc_name | Name of the Universal Connector (format: `{mysql-server-name}-{subscription-id}`) |
 | diagnostic_setting_name | Name of the diagnostic setting |
 | diagnostic_setting_id | Resource ID of the diagnostic setting |
 | eventhub_name | Name of the Event Hub receiving logs |

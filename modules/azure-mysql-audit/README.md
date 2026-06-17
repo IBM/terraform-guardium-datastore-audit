@@ -8,13 +8,12 @@ This module configures audit logging for Azure MySQL Flexible Server with IBM Gu
 
 Before using this module, you need to:
 
-1. **Azure CLI Authentication**: Be authenticated with Azure CLI (`az login`)
-2. Have an existing Azure MySQL Flexible Server
-3. Have Event Hub namespace and Event Hub created for audit log streaming
-4. Have Storage Account created for Event Hub checkpointing
-5. Have Guardium set up with appropriate credentials
-6. Have Azure credentials configured in Guardium Universal Connector
-7. Enable audit logging on the MySQL server (set `audit_log_enabled` parameter to `ON`)
+1. Have an existing Azure MySQL Flexible Server
+2. Have Event Hub namespace and Event Hub created for audit log streaming
+3. Have Storage Account created for Event Hub checkpointing
+4. Have Guardium set up with appropriate credentials
+5. Have Azure credentials configured in Guardium Universal Connector
+6. Enable audit logging on the MySQL server (set `audit_log_enabled` parameter to `ON`)
 
 ## Requirements
 
@@ -34,131 +33,48 @@ Before using this module, you need to:
 - Integrates with Guardium for audit data collection via Event Hub
 - Automatic Universal Connector profile deployment
 
-## Architecture
+## Diagnostic Setting Import Process
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│              Azure MySQL Flexible Server                    │
-│                                                             │
-│  • MySqlAuditLogs (audit events)                            │
-│  • MySqlSlowLogs (slow queries)                             │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-                          │
-                          │ Diagnostic Settings
-                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│              Azure Event Hub                                │
-│                                                             │
-│  • Namespace: <eventhub-namespace>                          │
-│  • Event Hub: <eventhub-name>                               │
-│  • Consumer Group: $Default                                 │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-                          │
-                          │ Event Streaming
-                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│         Guardium Universal Connector (UC)                   │
-│                                                             │
-│  • Reads events from Event Hub                              │
-│  • Parses and normalizes audit data                         │
-│  • Applies security policies                                │
-│  • Forwards to Guardium Data Protection                     │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-                          │
-                          │ Processed Audit Data
-                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│         Guardium Data Protection (GDP)                      │
-│                                                             │
-│  • Security monitoring and threat detection                 │
-│  • Compliance reporting and auditing                        │
-│  • Policy enforcement and alerting                          │
-│  • Activity analysis and forensics                          │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+To ensure Terraform manages your MySQL diagnostic settings correctly:
+
+1. Initialize Terraform in your working directory:
+   ```bash
+   terraform init
+   ```
+
+2. Check if diagnostic setting exists:
+   ```bash
+   az monitor diagnostic-settings list \
+     --resource /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforMySQL/flexibleServers/<mysql-server-name> \
+     --query "[].name" \
+     --output tsv
+   ```
+
+3. Import existing diagnostic setting (if exists):
+   ```bash
+   terraform import 'module.datastore-audit_azure-mysql-audit.module.common_azure-mysql-diagnostic-settings.azurerm_monitor_diagnostic_setting.mysql_audit' \
+     '/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforMySQL/flexibleServers/<mysql-server-name>|<diagnostic-setting-name>'
+   ```
+
+**Note**: The module includes automated diagnostic setting detection. Skipping the import step may cause Terraform to attempt creating a new diagnostic setting, which will fail if one already exists.
 
 ## Usage
 
-### Basic Example
+### Using a tfvars File
 
-```hcl
-module "mysql_audit" {
-  source = "IBM/datastore-audit/guardium//modules/azure-mysql-audit"
+Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.example](./terraform.tfvars.example) for an example with available options and detailed comments.
 
-  # Azure Configuration
-  azure_region         = "eastus"
-  resource_group_name  = "my-resource-group"
-  mysql_server_name    = "my-mysql-server"
-  
-  # Event Hub Configuration
-  eventhub_namespace_name = "my-eventhub-namespace"
-  eventhub_name           = "mysql-audit-logs"
-  storage_account_name    = "mystorageaccount"
-  
-  # Guardium Configuration
-  gdp_server             = "guardium.example.com"
-  gdp_port               = "8443"
-  gdp_username           = "admin"
-  gdp_password           = "password"
-  gdp_client_id          = "client1"
-  gdp_client_secret      = "client-secret"
-  gdp_mu_host            = "guardium-mu.example.com"
-  
-  tags = {
-    Environment = "production"
-    Project     = "data-security"
-  }
-}
-```
+Then run:
 
-### Advanced Example with Custom Log Categories
+```bash
+# Import existing resources (if diagnostic setting exists)
+# See the "Diagnostic Setting Import Process" section above
 
-```hcl
-module "mysql_audit" {
-  source = "IBM/datastore-audit/guardium//modules/azure-mysql-audit"
+# Plan the changes
+terraform plan
 
-  # Azure Configuration
-  azure_region         = "eastus"
-  resource_group_name  = "my-resource-group"
-  mysql_server_name    = "my-mysql-server"
-  
-  # Event Hub Configuration
-  eventhub_namespace_name          = "my-eventhub-namespace"
-  eventhub_name                    = "mysql-audit-logs"
-  eventhub_authorization_rule_name = "my-auth-rule"
-  storage_account_name             = "mystorageaccount"
-  consumer_group                   = "$Default"
-  
-  # Diagnostic Settings - Enable specific log categories
-  enable_mysql_audit_logs = true   # Audit events
-  enable_slow_query_logs  = true   # Slow queries
-  
-  # Guardium Configuration
-  gdp_server             = "guardium.example.com"
-  gdp_port               = "8443"
-  gdp_username           = "admin"
-  gdp_password           = "password"
-  gdp_client_id          = "client1"
-  gdp_client_secret      = "client-secret"
-  gdp_mu_host            = "guardium-mu.example.com"
-  
-  # Universal Connector Configuration
-  csv_start_position   = "end"
-  csv_interval         = "5"
-  
-  tags = {
-    Environment = "production"
-    Project     = "data-security"
-  }
-}
+# Apply the changes
+terraform apply
 ```
 
 ## Provider Configuration
@@ -182,11 +98,24 @@ Make sure your Terraform environment has access to the Guardium Data Protection 
 na.artifactory.swg-devops.com/ibm/guardium-data-protection
 ```
 
+## MySQL Audit Logging
+
+MySQL diagnostic settings capture:
+- **MySqlAuditLogs**: All audit events (connections, queries, DDL, DML, DCL, admin operations)
+- **MySqlSlowLogs**: Slow query logs for performance analysis
+
+## Event Hub Integration
+
+This module configures MySQL to send audit logs to Event Hub. The Universal Connector then:
+1. Reads these logs from Event Hub using the configured Azure credentials
+2. Parses and normalizes the log data
+3. Forwards the processed audit events to Guardium for analysis
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| azure_region | Azure region where resources are deployed | `string` | `"eastus"` | no |
+| azure_region | Azure region where resources are deployed (should match resource group location) | `string` | `"eastus"` | no |
 | resource_group_name | Name of the Azure resource group | `string` | n/a | yes |
 | mysql_server_name | Name of the MySQL Flexible Server | `string` | n/a | yes |
 | eventhub_namespace_name | Name of the Event Hub namespace | `string` | n/a | yes |
@@ -194,8 +123,12 @@ na.artifactory.swg-devops.com/ibm/guardium-data-protection
 | eventhub_authorization_rule_name | Name of the Event Hub authorization rule | `string` | `"RootManageSharedAccessKey"` | no |
 | storage_account_name | Name of the storage account for checkpointing | `string` | n/a | yes |
 | consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
+| config_mode | Configuration mode for Event Hub input (basic or advanced) | `string` | `"basic"` | no |
+| threads | Number of threads for Event Hub consumer | `number` | `8` | no |
+| decorate_events | Whether to decorate events with Event Hub metadata | `bool` | `true` | no |
 | enable_mysql_audit_logs | Enable MySQL Audit logs | `bool` | `true` | no |
 | enable_slow_query_logs | Enable MySQL Slow Query logs | `bool` | `false` | no |
+| audit_log_events | MySQL audit log events to capture (CONNECTION, GENERAL) | `string` | `"CONNECTION,GENERAL"` | no |
 | gdp_server | Hostname/IP of Guardium Central Manager | `string` | n/a | yes |
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
 | gdp_username | Guardium Web UI username | `string` | n/a | yes |
@@ -206,6 +139,8 @@ na.artifactory.swg-devops.com/ibm/guardium-data-protection
 | enable_universal_connector | Enable Universal Connector module | `bool` | `true` | no |
 | csv_start_position | Start position for UDC (beginning or end) | `string` | `"end"` | no |
 | csv_interval | Polling interval for UDC in seconds | `string` | `"5"` | no |
+| csv_event_filter | UDC Event filters | `string` | `""` | no |
+| codec_pattern | Codec pattern for the Universal Connector | `string` | `""` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs
@@ -213,7 +148,7 @@ na.artifactory.swg-devops.com/ibm/guardium-data-protection
 | Name | Description |
 |------|-------------|
 | profile_csv | Universal Connector profile CSV |
-| udc_name | Name of the Universal Connector |
+| udc_name | Name of the Universal Connector (format: `{mysql-server-name}-{subscription-id}`) |
 | mysql_server_name | Name of the MySQL server |
 | mysql_server_fqdn | Fully qualified domain name of the MySQL server |
 | eventhub_namespace_name | Name of the Event Hub namespace |
@@ -225,97 +160,9 @@ na.artifactory.swg-devops.com/ibm/guardium-data-protection
 | diagnostic_setting_name | Name of the diagnostic setting |
 | diagnostic_setting_id | ID of the diagnostic setting |
 
-## Log Categories
-
-### MySqlAuditLogs
-Captures MySQL audit events including:
-- Connection events (login/logout)
-- Query executions
-- DDL operations (CREATE, ALTER, DROP)
-- DML operations (INSERT, UPDATE, DELETE, SELECT)
-- DCL operations (GRANT, REVOKE)
-- Administrative commands
-
-### MySqlSlowLogs
-Provides slow query logs:
-- Queries exceeding the configured slow query threshold
-- Query execution time
-- Rows examined and returned
-- Lock time
-
-## MySQL Server Configuration
-
-To enable audit logging on your MySQL Flexible Server, you need to configure the following server parameters:
-
-```hcl
-resource "azurerm_mysql_flexible_server_configuration" "audit_log_enabled" {
-  name                = "audit_log_enabled"
-  resource_group_name = var.resource_group_name
-  server_name         = var.mysql_server_name
-  value               = "ON"
-}
-
-resource "azurerm_mysql_flexible_server_configuration" "audit_log_events" {
-  name                = "audit_log_events"
-  resource_group_name = var.resource_group_name
-  server_name         = var.mysql_server_name
-  value               = "CONNECTION,DML,DDL,DCL,ADMIN"
-}
-```
-
-## Security Considerations
-
-- **Credentials Management**: Store sensitive credentials securely using Terraform variables or secret management solutions
-- **State File Security**: Ensure Terraform state files are encrypted and stored securely
-- **Network Security**: Configure network security groups and firewall rules appropriately
-- **Encryption**: Enable encryption for Event Hub and data in transit
-- **Access Control**: Implement proper access controls for Guardium and Azure resources
-- **Event Hub Authorization**: Use dedicated authorization rules with minimal required permissions
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Diagnostic Settings Not Streaming Logs**:
-   - Verify Event Hub namespace and Event Hub exist
-   - Check Event Hub authorization rule has appropriate permissions
-   - Ensure MySQL server has diagnostic settings enabled
-   - Verify audit logging is enabled on MySQL server (`audit_log_enabled = ON`)
-   - Review Azure Monitor diagnostic settings in Azure Portal
-
-2. **Universal Connector Not Processing Logs**:
-   - Verify Azure credentials are correctly configured in Guardium
-   - Check network connectivity between Guardium and Azure
-   - Review Universal Connector logs in Guardium UI
-   - Verify Event Hub consumer group is accessible
-
-3. **Authentication Errors**:
-   - Verify Guardium OAuth client credentials
-   - Check Guardium user has appropriate permissions
-   - Ensure OAuth client is properly registered via `grdapi register_oauth_client`
-   - Verify Azure credential is configured in Guardium
-
-4. **Missing Audit Logs**:
-   - Check which log categories are enabled
-   - Verify diagnostic settings are applied to the correct MySQL server
-   - Review Event Hub metrics for incoming messages
-   - Check storage account for checkpoint data
-   - Ensure MySQL audit logging is properly configured
-
 ## Examples
 
 See the [examples](../../examples/azure-mysql-audit) directory for complete working examples.
-
-## License
-
-This project is licensed under the Apache 2.0 License - see the [LICENSE](../../LICENSE) file for details.
-
-```text
-#
-# Copyright IBM Corp. 2025
-# SPDX-License-Identifier: Apache-2.0
-#
-```
 
 ## Additional Resources
 
@@ -323,11 +170,4 @@ This project is licensed under the Apache 2.0 License - see the [LICENSE](../../
 - [Guardium Universal Connector Guide](https://www.ibm.com/docs/en/guardium/12.2?topic=connectors-universal-connector)
 - [Azure MySQL Flexible Server Audit Logs](https://docs.microsoft.com/en-us/azure/mysql/flexible-server/concepts-audit-logs)
 - [Azure Event Hubs Documentation](https://docs.microsoft.com/en-us/azure/event-hubs/)
-- [Terraform Azure Provider Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
 - [Azure MySQL Guardium Filter Plugin](https://github.com/IBM/universal-connectors/tree/main/filter-plugin/logstash-filter-mysql-azure-guardium)
-
-## Module Architecture
-
-This module uses two common sub-modules:
-- `azure-mysql-diagnostic-settings` - Configures MySQL-specific diagnostic settings
-- `azure-eventhub-registration` - Generic EventHub registration module (shared with other Azure services)

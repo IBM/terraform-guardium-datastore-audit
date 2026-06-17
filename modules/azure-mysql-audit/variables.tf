@@ -1,5 +1,5 @@
 #
-# Copyright IBM Corp. 2025
+# Copyright IBM Corp. 2026
 # SPDX-License-Identifier: Apache-2.0
 #
 
@@ -78,6 +78,12 @@ variable "enable_slow_query_logs" {
   default     = false
 }
 
+variable "audit_log_events" {
+  type        = string
+  description = "MySQL audit log events to capture. Options: CONNECTION (connection events), GENERAL (DML_SELECT, DML_NONSELECT, DML, DDL, DCL, ADMIN)"
+  default     = "CONNECTION,GENERAL"
+}
+
 //////
 // Guardium Configuration
 //////
@@ -152,4 +158,26 @@ variable "codec_pattern" {
   type        = string
   description = "Codec pattern for the Universal Connector"
   default     = ""
+}
+
+//////
+// Event Hub Advanced Configuration
+//////
+
+variable "config_mode" {
+  type        = string
+  description = "Configuration mode for Event Hub input (basic or advanced)"
+  default     = "basic"
+}
+
+variable "threads" {
+  type        = number
+  description = "Number of threads for Event Hub consumer"
+  default     = 8
+}
+
+variable "decorate_events" {
+  type        = bool
+  description = "Whether to decorate events with Event Hub metadata"
+  default     = true
 }
