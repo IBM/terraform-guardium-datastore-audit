@@ -171,7 +171,6 @@ Cosmos DB diagnostic settings capture:
 | azure_region | Azure region where resources are located | `string` | `"eastus"` | no |
 | resource_group_name | Name of the Azure resource group | `string` | n/a | yes |
 | cosmos_account_name | Name of the Cosmos DB account to be monitored | `string` | n/a | yes |
-| azure_enrollment_id | Azure Enterprise Agreement enrollment ID (optional, hidden field in Guardium UI) | `string` | `""` | no |
 | event_hub_namespace | Name of the Event Hub namespace | `string` | n/a | yes |
 | event_hub_name | Name of the Event Hub | `string` | n/a | yes |
 | event_hub_authorization_rule_id | Resource ID of the Event Hub authorization rule | `string` | n/a | yes |
