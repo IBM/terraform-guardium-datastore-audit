@@ -11,10 +11,10 @@ module "datastore-audit_azure-cosmos-audit" {
   source = "../../modules/azure-cosmos-audit"
 
   # Azure Configuration
-  azure_region         = var.azure_region
-  resource_group_name  = var.resource_group_name
-  cosmos_account_name  = var.cosmos_account_name
-  azure_enrollment_id  = var.azure_enrollment_id
+  azure_region        = var.azure_region
+  resource_group_name = var.resource_group_name
+  cosmos_account_name = var.cosmos_account_name
+  azure_enrollment_id = var.azure_enrollment_id
 
   # Event Hub Configuration
   eventhub_namespace_name          = var.eventhub_namespace_name
@@ -48,9 +48,9 @@ module "datastore-audit_azure-cosmos-audit" {
   csv_event_filter           = var.csv_event_filter
 
   # Event Hub Advanced Configuration
-  config_mode      = var.config_mode
-  threads          = var.threads
-  decorate_events  = var.decorate_events
+  config_mode     = var.config_mode
+  threads         = var.threads
+  decorate_events = var.decorate_events
 
   # Tags
   tags = var.tags
