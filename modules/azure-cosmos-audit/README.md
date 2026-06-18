@@ -217,8 +217,6 @@ na.artifactory.swg-devops.com/ibm/guardium-data-protection
 | enable_universal_connector | Enable Universal Connector module | `bool` | `true` | no |
 | csv_start_position | Start position for UDC (beginning or end) | `string` | `"end"` | no |
 | csv_interval | Polling interval for UDC in seconds | `string` | `"5"` | no |
-| csv_event_filter | UDC Event filters | `string` | `""` | no |
-| codec_pattern | Codec pattern for the Universal Connector | `string` | `""` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs

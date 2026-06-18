@@ -64,7 +64,7 @@ variable "tags" {
 
 variable "azure_enrollment_id" {
   type        = string
-  description = "Azure Enterprise Agreement enrollment ID (optional, hidden field in Guardium UI)"
+  description = "Azure Enrollment ID (optional)"
   default     = ""
 }
 

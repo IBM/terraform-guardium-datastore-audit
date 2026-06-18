@@ -30,7 +30,7 @@ data "azurerm_storage_account" "checkpoint" {
 
 # Call diagnostic settings common module
 module "common_azure-cosmos-diagnostic-settings" {
-  source = "../../../terraform-guardium-common/modules/azure-cosmos-diagnostic-settings"
+  source = "IBM/common/guardium//modules/azure-cosmos-diagnostic-settings"
 
   cosmos_account_name              = var.cosmos_account_name
   resource_group_name              = var.resource_group_name
@@ -67,7 +67,7 @@ locals {
 }
 
 module "common_azure-eventhub-registration" {
-  source = "../../../terraform-guardium-common/modules/azure-eventhub-registration"
+  source = "IBM/common/guardium//modules/azure-eventhub-registration"
 
   # Profile Configuration
   profile_definition_name = "Azure Cosmos over Event Hub"
