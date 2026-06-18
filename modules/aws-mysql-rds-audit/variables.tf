@@ -10,7 +10,7 @@
 variable "aws_region" {
   type        = string
   description = "This is the AWS region."
-  default     = "us-east-2"
+  default     = "us-east-1"
 }
 
 variable "tags" {

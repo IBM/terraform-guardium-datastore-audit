@@ -27,6 +27,7 @@ csv_start_position = "end"
 csv_interval = "5"
 csv_event_filter = ""
 use_aws_bundled_ca = true  # Whether to use AWS bundled CA certificates for Neptune connections
+skip_reboot = true         # Skip automatic reboot; manually reboot Neptune instances to activate audit logging
 
 #----------------------------------------
 # Guardium Connection Details

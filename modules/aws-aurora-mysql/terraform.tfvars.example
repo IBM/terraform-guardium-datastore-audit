@@ -1,0 +1,62 @@
+# AWS Aurora MySQL Audit Configuration Example
+# Copy this file to terraform.tfvars and update with your values
+
+#----------------------------------------
+# AWS Configuration
+#----------------------------------------
+aws_region = "us-east-1"
+
+# Existing Aurora MySQL cluster identifier
+aurora_mysql_cluster_identifier = "my-aurora-mysql-cluster"
+
+# CloudWatch log types to monitor
+# Valid values: audit, error, general, slowquery
+cloudwatch_logs_exports = ["audit"]
+
+tags = {
+  Environment = "Production"
+  Project     = "Guardium-Monitoring"
+}
+
+#----------------------------------------
+# Guardium Configuration
+#----------------------------------------
+# Name of AWS credential configured in Guardium
+udc_aws_credential = "aws-prod-credential"
+
+# OAuth client credentials from Guardium
+gdp_client_id     = "your-client-id"
+gdp_client_secret = "your-client-secret"
+
+# Guardium server details
+gdp_server   = "guardium.example.com"
+gdp_port     = "8443"
+gdp_username = "admin"
+gdp_password = "YourGuardiumPassword"
+
+# Comma-separated list of Guardium Managed Units
+gdp_mu_host = "managed-unit-1,managed-unit-2"
+
+#----------------------------------------
+# Universal Connector Configuration
+#----------------------------------------
+# Enable or disable the universal connector
+enable_universal_connector = true
+
+# Start reading logs from the end (or "beginning")
+csv_start_position = "end"
+
+# Polling interval in seconds
+csv_interval = "5"
+
+# Event filters (optional)
+csv_event_filter = ""
+
+# Codec pattern for log parsing (optional)
+codec_pattern = ""
+
+# Custom CloudWatch endpoint (optional, leave empty for default)
+cloudwatch_endpoint = ""
+
+# Use AWS bundled CA certificates
+use_aws_bundled_ca = true

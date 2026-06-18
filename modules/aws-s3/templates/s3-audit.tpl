@@ -1,0 +1,2 @@
+profile_definition_name,name,description,credential_name,region,log_group,start_position,interval,event_filter,account_id,cluster_name,prefix,unmask,endpoint,use_aws_bundled_ca
+S3 over Cloudwatch_Logs,${udc_name},${description},${credential_name},${aws_region},${log_group},${start_position},${interval},${event_filter},${aws_account_id},${cluster_name},${prefix},${unmask},${endpoint},${use_aws_bundled_ca}

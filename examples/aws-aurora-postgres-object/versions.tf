@@ -8,8 +8,7 @@ terraform {
 
   required_providers {
     guardium-data-protection = {
-      source  = "IBM/guardium-data-protection"
-      version = "~> 1.3"
+      source = "IBM/guardium-data-protection"
     }
     gdp-middleware-helper = {
       source = "IBM/gdp-middleware-helper"
@@ -17,6 +16,10 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = ">= 4.0.0"
+    }
+    postgresql = {
+      source  = "cyrilgdn/postgresql"
+      version = "1.26.0"
     }
     null = {
       source  = "hashicorp/null"

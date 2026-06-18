@@ -3,11 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-output "profile_csv" {
-  description = "Universal Connector profile CSV"
-  value       = var.enable_universal_connector ? module.gdp_connect-datasource-to-uc[0].profile_csv : "Universal connector disabled"
-}
-
 output "udc_name" {
   description = "Name of the Universal Connector"
   value       = local.udc_name
@@ -41,4 +36,9 @@ output "neptune_cluster_identifier" {
 output "neptune_cluster_endpoint" {
   description = "Neptune cluster endpoint"
   value       = var.neptune_endpoint
+}
+
+output "reboot_required" {
+  description = "Whether manual reboot is required to enable audit logging"
+  value       = var.skip_reboot ? "Manual reboot required to enable audit logging" : "Audit logging enabled (reboot completed)"
 }
