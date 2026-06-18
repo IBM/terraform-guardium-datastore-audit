@@ -4,7 +4,7 @@
 #
 
 locals {
-  udc_name        = format("%s-%s-%s", local.azure_region, var.cosmos_account_name, local.subscription_id)
+  udc_name        = format("%s-%s", var.cosmos_account_name, local.subscription_id)
   subscription_id = data.azurerm_client_config.current.subscription_id
   azure_region    = data.azurerm_resource_group.rg.location
 }
