@@ -123,7 +123,7 @@ locals {
 }
 
 module "common_azure-eventhub-registration" {
-  source = "../../../terraform-guardium-common/modules/azure-eventhub-registration"
+  source = "IBM/common/guardium//modules/azure-eventhub-registration"
 
   # Profile Configuration
   profile_definition_name = "Azure MySQL over Event Hub"
