@@ -62,6 +62,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "azure_enrollment_id" {
+  type        = string
+  description = "Azure Enterprise Agreement enrollment ID (optional, hidden field in Guardium UI)"
+  default     = ""
+}
+
 //////
 // Diagnostic Settings Configuration
 //////

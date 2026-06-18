@@ -13,9 +13,9 @@ output "mysql_server_name" {
   value       = module.datastore-audit_azure-mysql-audit.mysql_server_name
 }
 
-output "mysql_server_fqdn" {
+output "mysql_server_endpoint" {
   description = "Fully qualified domain name of the MySQL server"
-  value       = module.datastore-audit_azure-mysql-audit.mysql_server_fqdn
+  value       = module.datastore-audit_azure-mysql-audit.mysql_server_endpoint
 }
 
 output "eventhub_namespace_name" {

@@ -77,6 +77,7 @@ module "common_azure-eventhub-registration" {
   # Azure Configuration
   azure_region          = var.azure_region
   azure_subscription_id = local.subscription_id
+  azure_enrollment_id   = var.azure_enrollment_id
 
   # Event Hub Configuration
   event_hub_connections = local.event_hub_connection

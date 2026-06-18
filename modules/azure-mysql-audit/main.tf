@@ -15,33 +15,91 @@ data "azurerm_resource_group" "rg" {
   name = var.resource_group_name
 }
 
-# Get Event Hub authorization rule for connection string
+# Get MySQL Server details
+data "azurerm_mysql_flexible_server" "mysql" {
+  name                = var.mysql_server_name
+  resource_group_name = var.resource_group_name
+}
+
+# Get Event Hub namespace details
+data "azurerm_eventhub_namespace" "eventhub" {
+  name                = var.eventhub_namespace_name
+  resource_group_name = var.resource_group_name
+}
+
+# Get Event Hub details
+data "azurerm_eventhub" "eventhub" {
+  name                = var.eventhub_name
+  namespace_name      = var.eventhub_namespace_name
+  resource_group_name = var.resource_group_name
+}
+
+# Get Storage Account details (for Event Hub checkpointing)
+data "azurerm_storage_account" "checkpoint" {
+  name                = var.storage_account_name
+  resource_group_name = var.resource_group_name
+}
+
+# Get Event Hub authorization rule
 data "azurerm_eventhub_namespace_authorization_rule" "eventhub_auth" {
   name                = var.eventhub_authorization_rule_name
   namespace_name      = var.eventhub_namespace_name
   resource_group_name = var.resource_group_name
 }
 
-# Get Storage Account details for connection string
-data "azurerm_storage_account" "checkpoint" {
-  name                = var.storage_account_name
+######
+## MySQL Audit Configuration
+######
+
+# Enable MySQL audit logging on the server
+resource "azurerm_mysql_flexible_server_configuration" "audit_log_enabled" {
+  name                = "audit_log_enabled"
   resource_group_name = var.resource_group_name
+  server_name         = var.mysql_server_name
+  value               = var.enable_mysql_audit_logs ? "ON" : "OFF"
 }
 
-# Call diagnostic settings common module
-module "common_azure-mysql-diagnostic-settings" {
-  source = "../../../terraform-guardium-common/modules/azure-mysql-diagnostic-settings"
+# Configure audit log events
+resource "azurerm_mysql_flexible_server_configuration" "audit_log_events" {
+  count               = var.enable_mysql_audit_logs ? 1 : 0
+  name                = "audit_log_events"
+  resource_group_name = var.resource_group_name
+  server_name         = var.mysql_server_name
+  value               = var.audit_log_events
+}
 
-  mysql_server_name                = var.mysql_server_name
-  resource_group_name              = var.resource_group_name
-  eventhub_namespace_name          = var.eventhub_namespace_name
-  eventhub_name                    = var.eventhub_name
-  storage_account_name             = var.storage_account_name
-  eventhub_authorization_rule_name = var.eventhub_authorization_rule_name
-  diagnostic_setting_name          = var.diagnostic_setting_name
-  enable_mysql_audit_logs          = var.enable_mysql_audit_logs
-  enable_slow_query_logs           = var.enable_slow_query_logs
-  audit_log_events                 = var.audit_log_events
+# Configure diagnostic settings to stream MySQL audit logs to Event Hub
+resource "azurerm_monitor_diagnostic_setting" "mysql_audit" {
+  name                           = var.diagnostic_setting_name
+  target_resource_id             = data.azurerm_mysql_flexible_server.mysql.id
+  eventhub_name                  = data.azurerm_eventhub.eventhub.name
+  eventhub_authorization_rule_id = data.azurerm_eventhub_namespace_authorization_rule.eventhub_auth.id
+  storage_account_id             = data.azurerm_storage_account.checkpoint.id
+
+  # Enable MySQL Audit logs
+  dynamic "enabled_log" {
+    for_each = var.enable_mysql_audit_logs ? [1] : []
+    content {
+      category = "MySqlAuditLogs"
+    }
+  }
+
+  # Enable MySQL Slow Query logs
+  dynamic "enabled_log" {
+    for_each = var.enable_slow_query_logs ? [1] : []
+    content {
+      category = "MySqlSlowLogs"
+    }
+  }
+
+  depends_on = [
+    data.azurerm_mysql_flexible_server.mysql,
+    data.azurerm_eventhub.eventhub,
+    data.azurerm_eventhub_namespace_authorization_rule.eventhub_auth,
+    data.azurerm_storage_account.checkpoint,
+    azurerm_mysql_flexible_server_configuration.audit_log_enabled,
+    azurerm_mysql_flexible_server_configuration.audit_log_events
+  ]
 }
 
 //////
@@ -75,6 +133,7 @@ module "common_azure-eventhub-registration" {
   # Azure Configuration
   azure_region          = var.azure_region
   azure_subscription_id = local.subscription_id
+  azure_enrollment_id   = var.azure_enrollment_id
 
   # Event Hub Configuration
   event_hub_connections = local.event_hub_connection
