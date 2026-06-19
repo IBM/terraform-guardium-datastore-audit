@@ -4,12 +4,16 @@
 #
 
 locals {
-  udc_name        = format("%s-%s-%s", var.azure_region, var.cosmos_account_name, local.subscription_id)
+  udc_name        = format("%s-%s", var.cosmos_account_name, local.subscription_id)
   subscription_id = data.azurerm_client_config.current.subscription_id
-  azure_region    = var.azure_region
+  azure_region    = data.azurerm_resource_group.rg.location
 }
 
 data "azurerm_client_config" "current" {}
+
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
+}
 
 # Get Event Hub authorization rule for connection string
 data "azurerm_eventhub_namespace_authorization_rule" "eventhub_auth" {
@@ -62,20 +66,28 @@ locals {
   )
 }
 
-module "common_azure-cosmos-eventhub-registration" {
-  source = "IBM/common/guardium//modules/azure-cosmos-eventhub-registration"
+module "common_azure-eventhub-registration" {
+  source = "IBM/common/guardium//modules/azure-eventhub-registration"
+
+  # Profile Configuration
+  profile_definition_name = "Azure Cosmos over Event Hub"
+  udc_name                = var.cosmos_account_name
+  description             = "GDP Azure Cosmos DB connector for ${var.cosmos_account_name}"
 
   # Azure Configuration
   azure_region          = var.azure_region
   azure_subscription_id = local.subscription_id
+  azure_enrollment_id   = var.azure_enrollment_id
 
   # Event Hub Configuration
   event_hub_connections = local.event_hub_connection
   storage_connection    = local.storage_connection
   consumer_group        = var.consumer_group
+  config_mode           = var.config_mode
+  threads               = var.threads
+  decorate_events       = var.decorate_events
 
   # Guardium Configuration
-  udc_name                   = var.cosmos_account_name
   gdp_client_id              = var.gdp_client_id
   gdp_client_secret          = var.gdp_client_secret
   gdp_server                 = var.gdp_server

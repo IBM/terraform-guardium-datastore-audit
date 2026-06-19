@@ -1,5 +1,5 @@
 #
-# Copyright IBM Corp. 2025
+# Copyright IBM Corp. 2026
 # SPDX-License-Identifier: Apache-2.0
 #
 
@@ -15,13 +15,23 @@ variable "azure_region" {
 
 variable "resource_group_name" {
   type        = string
-  description = "Name of the Azure resource group containing the Cosmos DB account"
+  description = "Name of the Azure resource group containing the MySQL server"
 }
 
-variable "cosmos_account_name" {
+variable "mysql_server_name" {
   type        = string
-  description = "Name of the Azure Cosmos DB account to be monitored"
+  description = "Name of the Azure MySQL Flexible Server to be monitored"
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "Map of tags to apply to resources"
+  default     = {}
+}
+
+//////
+// Event Hub variables
+//////
 
 variable "eventhub_namespace_name" {
   type        = string
@@ -50,60 +60,30 @@ variable "consumer_group" {
   default     = "$Default"
 }
 
+//////
+// Diagnostic Settings variables
+//////
+
 variable "diagnostic_setting_name" {
   type        = string
   description = "Name of the diagnostic setting"
-  default     = "cosmos-audit-to-eventhub"
+  default     = "mysql-audit-to-eventhub"
 }
 
-variable "tags" {
-  type        = map(string)
-  description = "Map of tags to apply to resources"
-  default     = {}
-}
-
-variable "azure_enrollment_id" {
-  type        = string
-  description = "Azure Enrollment ID (optional)"
-  default     = ""
-}
-
-//////
-// Diagnostic Settings Configuration
-//////
-
-variable "enable_data_plane_logs" {
+variable "enable_mysql_audit_logs" {
   type        = bool
-  description = "Enable DataPlaneRequests logs (CRUD operations)"
+  description = "Enable MySQL Audit logs"
   default     = true
 }
 
-variable "enable_query_runtime_logs" {
+variable "enable_slow_query_logs" {
   type        = bool
-  description = "Enable QueryRuntimeStatistics logs"
-  default     = true
-}
-
-variable "enable_control_plane_logs" {
-  type        = bool
-  description = "Enable ControlPlaneRequests logs (management operations)"
-  default     = true
-}
-
-variable "enable_partition_key_logs" {
-  type        = bool
-  description = "Enable PartitionKeyStatistics logs"
-  default     = false
-}
-
-variable "enable_partition_ru_logs" {
-  type        = bool
-  description = "Enable PartitionKeyRUConsumption logs"
+  description = "Enable MySQL Slow Query logs"
   default     = false
 }
 
 //////
-// Guardium Configuration
+// Guardium variables
 //////
 
 variable "gdp_client_secret" {
@@ -142,10 +122,11 @@ variable "gdp_password" {
 variable "gdp_mu_host" {
   type        = string
   description = "Comma separated list of Guardium Managed Units to deploy profile"
+  default     = ""
 }
 
 //////
-// Universal Connector Control
+// Universal Connector variables
 //////
 
 variable "enable_universal_connector" {
@@ -166,36 +147,14 @@ variable "csv_interval" {
   default     = "5"
 }
 
-variable "csv_event_filter" {
-  type        = string
-  description = "UDC Event filters"
-  default     = ""
-}
-
 variable "codec_pattern" {
   type        = string
   description = "Codec pattern for the Universal Connector"
   default     = ""
 }
 
-//////
-// Event Hub Advanced Configuration
-//////
-
-variable "config_mode" {
+variable "csv_event_filter" {
   type        = string
-  description = "Configuration mode for Event Hub input (basic or advanced)"
-  default     = "basic"
-}
-
-variable "threads" {
-  type        = number
-  description = "Number of threads for Event Hub consumer"
-  default     = 8
-}
-
-variable "decorate_events" {
-  type        = bool
-  description = "Whether to decorate events with Event Hub metadata"
-  default     = true
+  description = "UDC Event filters"
+  default     = ""
 }

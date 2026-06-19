@@ -1,14 +1,14 @@
-# Azure Cosmos DB with IBM Guardium Data Protection
+# Azure MySQL with IBM Guardium Data Protection
 
-This example demonstrates how to configure Azure Cosmos DB with IBM Guardium Data Protection using diagnostic settings and Event Hub for comprehensive monitoring.
+This example demonstrates how to configure Azure MySQL Flexible Server with IBM Guardium Data Protection using diagnostic settings and Event Hub for comprehensive monitoring.
 
 ## Architecture
 
 ```
 ┌───────────────────┐     ┌───────────────────┐     ┌───────────────────┐
 │                   │     │                   │     │                   │
-│  Azure Cosmos DB  │────►│  Diagnostic       │────►│  Azure Event Hub  │
-│  Account          │     │  Settings         │     │                   │
+│  Azure MySQL      │────►│  Diagnostic       │────►│  Azure Event Hub  │
+│  Flexible Server  │     │  Settings         │     │                   │
 └───────────────────┘     └───────────────────┘     └───────────────────┘
                                                             │
                                                             │
@@ -33,18 +33,18 @@ This example demonstrates how to configure Azure Cosmos DB with IBM Guardium Dat
 
 ## Data Flow
 
-1. Cosmos DB database activity is captured by diagnostic settings
+1. MySQL database activity is captured by diagnostic settings
 2. Audit logs are streamed to Event Hub in real-time
 3. Guardium Universal Connector reads from Event Hub
-4. Guardium processes and analyzes the Cosmos DB activity
-5. Security teams can view and alert on Cosmos DB activity in Guardium
+4. Guardium processes and analyzes the MySQL activity
+5. Security teams can view and alert on MySQL activity in Guardium
 
 ## Overview
 
 This Terraform configuration:
 
-1. Configures an existing Azure Cosmos DB account for audit logging via diagnostic settings
-2. Sets up a Universal Data Connector in Guardium to collect and analyze Cosmos DB audit logs from Event Hub
+1. Configures an existing Azure MySQL Flexible Server for audit logging via diagnostic settings
+2. Sets up a Universal Data Connector in Guardium to collect and analyze MySQL audit logs from Event Hub
 3. Enables comprehensive monitoring of database operations, user activity, and access patterns
 
 ## Prerequisites
@@ -52,12 +52,16 @@ This Terraform configuration:
 Before using this example, ensure you have:
 
 1. **Azure Resources**:
-   - An existing Azure Cosmos DB account
+   - An existing Azure MySQL Flexible Server
    - An existing Event Hub namespace and Event Hub
    - An existing Storage Account (for Event Hub checkpointing)
    - Resource group containing these resources
 
-2. **Guardium Data Protection**:
+2. **MySQL Server Configuration**:
+   - Audit logging enabled on the MySQL server (`audit_log_enabled = ON`)
+   - Audit log events configured (e.g., `audit_log_events = CONNECTION,DML,DDL,DCL,ADMIN`)
+
+3. **Guardium Data Protection**:
    - A running Guardium Data Protection instance (version 12.2.1 or above)
    - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
       - OAuth client registered via `grdapi register_oauth_client`
@@ -86,27 +90,47 @@ Verify authentication:
 az account show
 ```
 
-### 2. Create a terraform.tfvars File
+### 2. Enable MySQL Audit Logging
+
+Configure your MySQL Flexible Server to enable audit logging:
+
+```bash
+# Enable audit logging
+az mysql flexible-server parameter set \
+  --resource-group <resource-group> \
+  --server-name <mysql-server-name> \
+  --name audit_log_enabled \
+  --value ON
+
+# Configure audit events
+az mysql flexible-server parameter set \
+  --resource-group <resource-group> \
+  --server-name <mysql-server-name> \
+  --name audit_log_events \
+  --value "CONNECTION,DML,DDL,DCL,ADMIN"
+```
+
+### 3. Create a terraform.tfvars File
 
 Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.example](./terraform.tfvars.example) for an example with available options and detailed comments.
 
-### 2. Initialize Terraform
+### 4. Initialize Terraform
 
   ```bash
   terraform init
   ```
 
-### 3. Import the Diagnostic Setting (if already exists)
+### 5. Import the Diagnostic Setting (if already exists)
 
 **Option A: Automated Import (Recommended)**
 
 The module includes automated diagnostic setting detection. When you run `terraform plan`, the module will:
-- Query your existing Cosmos DB account to discover any existing diagnostic settings
+- Query your existing MySQL server to discover any existing diagnostic settings
 - Automatically handle the import if a diagnostic setting exists
 - Prevent "diagnostic setting already exists" errors
 - Skip if no diagnostic setting exists (will create new one)
 
-The automation uses external data sources with Azure CLI to fetch your Cosmos DB diagnostic settings.
+The automation uses external data sources with Azure CLI to fetch your MySQL diagnostic settings.
 
 **Option B: Manual Import**
 
@@ -117,7 +141,7 @@ Identify existing diagnostic setting name:
 ```bash
 # Get current diagnostic setting name
 az monitor diagnostic-settings list \
-  --resource /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account-name> \
+  --resource /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforMySQL/flexibleServers/<mysql-server-name> \
   --query "[].name" \
   --output tsv
 ```
@@ -125,13 +149,13 @@ az monitor diagnostic-settings list \
 Import existing diagnostic setting:
 
 ```bash
-terraform import 'module.datastore-audit_azure-cosmos-audit.module.common_azure-cosmos-diagnostic-settings.azurerm_monitor_diagnostic_setting.cosmos_audit' \
-  '/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account-name>|<diagnostic-setting-name>'
+terraform import 'module.datastore-audit_azure-mysql-audit.module.common_azure-mysql-diagnostic-settings.azurerm_monitor_diagnostic_setting.mysql_audit' \
+  '/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforMySQL/flexibleServers/<mysql-server-name>|<diagnostic-setting-name>'
 ```
 
 **Note**: The automated approach is recommended. Manual import is only needed if you encounter specific issues or prefer explicit control. Skipping the import step will cause Terraform to attempt creating a new diagnostic setting, which may fail if one already exists.
 
-### 4. Apply the Configuration
+### 6. Apply the Configuration
 
   ```bash
   terraform apply
@@ -139,46 +163,44 @@ terraform import 'module.datastore-audit_azure-cosmos-audit.module.common_azure-
 
 Review the planned changes and type `yes` to apply them.
 
-### 5. Verify the Configuration
+### 7. Verify the Configuration
 
 After successful application:
 
 1. Log in to your Guardium Data Protection web interface
 2. Navigate to **Universal Connector** → **Datasource Profile Management**
-3. Verify that the Cosmos DB profile has been created and is active
+3. Verify that the MySQL profile has been created and is active
 4. Navigate to **Event Hubs** on the Azure Portal and verify that your Event Hub is receiving messages
 5. Navigate to the managed unit (collector) the UC is deployed on and ensure the STAP status is green/active
 
 ## Event Hub Integration
 
-The module configures Cosmos DB to send audit logs to Event Hub. The Universal Connector then:
+The module configures MySQL to send audit logs to Event Hub. The Universal Connector then:
 
 1. Reads these logs from Event Hub using the configured Azure credentials
 2. Parses and normalizes the log data
 3. Forwards the processed audit events to Guardium for analysis
 
-## Cosmos DB Audit Logging
+## MySQL Audit Logging
 
-Cosmos DB diagnostic settings capture:
-- **DataPlaneRequests**: All data operations (queries, CRUD operations)
-- **QueryRuntimeStatistics**: Query performance metrics and execution details
-- **ControlPlaneRequests**: Management operations (account configuration changes)
+MySQL diagnostic settings capture:
+- **MySqlAuditLogs**: All audit events (connections, queries, DDL, DML, DCL, admin operations)
+- **MySqlSlowLogs**: Slow query logs for performance analysis
 
 ## Input Variables
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| azure_region | Azure region where resources are located | `string` | `"eastus"` | no |
+| azure_region | Azure region where resources are located (should match resource group location) | `string` | `"eastus"` | no |
 | resource_group_name | Name of the Azure resource group | `string` | n/a | yes |
-| cosmos_account_name | Name of the Cosmos DB account to be monitored | `string` | n/a | yes |
-| event_hub_namespace | Name of the Event Hub namespace | `string` | n/a | yes |
-| event_hub_name | Name of the Event Hub | `string` | n/a | yes |
-| event_hub_authorization_rule_id | Resource ID of the Event Hub authorization rule | `string` | n/a | yes |
+| mysql_server_name | Name of the MySQL Flexible Server to be monitored | `string` | n/a | yes |
+| eventhub_namespace_name | Name of the Event Hub namespace | `string` | n/a | yes |
+| eventhub_name | Name of the Event Hub | `string` | n/a | yes |
+| eventhub_authorization_rule_name | Name of the Event Hub authorization rule | `string` | `"RootManageSharedAccessKey"` | no |
 | storage_account_name | Name of the storage account for Event Hub checkpointing | `string` | n/a | yes |
-| storage_container_name | Name of the storage container for Event Hub checkpointing | `string` | `"eventhub-checkpoint"` | no |
-| enable_data_plane_logs | Enable DataPlaneRequests logs | `bool` | `true` | no |
-| enable_query_runtime_logs | Enable QueryRuntimeStatistics logs | `bool` | `true` | no |
-| enable_control_plane_logs | Enable ControlPlaneRequests logs | `bool` | `true` | no |
+| consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
+| enable_mysql_audit_logs | Enable MySQL Audit logs | `bool` | `true` | no |
+| enable_slow_query_logs | Enable MySQL Slow Query logs | `bool` | `false` | no |
 | gdp_client_id | Client ID used when running grdapi register_oauth_client | `string` | n/a | yes |
 | gdp_client_secret | Client secret from output of grdapi register_oauth_client | `string` | n/a | yes |
 | gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a | yes |
@@ -189,20 +211,23 @@ Cosmos DB diagnostic settings capture:
 | enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
 | csv_start_position | Start position for UDC (beginning/end) | `string` | `"end"` | no |
 | csv_interval | Polling interval for UDC in seconds | `string` | `"5"` | no |
-| config_mode | Configuration mode for Event Hub input (basic or advanced) | `string` | `"basic"` | no |
-| threads | Number of threads for Event Hub consumer | `number` | `8` | no |
-| decorate_events | Whether to decorate events with Event Hub metadata | `bool` | `true` | no |
-| consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| udc_name | Name of the Universal Connector |
+| udc_name | Name of the Universal Connector (format: `{mysql-server-name}-{subscription-id}`) |
 | diagnostic_setting_name | Name of the diagnostic setting |
 | diagnostic_setting_id | Resource ID of the diagnostic setting |
-| event_hub_name | Name of the Event Hub receiving logs |
-| cosmos_account_endpoint | Cosmos DB account endpoint |
+| eventhub_name | Name of the Event Hub receiving logs |
+| mysql_server_fqdn | MySQL server fully qualified domain name |
 | azure_region | Azure region where resources are deployed |
 | resource_group_name | Resource group name |
+
+## Additional Resources
+
+- [Azure MySQL Flexible Server Audit Logs](https://docs.microsoft.com/en-us/azure/mysql/flexible-server/concepts-audit-logs)
+- [Azure MySQL Guardium Filter Plugin](https://github.com/IBM/universal-connectors/tree/main/filter-plugin/logstash-filter-mysql-azure-guardium)
+- [IBM Guardium Data Protection Documentation](https://www.ibm.com/docs/en/guardium)
+- [Guardium Universal Connector Guide](https://www.ibm.com/docs/en/guardium/12.2?topic=connectors-universal-connector)
