@@ -4,29 +4,29 @@
 #
 
 # Couchbase Instance Configuration
-couchbase_cluster_name   = "sysqa-uc-couchbase1"
-couchbase_host           = "sysqa-uc-couchbase1.fyre.ibm.com"
+couchbase_cluster_name   = "production-cluster"
+couchbase_host           = "couchbase.example.com"
 couchbase_admin_port     = "8091"
 couchbase_admin_username = "Administrator"
 couchbase_admin_password = "your-couchbase-admin-password"
 couchbase_audit_log_path = "/opt/couchbase/var/lib/couchbase/logs/*-audit.log"
 
 # Server Connection Configuration (for SSH)
-server_ip       = "sysqa-uc-couchbase1.fyre.ibm.com"
+server_ip       = "couchbase.example.com"
 server_username = "root"
-server_password = "M454b4ch@Gu@rd1um"
+server_password = "your-ssh-password"
 
 # Guardium Configuration
-gdp_server        = "jessica-truck-cm-0531.dev.fyre.ibm.com"
+gdp_server        = "guardium-cm.example.com"
 gdp_port          = "8443"
 gdp_username      = "admin"
-gdp_password      = "M454b4ch@"
-gdp_client_id     = "client4"
-gdp_client_secret = "9f8d8004-3a26-4183-bd51-2a89ad029505"
-gdp_mu_host       = "jessica-truck-m1-0531.dev.fyre.ibm.com"
+gdp_password      = "your-guardium-password"
+gdp_client_id     = "client1"
+gdp_client_secret = "your-client-secret-uuid"
+gdp_mu_host       = "guardium-mu-01.example.com"
 
 # Universal Connector Configuration
-udc_name                   = "couchbase-sysqa-filebeat"
+udc_name                   = "couchbase-prod-filebeat"
 enable_universal_connector = true
 
 # Filebeat/Logstash Configuration

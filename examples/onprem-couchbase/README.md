@@ -143,6 +143,7 @@ After applying the configuration:
 
 3. **Check Audit Logs are Being Generated**:
    ```bash
+   ls -lh /opt/couchbase/var/lib/couchbase/logs/*-audit.log
    tail -f /opt/couchbase/var/lib/couchbase/logs/*-audit.log
    ```
 
@@ -190,9 +191,11 @@ After applying the configuration:
 4. **Verify Couchbase Audit is Enabled**:
    check the filebeat configuration file and ensure that the audit log path is correct and the filebeat is configured to read the audit log file.
 
-5. **Check Audit Log Permissions**:
+5. **Check Audit Log Permissions and Files**:
    ```bash
-   ls -la /opt/couchbase/var/lib/couchbase/logs/*-audit.log
+   ls -lah /opt/couchbase/var/lib/couchbase/logs/*-audit.log
+   # Ensure the filebeat user can read the audit logs
+   sudo chmod 644 /opt/couchbase/var/lib/couchbase/logs/*-audit.log
    ```
 
 ### Filebeat Connection Issues

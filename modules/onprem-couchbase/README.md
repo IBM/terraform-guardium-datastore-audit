@@ -53,7 +53,7 @@ module "couchbase_audit" {
   couchbase_admin_port      = "8091"
   couchbase_admin_username  = "Administrator"
   couchbase_admin_password  = var.couchbase_admin_password
-  couchbase_audit_log_path  = "/opt/couchbase/var/lib/couchbase/logs/audit.log"
+  couchbase_audit_log_path  = "/opt/couchbase/var/lib/couchbase/logs/*-audit.log"
 
   # Server Connection (for SSH)
   server_ip       = "192.168.1.100"
@@ -111,7 +111,7 @@ This module will:
 | couchbase_admin_port | Couchbase admin port | `string` | `"8091"` | no |
 | couchbase_admin_username | Couchbase administrator username | `string` | n/a | yes |
 | couchbase_admin_password | Couchbase administrator password | `string` | n/a | yes |
-| couchbase_audit_log_path | Path to Couchbase audit log directory | `string` | `"/opt/couchbase/var/lib/couchbase/logs/audit.log"` | no |
+| couchbase_audit_log_path | Path to Couchbase audit log file pattern (supports wildcards) | `string` | `"/opt/couchbase/var/lib/couchbase/logs/*-audit.log"` | no |
 | server_ip | IP address or hostname of the Couchbase server | `string` | `""` | yes (if enable_audit_log or enable_filebeat is true) |
 | server_username | Username for SSH connection | `string` | `""` | yes (if enable_audit_log or enable_filebeat is true) |
 | server_password | Password for SSH connection | `string` | `""` | yes (if enable_audit_log or enable_filebeat is true) |
@@ -154,7 +154,7 @@ After applying the configuration:
 
 3. **Check Audit Logs are Being Generated**:
    ```bash
-   tail -f /opt/couchbase/var/lib/couchbase/logs/audit.log
+   tail -f /opt/couchbase/var/lib/couchbase/logs/*-audit.log
    ```
 
 4. **Generate Test Activity**:
@@ -203,7 +203,7 @@ After applying the configuration:
 
 5. **Check Audit Log Permissions**:
    ```bash
-   ls -la /opt/couchbase/var/lib/couchbase/logs/audit.log
+   ls -la /opt/couchbase/var/lib/couchbase/logs/*-audit.log
    ```
 
 ### Filebeat Connection Issues
