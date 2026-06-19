@@ -186,7 +186,6 @@ You can configure which events to audit using the `audit_events` variable:
 | csv_start_position | Start position for UDC | `string` | `"end"`           | no |
 | csv_interval | Polling interval for UDC | `string` | `"5"`             | no |
 | csv_event_filter | UDC Event filters | `string` | `""`              | no |
-| codec_pattern | Codec pattern for RDS MySQL CloudWatch logs | `string` | `""` | no |
 | cloudwatch_endpoint | Custom endpoint URL for AWS CloudWatch. Leave empty to use default AWS endpoint | `string` | `""` | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for CloudWatch connection | `bool` | `true` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}`              | no |

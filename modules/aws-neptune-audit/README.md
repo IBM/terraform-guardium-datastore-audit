@@ -27,6 +27,7 @@ Before using this module, you need to:
 - Supports both Gremlin and SPARQL query logging
 - Integrates with Guardium for audit data collection via CloudWatch
 - Automatic parameter group detection and management
+- Configurable reboot behavior after audit logging changes
 
 ## Parameter Group Import Process
 
@@ -72,6 +73,8 @@ terraform plan -var-file=defaults.tfvars
 terraform apply -var-file=defaults.tfvars
 ```
 
+**Please note:** By default, this module uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+
 ## Provider Configuration
 
 This module requires both the AWS provider and the Guardium Data Protection provider.
@@ -92,12 +95,6 @@ Make sure your Terraform environment has access to the Guardium Data Protection 
 ```
 na.artifactory.swg-devops.com/ibm/guardium-data-protection
 ```
-
-## Module Dependencies
-
-This module uses the following internal modules:
-
-1. `aws-configuration` - Retrieves AWS account information
 
 ## Neptune Audit Logging
 
@@ -143,10 +140,10 @@ Guardium is configured to collect and analyze these logs through the Universal C
 | enable_universal_connector | Whether to enable the universal connector | bool | `true` | no |
 | csv_start_position | Start position for UDC | string | `"end"` | no |
 | csv_interval | Polling interval for UDC | string | `"5"` | no |
-| codec_pattern | Codec pattern for the Universal Connector | string | `""` | no |
 | csv_event_filter | UDC Event filters | string | `""` | no |
 | neptune_endpoint | Neptune cluster endpoint (optional - will be fetched automatically if not provided) | string | `""` | no |
 | use_aws_bundled_ca | Whether to use the AWS bundled CA certificates for Neptune connection | bool | `true` | no |
+| skip_reboot | Skip automatic reboot (audit logging will not work until manual reboot) | bool | `true` | no |
 
 ## Outputs
 
@@ -160,3 +157,4 @@ Guardium is configured to collect and analyze these logs through the Universal C
 | aws_account_id | AWS account ID |
 | neptune_cluster_identifier | Neptune cluster identifier |
 | neptune_cluster_endpoint | Neptune cluster endpoint |
+| reboot_required | Reboot status message for enabling audit logging |

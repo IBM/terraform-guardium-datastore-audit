@@ -1,0 +1,2 @@
+profile_definition_name,name,description,credential_name,region,log_group,prefix,start_position,interval,event_filter,account_id,unmask,endpoint,use_aws_bundled_ca
+Aurora MySQL over Cloudwatch logs input,${udc_name},${description},${credential_name},${aws_region},"${aws_log_group}",${prefix},${start_position},${interval},${event_filter},${aws_account_id},${unmask},${cloudwatch_endpoint},${use_aws_bundled_ca}

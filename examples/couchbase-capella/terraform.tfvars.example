@@ -1,0 +1,93 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# Couchbase Capella Audit Configuration Example
+# Copy this file to terraform.tfvars and fill in your values
+
+#----------------------------------------
+# Existing Capella Cluster Information
+#----------------------------------------
+# Find these in your Capella console:
+# 1. Log into https://cloud.couchbase.com
+# 2. Navigate to your cluster
+# 3. Copy the IDs from cluster details
+
+capella_organization_id = "your-organization-id-here"
+capella_project_id      = "your-project-id-here"
+capella_cluster_id      = "your-cluster-id-here"
+
+# Capella API endpoint (usually no need to change)
+capella_api_host = "cloudapi.cloud.couchbase.com"
+capella_api_token = "your-api-token-here"
+
+#----------------------------------------
+# Audit Configuration
+#----------------------------------------
+# Events to capture in audit logs
+audit_events = [
+  "authentication",      # User login/logout
+  "authorization",       # Permission checks
+  "data_access",        # Read/write operations
+  "admin_operations",   # Administrative actions
+  "query_operations"    # N1QL queries
+]
+
+# Users to exclude from auditing (optional)
+audit_disabled_users = []
+# Example: audit_disabled_users = ["internal_monitor", "backup_user"]
+
+#----------------------------------------
+# Guardium Data Protection Configuration
+#----------------------------------------
+gdp_server = "guardium.example.com"
+gdp_port   = "8443"
+
+# Guardium credentials
+gdp_username = "admin"
+gdp_password = "your-guardium-password"
+
+# OAuth client credentials (from grdapi register_oauth_client)
+gdp_client_id     = "client4"
+gdp_client_secret = "your-oauth-client-secret"
+
+# Guardium Managed Units (comma-separated if multiple)
+gdp_mu_host = "guardium-mu.example.com"
+# Example with multiple: gdp_mu_host = "mu1.example.com,mu2.example.com"
+
+#----------------------------------------
+# Universal Connector Configuration
+#----------------------------------------
+# Name of Capella API credential configured in Guardium
+# You must create this credential in Guardium before running Terraform
+udc_capella_credential = "capella-api-credential"
+
+# Enable Universal Connector integration
+enable_universal_connector = true
+
+#----------------------------------------
+# CSV/UDC Settings
+#----------------------------------------
+# Where to start reading logs
+csv_start_position = "end"  # Options: "beginning" or "end"
+
+# How often to poll for new logs (in minutes)
+csv_interval = "5"
+
+# Event filter (regex pattern, leave empty for no filtering)
+csv_event_filter = ""
+
+# Description for the connector
+csv_description = "Couchbase Capella Audit Connector for Production"
+
+#----------------------------------------
+# Tags
+#----------------------------------------
+tags = {
+  Environment = "production"
+  Project     = "data-security"
+  ManagedBy   = "Terraform"
+  Owner       = "your-email@example.com"
+  Compliance  = "PCI-DSS"
+}

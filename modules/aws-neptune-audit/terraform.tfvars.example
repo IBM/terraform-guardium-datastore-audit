@@ -73,3 +73,6 @@ gdp_password = "guardium-password"
 # Optional: Whether to use AWS bundled CA certificates for Neptune connections (default: true)
 # use_aws_bundled_ca = true
 
+# Optional: Skip automatic reboot after enabling audit logging (default: true)
+# skip_reboot = true
+

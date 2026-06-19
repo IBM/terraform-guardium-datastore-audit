@@ -23,6 +23,7 @@ module "aurora-postgres-parameter-group" {
   pg_audit_log                       = "none"        # For object auditing, we don't use session logging
   pg_audit_role                      = "rds_pgaudit" # Use the dedicated audit role
   force_failover                     = var.force_failover
+  skip_reboot                        = var.skip_reboot
   aurora_postgres_cluster_identifier = var.aurora_postgres_cluster_identifier
   aws_region                         = var.aws_region
 }
@@ -82,6 +83,7 @@ module "aurora-postgres-cloudwatch-registration" {
   count  = var.log_export_type == "Cloudwatch" ? 1 : 0
   source = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
 
+  aws_region                         = var.aws_region
   aws_account_id                     = local.aws_account_id
   gdp_client_id                      = var.gdp_client_id
   gdp_client_secret                  = var.gdp_client_secret

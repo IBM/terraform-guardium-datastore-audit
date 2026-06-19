@@ -72,6 +72,8 @@ This approach provides comprehensive coverage of database activity but may gener
    terraform apply
    ```
 
+  **Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+
 ## pgAudit Log Configuration
 
 The `pg_audit_log` variable controls what types of statements are logged. The default value is `"all, -misc"`, which logs:

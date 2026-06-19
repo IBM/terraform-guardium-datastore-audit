@@ -115,43 +115,43 @@ The following diagram illustrates how this module orchestrates the configuration
 ### Architecture Flow
 
 1. **Datastore Configuration**: The module configures each datastore to enable audit logging:
+  
+  **AWS Datastores:**
+  - **DynamoDB**: Enables CloudTrail data events to capture API calls
+  - **DocumentDB**: Enables audit and profiler logs via parameter groups
+  - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
+  - **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
+  - **Neptune**: Enables audit logs via parameter groups
+  - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
+  - **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
+  - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
+  
+  **Azure Datastores:**
+  - **Cosmos DB**: Enables diagnostic settings to capture data plane, query runtime, and control plane logs
+  - **SQL Database**: Enables server-level and database-level auditing to Azure Storage Account
 
-**AWS Datastores:**
-- **DynamoDB**: Enables CloudTrail data events to capture API calls
-- **DocumentDB**: Enables audit and profiler logs via parameter groups
-- **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
-- **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
-- **Neptune**: Enables audit logs via parameter groups
-- **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
-- **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
-- **Redshift**: Enables connection and user activity logging to CloudWatch or S3
-
-**Azure Datastores:**
-- **Cosmos DB**: Enables diagnostic settings to capture data plane, query runtime, and control plane logs
-- **SQL Database**: Enables server-level and database-level auditing to Azure Storage Account
-
-**Cloud-Native Datastores:**
-- **Couchbase Capella**: Enables audit logging via Capella API for cloud-native deployments
+  **Cloud-Native Datastores:**
+  - **Couchbase Capella**: Enables audit logging via Capella API for cloud-native deployments
 
 
 2. **Log Aggregation**: Audit logs are collected in cloud platforms:
-
-**AWS:**
-- CloudWatch Log Groups store structured logs
-- S3 buckets provide long-term storage for CloudTrail logs
-- IAM roles and policies ensure secure access
-
-**Azure:**
-- Event Hub receives real-time diagnostic logs
-- Storage accounts provide checkpointing for Event Hub consumers
-- Azure RBAC ensures secure access
+  
+  **AWS:**
+  - CloudWatch Log Groups store structured logs
+  - S3 buckets provide long-term storage for CloudTrail logs
+  - IAM roles and policies ensure secure access
+  
+  **Azure:**
+  - Event Hub receives real-time diagnostic logs
+  - Storage accounts provide checkpointing for Event Hub consumers
+  - Azure RBAC ensures secure access
 
 3. **Universal Connector**: The module deploys and configures Guardium Universal Connector:
-
-- Establishes connection to CloudWatch Logs, S3, or Azure Event Hub
-- Uses AWS or Azure credentials configured in Guardium
-- Applies parsing rules specific to each datastore type
-- Streams processed data to Guardium Data Protection
+  
+  - Establishes connection to CloudWatch Logs, S3, or Azure Event Hub
+  - Uses AWS or Azure credentials configured in Guardium
+  - Applies parsing rules specific to each datastore type
+  - Streams processed data to Guardium Data Protection
 
 
 4. **Guardium Integration**: Audit data flows into Guardium for:
@@ -202,31 +202,31 @@ This module provides audit configuration for the following AWS and Azure datasto
 Before using this module, ensure you have:
 
 1. **Cloud Account**: With appropriate permissions to create and manage resources:  
-   **For AWS:**
-- CloudTrail and CloudWatch resources
-- IAM roles and policies
-- S3 buckets
-- Database parameter/option groups
-- SQS queues (for PostgreSQL modules)
-
-**For Azure:**
-- Diagnostic settings
-- Event Hub namespaces and Event Hubs
-- Storage accounts
-- Azure RBAC permissions
+  **For AWS:**
+  - CloudTrail and CloudWatch resources
+  - IAM roles and policies
+  - S3 buckets
+  - Database parameter/option groups
+  - SQS queues (for PostgreSQL modules)
+  
+  **For Azure:**
+  - Diagnostic settings
+  - Event Hub namespaces and Event Hubs
+  - Storage accounts
+  - Azure RBAC permissions
 
 2. **Guardium Data Protection Instance**: A running GDP cluster (version 12.2.1 or above) with:
-- Web UI credentials with appropriate permissions
-- OAuth client registered via `grdapi register_oauth_client`
-- AWS credentials configured in Universal Connector (for AWS datastores)
-- Azure credentials configured in Universal Connector (for Azure datastores)
+  - Web UI credentials with appropriate permissions
+  - OAuth client registered via `grdapi register_oauth_client`
+  - AWS credentials configured in Universal Connector (for AWS datastores)
+  - Azure credentials configured in Universal Connector (for Azure datastores)
 
 3. **Terraform**: Version 1.0.0 or later
 
 4. **Cloud CLI**: Configured with appropriate credentials
-
-- **AWS CLI** for AWS datastores
-- **Azure CLI** for Azure datastores
+  
+  - **AWS CLI** for AWS datastores
+  - **Azure CLI** for Azure datastores
 
 ## Guardium Data Protection Version Compatibility
 

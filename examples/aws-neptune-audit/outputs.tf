@@ -39,3 +39,8 @@ output "neptune_cluster_endpoint" {
   description = "Neptune cluster endpoint"
   value       = module.datastore-audit_aws-neptune-audit.neptune_cluster_endpoint
 }
+
+output "reboot_required" {
+  description = "Whether manual reboot is required to enable audit logging"
+  value       = module.datastore-audit_aws-neptune-audit.reboot_required
+}

@@ -31,6 +31,12 @@ variable "force_failover" {
   description = "To failover the database instance, requires multi AZ databases. Results in minimal downtime"
 }
 
+variable "skip_reboot" {
+  description = "Skip automatic reboot (audit logging won't work until manual reboot)"
+  type        = bool
+  default     = true
+}
+
 variable "db_host" {
   type        = string
   description = "The hostname of the Aurora PostgreSQL cluster endpoint"
@@ -62,8 +68,8 @@ variable "db_name" {
 
 variable "ssl_mode" {
   type        = string
-  description = "SSL mode for PostgreSQL connection"
-  default     = "prefer"
+  description = "SSL mode for PostgreSQL connection. Supported values: require, verify-full, verify-ca, disable"
+  default     = "require"
 }
 
 //////
@@ -183,7 +189,7 @@ variable "tables" {
 variable "codec_pattern" {
   type        = string
   description = "Codec pattern for Aurora PostgreSQL CloudWatch logs"
-  default     = "plain"
+  default     = "(((?<ts>[^[A-Z]{3}]*)UTC:(?<client_ip>[^:]*):(?<db_user>[^@]*)@(?<db_name>[^:]*):(?<session_id>[^:*]*):(?<logger>LOCATION|DETAIL|STATEMENT|HINT):%%{GREEDYDATA:sql_full_log})|(^\\s))"
 }
 
 variable "cloudwatch_endpoint" {
