@@ -144,7 +144,7 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 | profile_csv | Universal Connector profile CSV |
 | udc_name | Name of the Universal Connector (format: `{mysql-server-name}-{subscription-id}`) |
 | mysql_server_name | Name of the MySQL server |
-| mysql_server_fqdn | Fully qualified domain name of the MySQL server |
+| mysql_server_endpoint | Fully qualified domain name of the MySQL server |
 | eventhub_namespace_name | Name of the Event Hub namespace |
 | eventhub_name | Name of the Event Hub |
 | storage_account_name | Name of the storage account |
@@ -153,6 +153,7 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 | resource_group_name | Name of the resource group |
 | diagnostic_setting_name | Name of the diagnostic setting |
 | diagnostic_setting_id | ID of the diagnostic setting |
+| mysql_audit_configuration | MySQL audit configuration summary |
 
 ## Examples
 

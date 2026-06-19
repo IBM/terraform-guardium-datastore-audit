@@ -124,7 +124,7 @@ Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.
 
 ### 5. Import the Diagnostic Setting (if already exists)
 
-**Option A: Automated Import (Recommended)**
+**Option A: Automated Import**
 
 The module includes automated diagnostic setting detection. When you run `terraform plan`, the module will:
 - Query your existing MySQL server to discover any existing diagnostic settings
@@ -223,12 +223,15 @@ MySQL diagnostic settings capture:
 | Name | Description |
 |------|-------------|
 | udc_name | Name of the Universal Connector (format: `{mysql-server-name}-{subscription-id}`) |
-| diagnostic_setting_name | Name of the diagnostic setting |
-| diagnostic_setting_id | Resource ID of the diagnostic setting |
+| mysql_server_name | Name of the MySQL server |
+| mysql_server_endpoint | Fully qualified domain name of the MySQL server |
+| eventhub_namespace_name | Name of the Event Hub namespace |
 | eventhub_name | Name of the Event Hub receiving logs |
-| mysql_server_fqdn | MySQL server fully qualified domain name |
+| storage_account_name | Name of the storage account for checkpointing |
 | azure_region | Azure region where resources are deployed |
+| subscription_id | Azure subscription ID |
 | resource_group_name | Resource group name |
+| diagnostic_setting_name | Name of the diagnostic setting |
 
 ## Additional Resources
 

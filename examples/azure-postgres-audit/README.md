@@ -105,7 +105,7 @@ Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.
 
 ### 4. Import the Diagnostic Setting (if already exists)
 
-**Option A: Automated Import (Recommended)**
+**Option A: Automated Import**
 
 The module includes automated diagnostic setting detection. When you run `terraform plan`, the module will:
 - Query your existing PostgreSQL server to discover any existing diagnostic settings
@@ -166,7 +166,7 @@ The module configures PostgreSQL to send audit logs to Event Hub. The Universal 
 
 ## PostgreSQL pgAudit Logging
 
-The module automatically configures pgAudit extension with the following parameters:
+The module automatically configures pgAudit extension with the following parameters based on the `Enabling Auditing` section in [Azure PostgreSQL Guardium Filter Plugin](https://github.com/IBM/universal-connectors/tree/main/filter-plugin/logstash-filter-azure-postgresql-guardium):
 
 - **shared_preload_libraries**: PGAUDIT (loads the pgAudit extension)
 - **pgaudit.log**: DDL,FUNCTION,READ,WRITE,ROLE (configurable - controls which statement classes are logged)
@@ -218,12 +218,15 @@ PostgreSQL diagnostic settings capture:
 | Name | Description |
 |------|-------------|
 | udc_name | Name of the Universal Connector (format: `{postgres-server-name}-{subscription-id}`) |
-| diagnostic_setting_name | Name of the diagnostic setting |
-| diagnostic_setting_id | Resource ID of the diagnostic setting |
+| postgres_server_name | Name of the PostgreSQL server |
+| postgres_server_endpoint | Fully qualified domain name of the PostgreSQL server |
+| eventhub_namespace_name | Name of the Event Hub namespace |
 | eventhub_name | Name of the Event Hub receiving logs |
-| postgres_server_fqdn | PostgreSQL server fully qualified domain name |
+| storage_account_name | Name of the storage account for checkpointing |
 | azure_region | Azure region where resources are deployed |
+| subscription_id | Azure subscription ID |
 | resource_group_name | Resource group name |
+| diagnostic_setting_name | Name of the diagnostic setting |
 | pgaudit_configuration | Summary of pgAudit configuration |
 
 ## Additional Resources

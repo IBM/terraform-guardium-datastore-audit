@@ -34,35 +34,35 @@ Before using this module, you need to:
 
 ## pgAudit Configuration
 
-This module automatically configures the following PostgreSQL parameters:
+This module automatically configures the following PostgreSQL parameters based on the `Enabling Auditing` section in [Azure PostgreSQL Guardium Filter Plugin](https://github.com/IBM/universal-connectors/tree/main/filter-plugin/logstash-filter-azure-postgresql-guardium):
 
 ### Required pgAudit Parameters
 
 1. **shared_preload_libraries** = `PGAUDIT`
    - Loads the pgAudit extension
 
-2. **pgaudit.log** = `DDL,FUNCTION,READ,WRITE,ROLE` (default)
+2. **pgaudit.log** = `DDL,FUNCTION,READ,WRITE,ROLE` 
    - Controls which statement classes are logged
    - Options: READ, WRITE, FUNCTION, ROLE, DDL, MISC, ALL
 
-3. **pgaudit.log_catalog** = `off` (default)
+3. **pgaudit.log_catalog** = `off` 
    - Controls logging of catalog queries
 
-4. **pgaudit.log_client** = `off` (default)
+4. **pgaudit.log_client** = `off` 
    - Controls visibility of audit messages to client
 
-5. **pgaudit.log_parameter** = `off` (default)
+5. **pgaudit.log_parameter** = `off` 
    - Controls inclusion of parameters in audit log
 
 ### Additional Logging Parameters
 
-6. **log_checkpoints** = `off` (default)
+6. **log_checkpoints** = `off` 
    - Logs checkpoint and restartpoint events
 
-7. **log_error_verbosity** = `VERBOSE` (default)
-   - Controls detail level in server log (TERSE, DEFAULT, VERBOSE)
+7. **log_error_verbosity** = `VERBOSE` 
+   - Controls detail level in server log
 
-8. **log_line_prefix** = `%t:%r:%u@%d:[%p]:%a:%e` (default)
+8. **log_line_prefix** = `%t:%r:%u@%d:[%p]:%a:%e`
    - Prefixes each log line with:
      - %t: timestamp
      - %r: client IP:port
@@ -71,6 +71,27 @@ This module automatically configures the following PostgreSQL parameters:
      - %p: process ID
      - %a: application name
      - %e: SQL state
+
+## Provider Configuration
+
+This module requires both the Azure provider and the Guardium Data Protection provider.
+The providers are configured automatically using the variables you provide:
+
+```hcl
+provider "azurerm" {
+  features {}
+}
+
+provider "guardium-data-protection" {
+  host = var.gdp_server
+  port = var.gdp_port
+}
+```
+
+Make sure your Terraform environment has access to the Guardium Data Protection provider, which is sourced from:
+```
+na.artifactory.swg-devops.com/ibm/guardium-data-protection
+```
 
 ## Diagnostic Setting Import Process
 
@@ -137,6 +158,13 @@ To ensure Terraform manages your PostgreSQL diagnostic settings correctly:
 | udc_name | Name of the Universal Connector |
 | postgres_server_name | Name of the PostgreSQL server |
 | postgres_server_endpoint | FQDN of the PostgreSQL server |
+| eventhub_namespace_name | Name of the Event Hub namespace |
+| eventhub_name | Name of the Event Hub |
+| storage_account_name | Name of the storage account for checkpointing |
+| azure_region | Azure region where resources are deployed |
+| subscription_id | Azure subscription ID |
+| resource_group_name | Name of the resource group |
+| diagnostic_setting_name | Name of the diagnostic setting |
 | diagnostic_setting_id | ID of the diagnostic setting |
 | pgaudit_configuration | Summary of pgAudit configuration |
 
