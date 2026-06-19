@@ -201,8 +201,9 @@ MySQL diagnostic settings capture:
 | eventhub_authorization_rule_name | Name of the Event Hub authorization rule | `string` | `"RootManageSharedAccessKey"` | no |
 | storage_account_name | Name of the storage account for Event Hub checkpointing | `string` | n/a | yes |
 | consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
+| diagnostic_setting_name | Name of the diagnostic setting | `string` | `"mysql-audit-to-eventhub"` | no |
 | enable_mysql_audit_logs | Enable MySQL Audit logs | `bool` | `true` | no |
-| enable_slow_query_logs | Enable MySQL Slow Query logs | `bool` | `false` | no |
+| audit_log_events | MySQL audit log events to capture (CONNECTION, GENERAL) | `string` | `"CONNECTION,GENERAL"` | no |
 | gdp_client_id | Client ID used when running grdapi register_oauth_client | `string` | n/a | yes |
 | gdp_client_secret | Client secret from output of grdapi register_oauth_client | `string` | n/a | yes |
 | gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a | yes |
