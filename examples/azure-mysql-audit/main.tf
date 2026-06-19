@@ -1,5 +1,5 @@
 #
-# Copyright IBM Corp. 2025
+# Copyright IBM Corp. 2026
 # SPDX-License-Identifier: Apache-2.0
 #
 
@@ -7,14 +7,13 @@ provider "azurerm" {
   features {}
 }
 
-module "datastore-audit_azure-cosmos-audit" {
-  source = "../../modules/azure-cosmos-audit"
+module "datastore-audit_azure-mysql-audit" {
+  source = "../../modules/azure-mysql-audit"
 
   # Azure Configuration
   azure_region        = var.azure_region
   resource_group_name = var.resource_group_name
-  cosmos_account_name = var.cosmos_account_name
-  azure_enrollment_id = var.azure_enrollment_id
+  mysql_server_name   = var.mysql_server_name
 
   # Event Hub Configuration
   eventhub_namespace_name          = var.eventhub_namespace_name
@@ -24,12 +23,9 @@ module "datastore-audit_azure-cosmos-audit" {
   consumer_group                   = var.consumer_group
 
   # Diagnostic Settings Configuration
-  diagnostic_setting_name   = var.diagnostic_setting_name
-  enable_data_plane_logs    = var.enable_data_plane_logs
-  enable_query_runtime_logs = var.enable_query_runtime_logs
-  enable_control_plane_logs = var.enable_control_plane_logs
-  enable_partition_key_logs = var.enable_partition_key_logs
-  enable_partition_ru_logs  = var.enable_partition_ru_logs
+  diagnostic_setting_name = var.diagnostic_setting_name
+  enable_mysql_audit_logs = var.enable_mysql_audit_logs
+  enable_slow_query_logs  = var.enable_slow_query_logs
 
   # Guardium Configuration
   gdp_client_id     = var.gdp_client_id
@@ -47,12 +43,6 @@ module "datastore-audit_azure-cosmos-audit" {
   codec_pattern              = var.codec_pattern
   csv_event_filter           = var.csv_event_filter
 
-  # Event Hub Advanced Configuration
-  config_mode     = var.config_mode
-  threads         = var.threads
-  decorate_events = var.decorate_events
-
   # Tags
   tags = var.tags
 }
-

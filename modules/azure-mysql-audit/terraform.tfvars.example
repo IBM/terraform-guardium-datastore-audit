@@ -1,0 +1,111 @@
+#
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
+#
+
+###############################################################################
+# Azure MySQL Audit Configuration - Example Terraform Variables
+###############################################################################
+
+#------------------------------------------------------------------------------
+# Azure Configuration
+#------------------------------------------------------------------------------
+
+# Azure region where resources are deployed
+azure_region = "eastus"
+
+# Name of the Azure resource group containing the MySQL server
+resource_group_name = "my-resource-group"
+
+# Name of the Azure MySQL Flexible Server to be monitored
+mysql_server_name = "my-mysql-server"
+
+#------------------------------------------------------------------------------
+# Event Hub Configuration
+#------------------------------------------------------------------------------
+
+# Name of the Event Hub namespace for audit log streaming
+eventhub_namespace_name = "my-eventhub-namespace"
+
+# Name of the Event Hub for audit log streaming
+eventhub_name = "mysql-audit-logs"
+
+# Name of the Event Hub namespace authorization rule
+# Default: "RootManageSharedAccessKey"
+eventhub_authorization_rule_name = "RootManageSharedAccessKey"
+
+# Name of the storage account for Event Hub checkpointing
+storage_account_name = "mystorageaccount"
+
+# Event Hub consumer group name
+# Default: "$Default"
+consumer_group = "$Default"
+
+#------------------------------------------------------------------------------
+# Diagnostic Settings Configuration
+#------------------------------------------------------------------------------
+
+# Name of the diagnostic setting
+diagnostic_setting_name = "mysql-audit-to-eventhub"
+
+# Enable MySQL Audit logs
+enable_mysql_audit_logs = true
+
+# Enable MySQL Slow Query logs
+enable_slow_query_logs = false
+
+#------------------------------------------------------------------------------
+# Guardium Configuration
+#------------------------------------------------------------------------------
+
+# Hostname/IP address of Guardium Central Manager
+gdp_server = "guardium.example.com"
+
+# Port of Guardium Central Manager
+gdp_port = "8443"
+
+# Username of Guardium Web UI user
+gdp_username = "admin"
+
+# Password of Guardium Web UI user
+gdp_password = "your-password-here"
+
+# Client ID used when running grdapi register_oauth_client
+gdp_client_id = "client1"
+
+# Client secret from output of grdapi register_oauth_client
+gdp_client_secret = "your-client-secret-here"
+
+# Comma separated list of Guardium Managed Units to deploy profile
+gdp_mu_host = "guardium-mu.example.com"
+
+#------------------------------------------------------------------------------
+# Universal Connector Configuration
+#------------------------------------------------------------------------------
+
+# Whether to enable the universal connector module
+# Set to false to completely disable the universal connector for a run
+enable_universal_connector = true
+
+# Start position for UDC (beginning or end)
+csv_start_position = "end"
+
+# Polling interval for UDC in seconds
+csv_interval = "5"
+
+# UDC Event filters (optional)
+csv_event_filter = ""
+
+# Codec pattern for the Universal Connector (optional)
+codec_pattern = ""
+
+#------------------------------------------------------------------------------
+# Tags
+#------------------------------------------------------------------------------
+
+# Map of tags to apply to resources
+tags = {
+  Environment = "production"
+  Project     = "data-security"
+  ManagedBy   = "terraform"
+}
