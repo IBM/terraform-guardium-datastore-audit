@@ -51,9 +51,6 @@ diagnostic_setting_name = "mysql-audit-to-eventhub"
 # Enable MySQL Audit logs
 enable_mysql_audit_logs = true
 
-# Enable MySQL Slow Query logs
-enable_slow_query_logs = false
-
 #------------------------------------------------------------------------------
 # Guardium Configuration
 #------------------------------------------------------------------------------
@@ -91,12 +88,14 @@ enable_universal_connector = true
 initial_position = "end"
 
 #------------------------------------------------------------------------------
-# Tags
+# Event Hub Advanced Configuration
 #------------------------------------------------------------------------------
 
-# Map of tags to apply to resources
-tags = {
-  Environment = "production"
-  Project     = "data-security"
-  ManagedBy   = "terraform"
-}
+# Configuration mode for Event Hub input (basic or advanced)
+config_mode = "basic"
+
+# Number of threads for Event Hub consumer
+threads = 8
+
+# Whether to decorate events with Event Hub metadata
+decorate_events = true

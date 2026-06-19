@@ -61,12 +61,6 @@ variable "diagnostic_setting_name" {
   default     = "postgres-audit-to-eventhub"
 }
 
-variable "tags" {
-  type        = map(string)
-  description = "Map of tags to apply to resources"
-  default     = {}
-}
-
 //////
 // PostgreSQL pgAudit Configuration
 //////

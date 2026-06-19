@@ -118,8 +118,6 @@ resource "azurerm_monitor_diagnostic_setting" "postgres_audit" {
     category = "PostgreSQLLogs"
   }
 
-  tags = var.tags
-
   depends_on = [
     azurerm_postgresql_flexible_server_configuration.shared_preload_libraries,
     azurerm_postgresql_flexible_server_configuration.pgaudit_log,

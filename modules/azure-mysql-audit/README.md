@@ -27,9 +27,8 @@ Before using this module, you need to:
 
 - Configures Azure MySQL Flexible Server diagnostic settings for audit logging
 - Streams audit logs to Azure Event Hub
-- Supports multiple log categories:
-  - MySqlAuditLogs (audit events)
-  - MySqlSlowLogs (slow query logs)
+- Captures MySQL audit logs:
+  - MySqlAuditLogs (audit events including connections, queries, DDL, DML, DCL, admin operations)
 - Integrates with Guardium for audit data collection via Event Hub
 - Automatic Universal Connector profile deployment
 
@@ -102,7 +101,6 @@ na.artifactory.swg-devops.com/ibm/guardium-data-protection
 
 MySQL diagnostic settings capture:
 - **MySqlAuditLogs**: All audit events (connections, queries, DDL, DML, DCL, admin operations)
-- **MySqlSlowLogs**: Slow query logs for performance analysis
 
 ## Event Hub Integration
 
@@ -127,7 +125,6 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 | threads | Number of threads for Event Hub consumer | `number` | `8` | no |
 | decorate_events | Whether to decorate events with Event Hub metadata | `bool` | `true` | no |
 | enable_mysql_audit_logs | Enable MySQL Audit logs | `bool` | `true` | no |
-| enable_slow_query_logs | Enable MySQL Slow Query logs | `bool` | `false` | no |
 | audit_log_events | MySQL audit log events to capture (CONNECTION, GENERAL) | `string` | `"CONNECTION,GENERAL"` | no |
 | gdp_server | Hostname/IP of Guardium Central Manager | `string` | n/a | yes |
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
@@ -138,7 +135,6 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 | gdp_mu_host | Comma separated list of Guardium Managed Units | `string` | n/a | yes |
 | enable_universal_connector | Enable Universal Connector module | `bool` | `true` | no |
 | initial_position | Initial position for Event Hub consumer (beginning or end) | `string` | `"end"` | no |
-| tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs
 

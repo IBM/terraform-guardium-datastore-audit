@@ -32,7 +32,6 @@ Before using this module, you need to:
   - PostgreSQLLogs (audit events from pgAudit)
 - Integrates with Guardium for audit data collection via Event Hub
 - Automatic Universal Connector profile deployment
-- Supports resource tagging for diagnostic settings
 
 ## pgAudit Configuration
 
@@ -167,7 +166,6 @@ module "azure_postgres_audit" {
 | config_mode | Configuration mode for Event Hub input (basic or advanced) | `string` | `"basic"` | no |
 | threads | Number of threads for Event Hub consumer | `number` | `8` | no |
 | decorate_events | Whether to decorate events with Event Hub metadata | `bool` | `true` | no |
-| tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs
 

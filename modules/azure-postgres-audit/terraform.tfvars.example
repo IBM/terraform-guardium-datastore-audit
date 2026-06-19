@@ -120,12 +120,14 @@ enable_universal_connector = true
 initial_position = "end"
 
 #------------------------------------------------------------------------------
-# Tags
+# Event Hub Advanced Configuration
 #------------------------------------------------------------------------------
 
-# Map of tags to apply to resources
-tags = {
-  Environment = "production"
-  Project     = "data-security"
-  ManagedBy   = "terraform"
-}
+# Configuration mode for Event Hub input (basic or advanced)
+config_mode = "basic"
+
+# Number of threads for Event Hub consumer
+threads = 8
+
+# Whether to decorate events with Event Hub metadata
+decorate_events = true

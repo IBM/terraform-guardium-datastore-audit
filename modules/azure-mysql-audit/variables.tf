@@ -56,12 +56,6 @@ variable "diagnostic_setting_name" {
   default     = "mysql-audit-to-eventhub"
 }
 
-variable "tags" {
-  type        = map(string)
-  description = "Map of tags to apply to resources"
-  default     = {}
-}
-
 variable "azure_enrollment_id" {
   type        = string
   description = "Azure Enrollment ID (optional)"
@@ -76,12 +70,6 @@ variable "enable_mysql_audit_logs" {
   type        = bool
   description = "Enable MySQL Audit logs"
   default     = true
-}
-
-variable "enable_slow_query_logs" {
-  type        = bool
-  description = "Enable MySQL Slow Query logs"
-  default     = false
 }
 
 variable "audit_log_events" {

@@ -84,16 +84,6 @@ resource "azurerm_monitor_diagnostic_setting" "mysql_audit" {
     }
   }
 
-  # Enable MySQL Slow Query logs
-  dynamic "enabled_log" {
-    for_each = var.enable_slow_query_logs ? [1] : []
-    content {
-      category = "MySqlSlowLogs"
-    }
-  }
-
-  tags = var.tags
-
   depends_on = [
     data.azurerm_mysql_flexible_server.mysql,
     data.azurerm_eventhub.eventhub,

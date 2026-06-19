@@ -23,12 +23,6 @@ variable "mysql_server_name" {
   description = "Name of the Azure MySQL Flexible Server to be monitored"
 }
 
-variable "tags" {
-  type        = map(string)
-  description = "Map of tags to apply to resources"
-  default     = {}
-}
-
 //////
 // Event Hub variables
 //////
@@ -74,12 +68,6 @@ variable "enable_mysql_audit_logs" {
   type        = bool
   description = "Enable MySQL Audit logs"
   default     = true
-}
-
-variable "enable_slow_query_logs" {
-  type        = bool
-  description = "Enable MySQL Slow Query logs"
-  default     = false
 }
 
 //////
