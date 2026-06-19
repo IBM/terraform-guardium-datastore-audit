@@ -111,7 +111,7 @@ module "cassandra_audit" {
 - Ensure the Cassandra server has Filebeat installed before running this module
 - The module creates a backup of the existing `filebeat.yml` before modification
 - SSL/TLS is recommended for production environments
-- Requires `gdp-middleware-helper` provider version >= 1.4.0
+- Requires `gdp-middleware-helper` provider version >= 1.0.0 (with on-prem configuration resources)
 
 ## License
 

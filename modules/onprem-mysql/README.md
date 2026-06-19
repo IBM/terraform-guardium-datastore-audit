@@ -84,7 +84,7 @@ module "mysql_audit_linux" {
 8. **Configures Universal Connector**: Sets up Guardium Universal Connector to receive audit logs via syslog
 9. **Streams to Guardium**: Audit data flows to Guardium Data Protection for monitoring and compliance
 
-**Note**: This module uses the `gdp-middleware-helper` provider to execute commands remotely via SSH. No temporary files are transferred to the MySQL server. Requires `gdp-middleware-helper` provider version >= 1.4.0.
+**Note**: This module uses the `gdp-middleware-helper` provider to execute commands remotely via SSH. No temporary files are transferred to the MySQL server. Requires `gdp-middleware-helper` provider version >= 1.0.0 (with on-prem configuration resources).
 
 
 ## Requirements
