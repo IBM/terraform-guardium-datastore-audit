@@ -159,7 +159,7 @@ module "azure_postgres_audit" {
 | gdp_password | Guardium Web UI password | `string` | n/a | yes |
 | gdp_client_id | Guardium OAuth client ID | `string` | n/a | yes |
 | gdp_client_secret | Guardium OAuth client secret | `string` | n/a | yes |
-| gdp_mu_host | Guardium Managed Units (comma-separated) | `string` | n/a | yes |
+| gdp_mu_host | Guardium Managed Units (comma-separated) | `string` | `""` | no |
 | enable_universal_connector | Enable Universal Connector module | `bool` | `true` | no |
 | initial_position | Initial position for Event Hub consumer (beginning or end) | `string` | `"end"` | no |
 | config_mode | Configuration mode for Event Hub input (basic or advanced) | `string` | `"basic"` | no |

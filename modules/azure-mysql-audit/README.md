@@ -132,7 +132,7 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 | gdp_password | Guardium Web UI password | `string` | n/a | yes |
 | gdp_client_id | OAuth client ID | `string` | n/a | yes |
 | gdp_client_secret | OAuth client secret | `string` | n/a | yes |
-| gdp_mu_host | Comma separated list of Guardium Managed Units | `string` | n/a | yes |
+| gdp_mu_host | Comma separated list of Guardium Managed Units | `string` | `""` | no |
 | enable_universal_connector | Enable Universal Connector module | `bool` | `true` | no |
 | initial_position | Initial position for Event Hub consumer (beginning or end) | `string` | `"end"` | no |
 

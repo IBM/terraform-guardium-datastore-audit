@@ -118,6 +118,7 @@ variable "gdp_password" {
 variable "gdp_mu_host" {
   type        = string
   description = "Comma separated list of Guardium Managed Units to deploy profile"
+  default     = ""
 }
 
 //////
