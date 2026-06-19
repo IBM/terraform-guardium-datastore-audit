@@ -6,13 +6,12 @@ This module configures audit logging for Azure PostgreSQL Flexible Server with I
 
 ## Prerequisites
 
-Before using this module, you need to:
+Before using this module, you must have the following Azure resources already created:
 
-1. Have an existing Azure PostgreSQL Flexible Server
-2. Have Event Hub namespace and Event Hub created for audit log streaming
-3. Have Storage Account created for Event Hub checkpointing
-4. Have Guardium set up with appropriate credentials
-5. Have Azure credentials configured in Guardium Universal Connector
+1. **Azure PostgreSQL Flexible Server**
+2. **Event Hub namespace and Event Hub** (for audit log streaming)
+3. **Storage Account** (for Event Hub checkpointing)
+4. **Resource group** containing these resources
 
 ## Requirements
 
