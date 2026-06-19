@@ -29,6 +29,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "azure_enrollment_id" {
+  type        = string
+  description = "Azure Enrollment ID (optional)"
+  default     = ""
+}
+
 //////
 // Event Hub variables
 //////
@@ -175,4 +181,26 @@ variable "csv_event_filter" {
   type        = string
   description = "UDC Event filters"
   default     = ""
+}
+
+//////
+// Event Hub Advanced Configuration
+//////
+
+variable "config_mode" {
+  type        = string
+  description = "Configuration mode for Event Hub input (basic or advanced)"
+  default     = "basic"
+}
+
+variable "threads" {
+  type        = number
+  description = "Number of threads for Event Hub consumer"
+  default     = 8
+}
+
+variable "decorate_events" {
+  type        = bool
+  description = "Whether to decorate events with Event Hub metadata"
+  default     = true
 }

@@ -1,5 +1,5 @@
 #
-# Copyright IBM Corp. 2025
+# Copyright IBM Corp. 2026
 # SPDX-License-Identifier: Apache-2.0
 #
 
@@ -15,12 +15,12 @@ variable "azure_region" {
 
 variable "resource_group_name" {
   type        = string
-  description = "Name of the Azure resource group containing the Cosmos DB account"
+  description = "Name of the Azure resource group containing the MySQL server"
 }
 
-variable "cosmos_account_name" {
+variable "mysql_server_name" {
   type        = string
-  description = "Name of the Azure Cosmos DB account to be monitored"
+  description = "Name of the Azure MySQL Flexible Server to be monitored"
 }
 
 variable "eventhub_namespace_name" {
@@ -53,7 +53,7 @@ variable "consumer_group" {
 variable "diagnostic_setting_name" {
   type        = string
   description = "Name of the diagnostic setting"
-  default     = "cosmos-audit-to-eventhub"
+  default     = "mysql-audit-to-eventhub"
 }
 
 variable "tags" {
@@ -72,34 +72,22 @@ variable "azure_enrollment_id" {
 // Diagnostic Settings Configuration
 //////
 
-variable "enable_data_plane_logs" {
+variable "enable_mysql_audit_logs" {
   type        = bool
-  description = "Enable DataPlaneRequests logs (CRUD operations)"
+  description = "Enable MySQL Audit logs"
   default     = true
 }
 
-variable "enable_query_runtime_logs" {
+variable "enable_slow_query_logs" {
   type        = bool
-  description = "Enable QueryRuntimeStatistics logs"
-  default     = true
-}
-
-variable "enable_control_plane_logs" {
-  type        = bool
-  description = "Enable ControlPlaneRequests logs (management operations)"
-  default     = true
-}
-
-variable "enable_partition_key_logs" {
-  type        = bool
-  description = "Enable PartitionKeyStatistics logs"
+  description = "Enable MySQL Slow Query logs"
   default     = false
 }
 
-variable "enable_partition_ru_logs" {
-  type        = bool
-  description = "Enable PartitionKeyRUConsumption logs"
-  default     = false
+variable "audit_log_events" {
+  type        = string
+  description = "MySQL audit log events to capture. Options: CONNECTION (connection events), GENERAL (DML_SELECT, DML_NONSELECT, DML, DDL, DCL, ADMIN)"
+  default     = "CONNECTION,GENERAL"
 }
 
 //////
