@@ -121,6 +121,7 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 | eventhub_authorization_rule_name | Name of the Event Hub authorization rule | `string` | `"RootManageSharedAccessKey"` | no |
 | storage_account_name | Name of the storage account for checkpointing | `string` | n/a | yes |
 | consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
+| diagnostic_setting_name | Name of the diagnostic setting | `string` | `"mysql-audit-to-eventhub"` | no |
 | config_mode | Configuration mode for Event Hub input (basic or advanced) | `string` | `"basic"` | no |
 | threads | Number of threads for Event Hub consumer | `number` | `8` | no |
 | decorate_events | Whether to decorate events with Event Hub metadata | `bool` | `true` | no |

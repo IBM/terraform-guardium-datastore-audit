@@ -95,43 +95,6 @@ To ensure Terraform manages your PostgreSQL diagnostic settings correctly:
      "/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforPostgreSQL/flexibleServers/<postgres-server-name>|<diagnostic-setting-name>"
    ```
 
-## Usage
-
-```hcl
-module "azure_postgres_audit" {
-  source = "../../modules/azure-postgres-audit"
-
-  # Azure Configuration
-  azure_region         = "eastus"
-  resource_group_name  = "my-resource-group"
-  postgres_server_name = "my-postgres-server"
-
-  # Event Hub Configuration
-  eventhub_namespace_name          = "my-eventhub-namespace"
-  eventhub_name                    = "postgres-audit-logs"
-  eventhub_authorization_rule_name = "RootManageSharedAccessKey"
-  storage_account_name             = "mystorageaccount"
-
-  # pgAudit Configuration
-  pgaudit_log           = "DDL,FUNCTION,READ,WRITE,ROLE"
-  pgaudit_log_catalog   = false
-  pgaudit_log_client    = false
-  pgaudit_log_parameter = false
-  log_checkpoints       = false
-  log_error_verbosity   = "VERBOSE"
-  log_line_prefix       = "%t:%r:%u@%d:[%p]:%a:%e"
-
-  # Guardium Configuration
-  gdp_server        = "guardium.example.com"
-  gdp_port          = "8443"
-  gdp_username      = "admin"
-  gdp_password      = var.gdp_password
-  gdp_client_id     = "client1"
-  gdp_client_secret = var.gdp_client_secret
-  gdp_mu_host       = "guardium-mu.example.com"
-}
-```
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |

@@ -12,6 +12,7 @@ module "datastore-audit_azure-mysql-audit" {
 
   # Azure Configuration
   azure_region        = var.azure_region
+  azure_enrollment_id = var.azure_enrollment_id
   resource_group_name = var.resource_group_name
   mysql_server_name   = var.mysql_server_name
 
@@ -25,6 +26,7 @@ module "datastore-audit_azure-mysql-audit" {
   # Diagnostic Settings Configuration
   diagnostic_setting_name = var.diagnostic_setting_name
   enable_mysql_audit_logs = var.enable_mysql_audit_logs
+  audit_log_events        = var.audit_log_events
 
   # Guardium Configuration
   gdp_client_id     = var.gdp_client_id

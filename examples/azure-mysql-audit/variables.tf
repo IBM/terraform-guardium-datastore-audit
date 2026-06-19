@@ -54,6 +54,12 @@ variable "consumer_group" {
   default     = "$Default"
 }
 
+variable "azure_enrollment_id" {
+  type        = string
+  description = "Azure Enrollment ID (optional)"
+  default     = ""
+}
+
 //////
 // Diagnostic Settings variables
 //////
@@ -68,6 +74,12 @@ variable "enable_mysql_audit_logs" {
   type        = bool
   description = "Enable MySQL Audit logs"
   default     = true
+}
+
+variable "audit_log_events" {
+  type        = string
+  description = "MySQL audit log events to capture. Options: CONNECTION (connection events), GENERAL (DML_SELECT, DML_NONSELECT, DML, DDL, DCL, ADMIN)"
+  default     = "CONNECTION,GENERAL"
 }
 
 //////
