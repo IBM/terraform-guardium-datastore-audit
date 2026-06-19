@@ -106,10 +106,12 @@ module "cassandra_audit" {
 
 ## Notes
 
-- The module uses SSH to configure Filebeat on the Cassandra server
+- The module uses the `gdp-middleware-helper` provider to configure Filebeat on the Cassandra server via SSH
+- No temporary files are transferred to the Cassandra server during configuration
 - Ensure the Cassandra server has Filebeat installed before running this module
 - The module creates a backup of the existing `filebeat.yml` before modification
 - SSL/TLS is recommended for production environments
+- Requires `gdp-middleware-helper` provider version >= 1.4.0
 
 ## License
 
