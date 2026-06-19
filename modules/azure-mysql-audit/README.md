@@ -2,7 +2,7 @@
 
 This module configures audit logging for Azure MySQL Flexible Server with IBM Guardium Data Protection. It enables diagnostic settings to stream audit logs to Azure Event Hub and configures Guardium Universal Connector for log collection.
 
-**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.2 and above**.
+**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 
 ## Prerequisites
 
@@ -137,10 +137,7 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 | gdp_client_secret | OAuth client secret | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units | `string` | n/a | yes |
 | enable_universal_connector | Enable Universal Connector module | `bool` | `true` | no |
-| csv_start_position | Start position for UDC (beginning or end) | `string` | `"end"` | no |
-| csv_interval | Polling interval for UDC in seconds | `string` | `"5"` | no |
-| csv_event_filter | UDC Event filters | `string` | `""` | no |
-| codec_pattern | Codec pattern for the Universal Connector | `string` | `""` | no |
+| initial_position | Initial position for Event Hub consumer (beginning or end) | `string` | `"end"` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs

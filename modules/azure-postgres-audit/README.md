@@ -2,7 +2,7 @@
 
 This module configures audit logging for Azure PostgreSQL Flexible Server with IBM Guardium Data Protection using pgAudit extension. It enables diagnostic settings to stream audit logs to Azure Event Hub and configures Guardium Universal Connector for log collection.
 
-**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.2 and above**.
+**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 
 ## Prerequisites
 
@@ -28,15 +28,11 @@ Before using this module, you need to:
 - Configures Azure PostgreSQL Flexible Server with pgAudit extension
 - Enables comprehensive audit logging with configurable parameters
 - Streams audit logs to Azure Event Hub
-- Supports multiple PostgreSQL log categories:
+- Captures PostgreSQL audit logs:
   - PostgreSQLLogs (audit events from pgAudit)
-  - PostgreSQLFlexSessions (optional)
-  - PostgreSQLFlexQueryStoreRuntime (optional)
-  - PostgreSQLFlexQueryStoreWaitStats (optional)
-  - PostgreSQLFlexTableStats (optional)
-  - PostgreSQLFlexDatabaseXacts (optional)
 - Integrates with Guardium for audit data collection via Event Hub
 - Automatic Universal Connector profile deployment
+- Supports resource tagging for diagnostic settings
 
 ## pgAudit Configuration
 
@@ -77,23 +73,6 @@ This module automatically configures the following PostgreSQL parameters:
      - %p: process ID
      - %a: application name
      - %e: SQL state
-
-## Important: Server Restart Required
-
-After applying this module, you **must restart** the PostgreSQL server for pgAudit to take effect:
-
-### Via Azure Portal
-1. Go to your PostgreSQL Flexible Server
-2. Click "Overview"
-3. Click "Restart" button
-4. Wait for server to become "Available"
-
-### Via Azure CLI
-```bash
-az postgres flexible-server restart \
-  --resource-group <resource-group-name> \
-  --name <server-name>
-```
 
 ## Diagnostic Setting Import Process
 
@@ -160,11 +139,15 @@ module "azure_postgres_audit" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | azure_region | Azure region where resources are deployed | `string` | `"eastus"` | no |
+| azure_enrollment_id | Azure Enrollment ID | `string` | n/a | yes |
 | resource_group_name | Name of the Azure resource group | `string` | n/a | yes |
 | postgres_server_name | Name of the PostgreSQL Flexible Server | `string` | n/a | yes |
 | eventhub_namespace_name | Name of the Event Hub namespace | `string` | n/a | yes |
 | eventhub_name | Name of the Event Hub | `string` | n/a | yes |
+| eventhub_authorization_rule_name | Name of the Event Hub authorization rule | `string` | `"RootManageSharedAccessKey"` | no |
 | storage_account_name | Name of the storage account | `string` | n/a | yes |
+| consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
+| diagnostic_setting_name | Name of the diagnostic setting | `string` | `"postgres-audit-to-eventhub"` | no |
 | pgaudit_log | Statement classes to log | `string` | `"DDL,FUNCTION,READ,WRITE,ROLE"` | no |
 | pgaudit_log_catalog | Log catalog queries | `bool` | `false` | no |
 | pgaudit_log_client | Show audit messages to client | `bool` | `false` | no |
@@ -173,11 +156,18 @@ module "azure_postgres_audit" {
 | log_error_verbosity | Error verbosity level | `string` | `"VERBOSE"` | no |
 | log_line_prefix | Log line prefix format | `string` | `"%t:%r:%u@%d:[%p]:%a:%e"` | no |
 | gdp_server | Guardium Central Manager hostname | `string` | n/a | yes |
+| gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
 | gdp_username | Guardium Web UI username | `string` | n/a | yes |
 | gdp_password | Guardium Web UI password | `string` | n/a | yes |
 | gdp_client_id | Guardium OAuth client ID | `string` | n/a | yes |
 | gdp_client_secret | Guardium OAuth client secret | `string` | n/a | yes |
 | gdp_mu_host | Guardium Managed Units (comma-separated) | `string` | n/a | yes |
+| enable_universal_connector | Enable Universal Connector module | `bool` | `true` | no |
+| initial_position | Initial position for Event Hub consumer (beginning or end) | `string` | `"end"` | no |
+| config_mode | Configuration mode for Event Hub input (basic or advanced) | `string` | `"basic"` | no |
+| threads | Number of threads for Event Hub consumer | `number` | `8` | no |
+| decorate_events | Whether to decorate events with Event Hub metadata | `bool` | `true` | no |
+| tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs
 

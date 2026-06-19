@@ -92,6 +92,8 @@ resource "azurerm_monitor_diagnostic_setting" "mysql_audit" {
     }
   }
 
+  tags = var.tags
+
   depends_on = [
     data.azurerm_mysql_flexible_server.mysql,
     data.azurerm_eventhub.eventhub,
@@ -152,5 +154,5 @@ module "common_azure-eventhub-registration" {
   gdp_password               = var.gdp_password
   gdp_mu_host                = var.gdp_mu_host
   enable_universal_connector = var.enable_universal_connector
-  csv_start_position         = var.csv_start_position
+  csv_start_position         = var.initial_position
 }

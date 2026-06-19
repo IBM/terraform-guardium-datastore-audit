@@ -2,6 +2,8 @@
 
 This example demonstrates how to configure Azure MySQL Flexible Server with IBM Guardium Data Protection using diagnostic settings and Event Hub for comprehensive monitoring.
 
+**Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
+
 ## Architecture
 
 ```
@@ -209,8 +211,10 @@ MySQL diagnostic settings capture:
 | gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
 | enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
-| csv_start_position | Start position for UDC (beginning/end) | `string` | `"end"` | no |
-| csv_interval | Polling interval for UDC in seconds | `string` | `"5"` | no |
+| initial_position | Initial position for Event Hub consumer (beginning/end) | `string` | `"end"` | no |
+| config_mode | Configuration mode for Event Hub input (basic/advanced) | `string` | `"basic"` | no |
+| threads | Number of threads for Event Hub consumer | `number` | `8` | no |
+| decorate_events | Whether to decorate events with Event Hub metadata | `bool` | `true` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs

@@ -118,6 +118,8 @@ resource "azurerm_monitor_diagnostic_setting" "postgres_audit" {
     category = "PostgreSQLLogs"
   }
 
+  tags = var.tags
+
   depends_on = [
     azurerm_postgresql_flexible_server_configuration.shared_preload_libraries,
     azurerm_postgresql_flexible_server_configuration.pgaudit_log,
@@ -175,5 +177,5 @@ module "common_azure-eventhub-registration" {
   gdp_password               = var.gdp_password
   gdp_mu_host                = var.gdp_mu_host
   enable_universal_connector = var.enable_universal_connector
-  csv_start_position         = var.csv_start_position
+  csv_start_position         = var.initial_position
 }

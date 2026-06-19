@@ -165,28 +165,10 @@ variable "enable_universal_connector" {
   default     = true
 }
 
-variable "csv_start_position" {
+variable "initial_position" {
   type        = string
-  description = "Start position for UDC (beginning or end)"
+  description = "Initial position for Event Hub consumer (beginning or end)"
   default     = "end"
-}
-
-variable "csv_interval" {
-  type        = string
-  description = "Polling interval for UDC in seconds"
-  default     = "5"
-}
-
-variable "csv_event_filter" {
-  type        = string
-  description = "UDC Event filters"
-  default     = ""
-}
-
-variable "codec_pattern" {
-  type        = string
-  description = "Codec pattern for the Universal Connector"
-  default     = ""
 }
 
 //////
