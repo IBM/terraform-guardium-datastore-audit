@@ -25,7 +25,6 @@ module "datastore-audit_azure-mysql-audit" {
   # Diagnostic Settings Configuration
   diagnostic_setting_name = var.diagnostic_setting_name
   enable_mysql_audit_logs = var.enable_mysql_audit_logs
-  enable_slow_query_logs  = var.enable_slow_query_logs
 
   # Guardium Configuration
   gdp_client_id     = var.gdp_client_id
@@ -42,7 +41,4 @@ module "datastore-audit_azure-mysql-audit" {
   config_mode                = var.config_mode
   threads                    = var.threads
   decorate_events            = var.decorate_events
-
-  # Tags
-  tags = var.tags
 }

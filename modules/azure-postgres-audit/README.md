@@ -13,7 +13,6 @@ Before using this module, you need to:
 3. Have Storage Account created for Event Hub checkpointing
 4. Have Guardium set up with appropriate credentials
 5. Have Azure credentials configured in Guardium Universal Connector
-6. **Important:** Server restart required after enabling pgAudit
 
 ## Requirements
 
@@ -197,7 +196,7 @@ The `pgaudit_log` parameter accepts the following values (comma-separated):
 **Issue:** No audit logs appearing in Event Hub
 
 **Solution:**
-1. Verify server was restarted after configuration
+1. Verify pgAudit extension is properly configured
 2. Check server parameters:
    ```sql
    SHOW shared_preload_libraries;
