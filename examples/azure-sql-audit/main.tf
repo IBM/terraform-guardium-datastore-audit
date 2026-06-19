@@ -20,9 +20,9 @@ module "datastore-audit_azure-sql-audit" {
   retention_in_days    = var.retention_in_days
 
   # JDBC Configuration
-  credential_name      = var.credential_name
-  jdbc_driver_library  = var.jdbc_driver_library
-  enrollment_id        = var.enrollment_id
+  credential_name     = var.credential_name
+  jdbc_driver_library = var.jdbc_driver_library
+  enrollment_id       = var.enrollment_id
 
   # Guardium Configuration
   gdp_client_id     = var.gdp_client_id
