@@ -152,7 +152,6 @@ This module configures MySQL to send audit logs to Event Hub. The Universal Conn
 | subscription_id | Azure subscription ID |
 | resource_group_name | Name of the resource group |
 | diagnostic_setting_name | Name of the diagnostic setting |
-| diagnostic_setting_id | ID of the diagnostic setting |
 | mysql_audit_configuration | MySQL audit configuration summary |
 
 ## Examples

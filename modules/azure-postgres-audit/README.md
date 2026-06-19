@@ -165,7 +165,6 @@ To ensure Terraform manages your PostgreSQL diagnostic settings correctly:
 | subscription_id | Azure subscription ID |
 | resource_group_name | Name of the resource group |
 | diagnostic_setting_name | Name of the diagnostic setting |
-| diagnostic_setting_id | ID of the diagnostic setting |
 | pgaudit_configuration | Summary of pgAudit configuration |
 
 ## pgAudit Statement Classes

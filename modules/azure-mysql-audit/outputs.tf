@@ -66,8 +66,7 @@ output "diagnostic_setting_id" {
 output "mysql_audit_configuration" {
   description = "MySQL audit configuration summary"
   value = {
-    audit_log_enabled  = azurerm_mysql_flexible_server_configuration.audit_log_enabled.value
-    audit_log_events   = var.enable_mysql_audit_logs ? azurerm_mysql_flexible_server_configuration.audit_log_events[0].value : "N/A"
-    slow_query_enabled = var.enable_slow_query_logs
+    audit_log_enabled = azurerm_mysql_flexible_server_configuration.audit_log_enabled.value
+    audit_log_events  = var.enable_mysql_audit_logs ? azurerm_mysql_flexible_server_configuration.audit_log_events[0].value : "N/A"
   }
 }
