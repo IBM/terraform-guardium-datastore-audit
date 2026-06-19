@@ -1,0 +1,140 @@
+#
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
+#
+
+###############################################################################
+# Azure PostgreSQL Audit Configuration - Example Terraform Variables
+###############################################################################
+
+#------------------------------------------------------------------------------
+# Azure Configuration
+#------------------------------------------------------------------------------
+
+# Azure region where resources are deployed
+azure_region = "eastus"
+
+# Name of the Azure resource group containing the PostgreSQL server
+resource_group_name = "my-resource-group"
+
+# Name of the Azure PostgreSQL Flexible Server to be monitored
+postgres_server_name = "my-postgres-server"
+
+# Azure Enrollment ID (required)
+azure_enrollment_id = "12345678"
+
+#------------------------------------------------------------------------------
+# Event Hub Configuration
+#------------------------------------------------------------------------------
+
+# Name of the Event Hub namespace for audit log streaming
+eventhub_namespace_name = "my-eventhub-namespace"
+
+# Name of the Event Hub for audit log streaming
+eventhub_name = "postgres-audit-logs"
+
+# Name of the Event Hub namespace authorization rule
+# Default: "RootManageSharedAccessKey"
+eventhub_authorization_rule_name = "RootManageSharedAccessKey"
+
+# Name of the storage account for Event Hub checkpointing
+storage_account_name = "mystorageaccount"
+
+# Event Hub consumer group name
+# Default: "$Default"
+consumer_group = "$Default"
+
+#------------------------------------------------------------------------------
+# Diagnostic Settings Configuration
+#------------------------------------------------------------------------------
+
+# Name of the diagnostic setting
+diagnostic_setting_name = "postgres-audit-to-eventhub"
+
+#------------------------------------------------------------------------------
+# PostgreSQL pgAudit Configuration
+#------------------------------------------------------------------------------
+
+# Specifies which classes of statements will be logged by pgAudit
+# Options: READ, WRITE, FUNCTION, ROLE, DDL, MISC, ALL
+# Use comma-separated values for multiple classes
+pgaudit_log = "DDL,FUNCTION,READ,WRITE,ROLE"
+
+# Specifies whether session audit logging should create a separate log entry
+# for statements in the PostgreSQL catalog
+pgaudit_log_catalog = false
+
+# Specifies whether audit messages should be visible to the client
+pgaudit_log_client = false
+
+# Specifies whether parameters should be included in the audit log
+pgaudit_log_parameter = false
+
+# Causes checkpoints and restartpoints to be logged in the server log
+log_checkpoints = false
+
+# Controls the amount of detail written in the server log for each message
+# Valid values: TERSE, DEFAULT, VERBOSE
+log_error_verbosity = "VERBOSE"
+
+# Controls information prefixed to each log line
+# Should include: timestamp (%t), client ip:port (%r), username (%u),
+# database (%d), process id (%p), application name (%a), sql state (%e)
+# Example: %t:%r:%u@%d:[%p]:%a:%e
+log_line_prefix = "%t:%r:%u@%d:[%p]:%a:%e"
+
+#------------------------------------------------------------------------------
+# Guardium Configuration
+#------------------------------------------------------------------------------
+
+# Hostname/IP address of Guardium Central Manager
+gdp_server = "guardium.example.com"
+
+# Port of Guardium Central Manager
+gdp_port = "8443"
+
+# Username of Guardium Web UI user
+gdp_username = "admin"
+
+# Password of Guardium Web UI user
+gdp_password = "your-password-here"
+
+# Client ID used when running grdapi register_oauth_client
+gdp_client_id = "client1"
+
+# Client secret from output of grdapi register_oauth_client
+gdp_client_secret = "your-client-secret-here"
+
+# Comma separated list of Guardium Managed Units to deploy profile
+gdp_mu_host = "guardium-mu.example.com"
+
+#------------------------------------------------------------------------------
+# Universal Connector Configuration
+#------------------------------------------------------------------------------
+
+# Whether to enable the universal connector module
+# Set to false to completely disable the universal connector for a run
+enable_universal_connector = true
+
+# Start position for UDC (beginning or end)
+csv_start_position = "end"
+
+# Polling interval for UDC in seconds
+csv_interval = "5"
+
+# UDC Event filters (optional)
+csv_event_filter = ""
+
+# Codec pattern for the Universal Connector (optional)
+codec_pattern = ""
+
+#------------------------------------------------------------------------------
+# Tags
+#------------------------------------------------------------------------------
+
+# Map of tags to apply to resources
+tags = {
+  Environment = "production"
+  Project     = "data-security"
+  ManagedBy   = "terraform"
+}
