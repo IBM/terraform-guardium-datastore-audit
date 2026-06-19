@@ -199,7 +199,7 @@ The `pgaudit_log` parameter accepts the following values (comma-separated):
 **Issue:** Parameter changes don't take effect
 
 **Solution:**
-1. Some parameters require server restart
+1. Some parameters might require server restart
 2. Restart the server via Azure Portal or CLI
 3. Verify changes: `SHOW <parameter_name>;`
 
