@@ -10,13 +10,13 @@
 resource "gdp-middleware-helper_filebeat_configure" "cassandra" {
   count = var.enable_filebeat_setup ? 1 : 0
 
-  host             = var.server_ip
-  username         = var.server_username
-  password         = var.server_password
-  audit_log_path   = var.cassandra_audit_log_path
-  datasource_tag   = var.datasource_tag
-  logstash_host    = var.gdp_mu_host
-  logstash_port    = var.logstash_port
+  host           = var.server_ip
+  username       = var.server_username
+  password       = var.server_password
+  audit_log_path = var.cassandra_audit_log_path
+  datasource_tag = var.datasource_tag
+  logstash_host  = var.gdp_mu_host
+  logstash_port  = var.logstash_port
 }
 
 locals {
