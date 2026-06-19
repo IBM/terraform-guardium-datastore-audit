@@ -48,10 +48,11 @@ locals {
   # Split SQL query into three parts for Guardium UI format
   statement_select = "event_time,succeeded,session_id,database_name,client_ip,server_principal_name,application_name,statement,server_instance_name,host_name,DATEDIFF_BIG(ns, '1970-01-01 00:00:00.00000', event_time) AS updatedeventtime,additional_information"
   
-  statement_from = format("sys.fn_get_audit_file('https://%s.blob.core.windows.net/%s/%s/master/SqlDbAuditing_ServerAudit', DEFAULT, DEFAULT)",
+  statement_from = format("sys.fn_get_audit_file('https://%s.blob.core.windows.net/%s/%s/%s', DEFAULT, DEFAULT)",
     var.storage_account_name,
     var.audit_container_name,
-    var.sql_server_name
+    var.sql_server_name,
+    var.sql_database_name
   )
   
   statement_where = "action_id='BCM' and statement not like '%xproc%' and statement not like '%SPID%' and statement not like '%DEADLOCK_PRIORITY%' and application_name not like '%Microsoft SQL Server Management Studio - Transact-SQL IntelliSense%' and DATEDIFF_BIG(ns, '1970-01-01 00:00:00.00000', event_time) > :sql_last_value"
