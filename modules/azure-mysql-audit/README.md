@@ -47,13 +47,21 @@ To ensure Terraform manages your MySQL diagnostic settings correctly:
      --output tsv
    ```
 
-3. Import existing diagnostic setting (if exists):
+3. Import existing diagnostic setting (if exists).
+
+   If you are running Terraform from this module directory, use:
    ```bash
-   terraform import 'module.datastore-audit_azure-mysql-audit.module.common_azure-mysql-diagnostic-settings.azurerm_monitor_diagnostic_setting.mysql_audit' \
+   terraform import azurerm_monitor_diagnostic_setting.mysql_audit \
      '/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforMySQL/flexibleServers/<mysql-server-name>|<diagnostic-setting-name>'
    ```
 
-**Note**: The module includes automated diagnostic setting detection. Skipping the import step may cause Terraform to attempt creating a new diagnostic setting, which will fail if one already exists.
+   If you are running Terraform from a root configuration that calls this module as `module "datastore-audit_azure-mysql-audit"`, use:
+   ```bash
+   terraform import 'module.datastore-audit_azure-mysql-audit.azurerm_monitor_diagnostic_setting.mysql_audit' \
+     '/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforMySQL/flexibleServers/<mysql-server-name>|<diagnostic-setting-name>'
+   ```
+
+**Note**: The import ID stays the same, but the Terraform resource address depends on where you run `terraform import`. Skipping the import step may cause Terraform to attempt creating a new diagnostic setting, which will fail if one already exists.
 
 ## Usage
 

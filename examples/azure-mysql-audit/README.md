@@ -151,7 +151,7 @@ az monitor diagnostic-settings list \
 Import existing diagnostic setting:
 
 ```bash
-terraform import 'module.datastore-audit_azure-mysql-audit.module.common_azure-mysql-diagnostic-settings.azurerm_monitor_diagnostic_setting.mysql_audit' \
+terraform import 'module.datastore-audit_azure-mysql-audit.azurerm_monitor_diagnostic_setting.mysql_audit' \
   '/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforMySQL/flexibleServers/<mysql-server-name>|<diagnostic-setting-name>'
 ```
 

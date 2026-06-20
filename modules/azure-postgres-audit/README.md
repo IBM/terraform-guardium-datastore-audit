@@ -109,9 +109,17 @@ To ensure Terraform manages your PostgreSQL diagnostic settings correctly:
      --output tsv
    ```
 
-3. If a diagnostic setting exists with the same name, import it:
+3. Import existing diagnostic setting (if exists).
+
+   If you are running Terraform from this module directory, use:
    ```bash
    terraform import azurerm_monitor_diagnostic_setting.postgres_audit \
+     "/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforPostgreSQL/flexibleServers/<postgres-server-name>|<diagnostic-setting-name>"
+   ```
+
+   If you are running Terraform from a root configuration that calls this module as `module "datastore-audit_azure-postgres-audit"`, use:
+   ```bash
+   terraform import 'module.datastore-audit_azure-postgres-audit.azurerm_monitor_diagnostic_setting.postgres_audit' \
      "/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.DBforPostgreSQL/flexibleServers/<postgres-server-name>|<diagnostic-setting-name>"
    ```
 
