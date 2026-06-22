@@ -27,11 +27,11 @@ data "azurerm_storage_account" "audit" {
 module "common_azure-sql-audit-settings" {
   source = "IBM/common/guardium//modules/azure-sql-audit-settings"
 
-  sql_server_name       = var.sql_server_name
-  sql_database_name     = var.sql_database_name
-  resource_group_name   = var.resource_group_name
-  storage_account_name  = var.storage_account_name
-  audit_retention_days  = var.retention_in_days
+  sql_server_name      = var.sql_server_name
+  sql_database_name    = var.sql_database_name
+  resource_group_name  = var.resource_group_name
+  storage_account_name = var.storage_account_name
+  audit_retention_days = var.retention_in_days
 }
 
 //////
