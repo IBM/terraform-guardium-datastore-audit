@@ -165,6 +165,12 @@ variable "server_password" {
   default     = ""
 }
 
+variable "ssh_port" {
+  type        = number
+  description = "SSH port for connecting to the Couchbase server"
+  default     = 22
+}
+
 # CSV Configuration
 
 variable "csv_description" {

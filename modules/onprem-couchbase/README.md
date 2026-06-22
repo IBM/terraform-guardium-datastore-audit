@@ -59,6 +59,7 @@ module "couchbase_audit" {
   server_ip       = "192.168.1.100"
   server_username = "couchbase"
   server_password = var.server_password
+  ssh_port        = 22
 
   # Guardium Configuration
   gdp_server        = "guardium.example.com"
@@ -92,10 +93,12 @@ This module will:
    - Specifies audit log path
 
 2. **Configure Filebeat**:
+   - Connects to the Couchbase server via SSH
    - Creates Filebeat configuration to monitor Couchbase audit logs
-   - Configures JSON parsing for audit log entries
+   - Configures log parsing for audit log entries
    - Sets up Logstash output with optional SSL/TLS
-   - Adds cluster identification fields
+   - Adds datasource tags for identification
+   - Restarts and enables Filebeat service
 
 3. **Create Guardium Universal Connector**:
    - Registers a new Universal Connector in Guardium
@@ -115,6 +118,7 @@ This module will:
 | server_ip | IP address or hostname of the Couchbase server | `string` | `""` | yes (if enable_audit_log or enable_filebeat is true) |
 | server_username | Username for SSH connection | `string` | `""` | yes (if enable_audit_log or enable_filebeat is true) |
 | server_password | Password for SSH connection | `string` | `""` | yes (if enable_audit_log or enable_filebeat is true) |
+| ssh_port | SSH port for connecting to the Couchbase server | `number` | `22` | no |
 | gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a | yes |
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
 | gdp_username | Username of Guardium Web UI user | `string` | n/a | yes |

@@ -8,6 +8,11 @@ provider "guardium-data-protection" {
   port = var.gdp_port
 }
 
+provider "gdp-middleware-helper" {
+  # Provider configuration for gdp-middleware-helper
+  # This provider is used to configure Filebeat on remote servers
+}
+
 module "datastore-audit_onprem-couchbase" {
   source = "../../modules/onprem-couchbase"
 
@@ -27,6 +32,7 @@ module "datastore-audit_onprem-couchbase" {
   server_ip       = var.server_ip
   server_username = var.server_username
   server_password = var.server_password
+  ssh_port        = var.ssh_port
 
   # Guardium Configuration
   udc_name          = var.udc_name
