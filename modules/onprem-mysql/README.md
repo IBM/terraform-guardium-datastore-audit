@@ -68,7 +68,7 @@ module "mysql_audit_linux" {
 
 ### For Linux Servers
 
-1. **Installs Audit Plugin**: Runs the audit_log_filter_linux_install.sql script
+1. **Installs Audit Plugin**: Runs the audit_log_filter_linux_install.sql script via SSH
 2. **Verifies Installation**: Checks that the audit plugin is active
 3. **Backs up my.cnf**: Creates a backup of the MySQL configuration file
 4. **Configures Audit Plugin**: Adds the following to /etc/my.cnf:
@@ -83,6 +83,8 @@ module "mysql_audit_linux" {
 7. **Enables Audit Filters**: Creates and assigns the 'log_all' filter to capture all database activity
 8. **Configures Universal Connector**: Sets up Guardium Universal Connector to receive audit logs via syslog
 9. **Streams to Guardium**: Audit data flows to Guardium Data Protection for monitoring and compliance
+
+**Note**: This module uses the `gdp-middleware-helper` provider to execute commands remotely via SSH. No temporary files are transferred to the MySQL server. Requires `gdp-middleware-helper` provider version >= 1.0.0 (with on-prem configuration resources).
 
 
 ## Requirements
