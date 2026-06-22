@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+provider "gdp-middleware-helper" {}
+
 provider "guardium-data-protection" {
   host = var.gdp_server
   port = var.gdp_port

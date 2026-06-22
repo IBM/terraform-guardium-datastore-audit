@@ -189,6 +189,7 @@ This module provides audit configuration for the following AWS and Azure datasto
 | Datastore | Module Path | Audit Method | Log Destination |
 |-----------|-------------|--------------|-----------------|
 | Azure Cosmos DB | `modules/azure-cosmos-audit` | Diagnostic Settings | Azure Event Hub |
+| Azure MySQL Flexible Server | `modules/azure-mysql-audit` | Diagnostic Settings | Azure Event Hub |
 
 ### Azure Datastores
 
@@ -730,6 +731,7 @@ Complete working examples are available in the `examples/` directory:
 ### Azure Examples
 
 - [azure-cosmos-audit](examples/azure-cosmos-audit) - Azure Cosmos DB audit configuration with Event Hub and Universal Connector
+- [azure-mysql-audit](examples/azure-mysql-audit) - Azure MySQL Flexible Server audit configuration with Event Hub and Universal Connector
 
 ### Azure Examples
 
