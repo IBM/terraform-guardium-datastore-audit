@@ -56,10 +56,15 @@ consumer_group = "$Default"
 # Optional firewall rules to allow client IPs to connect to PostgreSQL
 # Get your public IP with: curl ifconfig.me
 firewall_rules = {
-  jasmine_home = {
-    start_ip = "203.0.113.25"
-    end_ip   = "203.0.113.25"
+  "my-local-ip" = {
+    start_ip = "YOUR.PUBLIC.IP.HERE"  # Replace with your actual public IP
+    end_ip   = "YOUR.PUBLIC.IP.HERE"  # Same as start_ip for single IP
   }
+  # Add more rules as needed:
+  # "office" = {
+  #   start_ip = "203.0.113.0"
+  #   end_ip   = "203.0.113.255"
+  # }
 }
 
 #------------------------------------------------------------------------------

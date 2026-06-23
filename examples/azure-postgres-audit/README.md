@@ -105,17 +105,6 @@ Provide both Event Hub policy names:
 - `eventhub_authorization_rule_name` for the namespace SAS policy used by Azure diagnostic settings
 - `eventhub_sas_policy_name` for the Event Hub shared access policy used to build the UC connection string
 
-If you need local client access to PostgreSQL, include a `firewall_rules` block such as:
-
-```hcl
-firewall_rules = {
-  jasmine_home = {
-    start_ip = "203.0.113.25"
-    end_ip   = "203.0.113.25"
-  }
-}
-```
-
 ### 3. Initialize Terraform
 
   ```bash
