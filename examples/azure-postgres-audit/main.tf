@@ -22,6 +22,7 @@ module "datastore-audit_azure-postgres-audit" {
   eventhub_authorization_rule_name = var.eventhub_authorization_rule_name
   storage_account_name             = var.storage_account_name
   consumer_group                   = var.consumer_group
+  firewall_rules                   = var.firewall_rules
 
   # Diagnostic Settings Configuration
   diagnostic_setting_name = var.diagnostic_setting_name

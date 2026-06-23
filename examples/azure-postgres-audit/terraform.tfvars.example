@@ -45,6 +45,19 @@ storage_account_name = "mystorageaccount"
 consumer_group = "$Default"
 
 #------------------------------------------------------------------------------
+# PostgreSQL Firewall Configuration
+#------------------------------------------------------------------------------
+
+# Optional firewall rules to allow client IPs to connect to PostgreSQL
+# Get your public IP with: curl ifconfig.me
+firewall_rules = {
+  jasmine_home = {
+    start_ip = "203.0.113.25"
+    end_ip   = "203.0.113.25"
+  }
+}
+
+#------------------------------------------------------------------------------
 # Diagnostic Settings Configuration
 #------------------------------------------------------------------------------
 

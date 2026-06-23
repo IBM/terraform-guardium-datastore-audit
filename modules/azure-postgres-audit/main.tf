@@ -34,6 +34,15 @@ data "azurerm_storage_account" "checkpoint" {
   resource_group_name = var.resource_group_name
 }
 
+# Optional PostgreSQL firewall rules for client access
+resource "azurerm_postgresql_flexible_server_firewall_rule" "custom_rules" {
+  for_each         = var.firewall_rules
+  name             = each.key
+  server_id        = data.azurerm_postgresql_flexible_server.postgres.id
+  start_ip_address = each.value.start_ip
+  end_ip_address   = each.value.end_ip
+}
+
 ######
 # PostgreSQL pgAudit Configuration
 ######

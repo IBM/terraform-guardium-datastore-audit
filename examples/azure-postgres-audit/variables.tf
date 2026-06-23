@@ -59,6 +59,15 @@ variable "consumer_group" {
   default     = "$Default"
 }
 
+variable "firewall_rules" {
+  type = map(object({
+    start_ip = string
+    end_ip   = string
+  }))
+  description = "Map of PostgreSQL firewall rules to create (name => {start_ip, end_ip})"
+  default     = {}
+}
+
 //////
 // Diagnostic Settings variables
 //////

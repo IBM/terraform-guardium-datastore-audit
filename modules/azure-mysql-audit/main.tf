@@ -47,6 +47,16 @@ data "azurerm_eventhub_namespace_authorization_rule" "eventhub_auth" {
   resource_group_name = var.resource_group_name
 }
 
+# Optional MySQL firewall rules for client access
+resource "azurerm_mysql_flexible_server_firewall_rule" "custom_rules" {
+  for_each            = var.firewall_rules
+  name                = each.key
+  resource_group_name = var.resource_group_name
+  server_name         = var.mysql_server_name
+  start_ip_address    = each.value.start_ip
+  end_ip_address      = each.value.end_ip
+}
+
 ######
 ## MySQL Audit Configuration
 ######

@@ -60,11 +60,15 @@ Before using this example, ensure you have:
    - An existing Storage Account (for Event Hub checkpointing)
    - Resource group containing these resources
 
-2. **PostgreSQL Server Configuration**:
+2. **Network Access**:
+   - If you need to connect to PostgreSQL from your local machine, add your public IP using `firewall_rules`
+   - Get your public IP with `curl ifconfig.me`
+
+3. **PostgreSQL Server Configuration**:
    - Server must support pgAudit extension (PostgreSQL 11+)
    - Sufficient permissions to modify server parameters
 
-3. **Guardium Data Protection**:
+4. **Guardium Data Protection**:
    - A running Guardium Data Protection instance (version 12.2.2 or above)
    - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
       - OAuth client registered via `grdapi register_oauth_client`
@@ -96,6 +100,17 @@ az account show
 ### 2. Create a terraform.tfvars File
 
 Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.example](./terraform.tfvars.example) for an example with available options and detailed comments.
+
+If you need local client access to PostgreSQL, include a `firewall_rules` block such as:
+
+```hcl
+firewall_rules = {
+  jasmine_home = {
+    start_ip = "203.0.113.25"
+    end_ip   = "203.0.113.25"
+  }
+}
+```
 
 ### 3. Initialize Terraform
 
@@ -191,6 +206,7 @@ PostgreSQL diagnostic settings capture:
 | eventhub_authorization_rule_name | Name of the Event Hub authorization rule | `string` | `"RootManageSharedAccessKey"` | no |
 | storage_account_name | Name of the storage account for Event Hub checkpointing | `string` | n/a | yes |
 | consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
+| firewall_rules | Map of PostgreSQL firewall rules to create (name => `{ start_ip, end_ip }`) | `map(object({ start_ip = string, end_ip = string }))` | `{}` | no |
 | pgaudit_log | Statement classes to log (READ, WRITE, FUNCTION, ROLE, DDL, MISC, ALL) | `string` | `"DDL,FUNCTION,READ,WRITE,ROLE"` | no |
 | pgaudit_log_catalog | Log catalog queries | `bool` | `false` | no |
 | pgaudit_log_client | Show audit messages to client | `bool` | `false` | no |
