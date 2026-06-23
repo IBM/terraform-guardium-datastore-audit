@@ -59,11 +59,15 @@ Before using this example, ensure you have:
    - An existing Storage Account (for Event Hub checkpointing)
    - Resource group containing these resources
 
-2. **MySQL Server Configuration**:
+2. **Network Access**:
+   - If you need to connect to MySQL from your local machine, add your public IP using `firewall_rules`
+   - Get your public IP with `curl ifconfig.me`
+
+3. **MySQL Server Configuration**:
    - Audit logging enabled on the MySQL server (`audit_log_enabled = ON`)
    - Audit log events configured (e.g., `audit_log_events = CONNECTION,DML,DDL,DCL,ADMIN`)
 
-3. **Guardium Data Protection**:
+4. **Guardium Data Protection**:
    - A running Guardium Data Protection instance (version 12.2.1 or above)
    - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
       - OAuth client registered via `grdapi register_oauth_client`
@@ -115,6 +119,21 @@ az mysql flexible-server parameter set \
 ### 3. Create a terraform.tfvars File
 
 Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.example](./terraform.tfvars.example) for an example with available options and detailed comments.
+
+Provide both Event Hub policy names:
+- `eventhub_authorization_rule_name` for the namespace SAS policy used by Azure diagnostic settings
+- `eventhub_sas_policy_name` for the Event Hub shared access policy used to build the UC connection string
+
+If you need local client access to MySQL, include a `firewall_rules` block such as:
+
+```hcl
+firewall_rules = {
+  jasmine_home = {
+    start_ip = "203.0.113.25"
+    end_ip   = "203.0.113.25"
+  }
+}
+```
 
 ### 4. Initialize Terraform
 
@@ -198,9 +217,11 @@ MySQL diagnostic settings capture:
 | mysql_server_name | Name of the MySQL Flexible Server to be monitored | `string` | n/a | yes |
 | eventhub_namespace_name | Name of the Event Hub namespace | `string` | n/a | yes |
 | eventhub_name | Name of the Event Hub | `string` | n/a | yes |
-| eventhub_authorization_rule_name | Name of the Event Hub authorization rule | `string` | `"RootManageSharedAccessKey"` | no |
+| eventhub_authorization_rule_name | Name of the Event Hub namespace authorization rule used by diagnostic settings | `string` | `"RootManageSharedAccessKey"` | no |
+| eventhub_sas_policy_name | Name of the Event Hub shared access policy used to build the UC connection string | `string` | n/a | yes |
 | storage_account_name | Name of the storage account for Event Hub checkpointing | `string` | n/a | yes |
 | consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
+| firewall_rules | Map of MySQL firewall rules to create (name => `{ start_ip, end_ip }`) | `map(object({ start_ip = string, end_ip = string }))` | `{}` | no |
 | diagnostic_setting_name | Name of the diagnostic setting | `string` | `"mysql-audit-to-eventhub"` | no |
 | enable_mysql_audit_logs | Enable MySQL Audit logs | `bool` | `true` | no |
 | audit_log_events | MySQL audit log events to capture (CONNECTION, GENERAL) | `string` | `"CONNECTION,GENERAL"` | no |

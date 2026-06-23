@@ -31,8 +31,13 @@ eventhub_namespace_name = "my-eventhub-namespace"
 eventhub_name = "mysql-audit-logs"
 
 # Name of the Event Hub namespace authorization rule
+# Used for Azure diagnostic settings
 # Default: "RootManageSharedAccessKey"
 eventhub_authorization_rule_name = "RootManageSharedAccessKey"
+
+# Name of the Event Hub shared access policy
+# Used to build the UC connection string from the Event Hub primary key
+eventhub_sas_policy_name = "mysql-eh-auth-rule"
 
 # Name of the storage account for Event Hub checkpointing
 storage_account_name = "mystorageaccount"
@@ -40,6 +45,19 @@ storage_account_name = "mystorageaccount"
 # Event Hub consumer group name
 # Default: "$Default"
 consumer_group = "$Default"
+
+#------------------------------------------------------------------------------
+# MySQL Firewall Configuration
+#------------------------------------------------------------------------------
+
+# Optional firewall rules to allow client IPs to connect to MySQL
+# Get your public IP with: curl ifconfig.me
+firewall_rules = {
+  jasmine_home = {
+    start_ip = "203.0.113.25"
+    end_ip   = "203.0.113.25"
+  }
+}
 
 #------------------------------------------------------------------------------
 # Diagnostic Settings Configuration

@@ -34,8 +34,13 @@ eventhub_namespace_name = "my-eventhub-namespace"
 eventhub_name = "postgres-audit-logs"
 
 # Name of the Event Hub namespace authorization rule
+# Used for Azure diagnostic settings
 # Default: "RootManageSharedAccessKey"
 eventhub_authorization_rule_name = "RootManageSharedAccessKey"
+
+# Name of the Event Hub shared access policy
+# Used to build the UC connection string from the Event Hub primary key
+eventhub_sas_policy_name = "postgres-eh-auth-rule"
 
 # Name of the storage account for Event Hub checkpointing
 storage_account_name = "mystorageaccount"

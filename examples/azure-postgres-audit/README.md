@@ -101,6 +101,10 @@ az account show
 
 Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.example](./terraform.tfvars.example) for an example with available options and detailed comments.
 
+Provide both Event Hub policy names:
+- `eventhub_authorization_rule_name` for the namespace SAS policy used by Azure diagnostic settings
+- `eventhub_sas_policy_name` for the Event Hub shared access policy used to build the UC connection string
+
 If you need local client access to PostgreSQL, include a `firewall_rules` block such as:
 
 ```hcl
@@ -203,7 +207,8 @@ PostgreSQL diagnostic settings capture:
 | postgres_server_name | Name of the PostgreSQL Flexible Server to be monitored | `string` | n/a | yes |
 | eventhub_namespace_name | Name of the Event Hub namespace | `string` | n/a | yes |
 | eventhub_name | Name of the Event Hub | `string` | n/a | yes |
-| eventhub_authorization_rule_name | Name of the Event Hub authorization rule | `string` | `"RootManageSharedAccessKey"` | no |
+| eventhub_authorization_rule_name | Name of the Event Hub namespace authorization rule used by diagnostic settings | `string` | `"RootManageSharedAccessKey"` | no |
+| eventhub_sas_policy_name | Name of the Event Hub shared access policy used to build the UC connection string | `string` | n/a | yes |
 | storage_account_name | Name of the storage account for Event Hub checkpointing | `string` | n/a | yes |
 | consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
 | firewall_rules | Map of PostgreSQL firewall rules to create (name => `{ start_ip, end_ip }`) | `map(object({ start_ip = string, end_ip = string }))` | `{}` | no |

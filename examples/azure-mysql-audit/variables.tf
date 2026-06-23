@@ -43,6 +43,11 @@ variable "eventhub_authorization_rule_name" {
   default     = "RootManageSharedAccessKey"
 }
 
+variable "eventhub_sas_policy_name" {
+  type        = string
+  description = "Name of the Event Hub shared access policy used to build the UC connection string"
+}
+
 variable "storage_account_name" {
   type        = string
   description = "Name of the storage account for Event Hub checkpointing"
@@ -52,6 +57,15 @@ variable "consumer_group" {
   type        = string
   description = "Event Hub consumer group name"
   default     = "$Default"
+}
+
+variable "firewall_rules" {
+  type = map(object({
+    start_ip = string
+    end_ip   = string
+  }))
+  description = "Map of MySQL firewall rules to create (name => {start_ip, end_ip})"
+  default     = {}
 }
 
 variable "azure_enrollment_id" {

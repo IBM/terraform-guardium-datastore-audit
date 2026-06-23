@@ -21,10 +21,18 @@ data "azurerm_postgresql_flexible_server" "postgres" {
   resource_group_name = var.resource_group_name
 }
 
-# Get Event Hub authorization rule for connection string
+# Get Event Hub namespace authorization rule for diagnostic settings
 data "azurerm_eventhub_namespace_authorization_rule" "eventhub_auth" {
   name                = var.eventhub_authorization_rule_name
   namespace_name      = var.eventhub_namespace_name
+  resource_group_name = var.resource_group_name
+}
+
+# Get Event Hub authorization rule for UC connection string
+data "azurerm_eventhub_authorization_rule" "eventhub_sas_policy" {
+  name                = var.eventhub_sas_policy_name
+  namespace_name      = var.eventhub_namespace_name
+  eventhub_name       = var.eventhub_name
   resource_group_name = var.resource_group_name
 }
 
@@ -142,8 +150,8 @@ locals {
   # Build Event Hub connection string
   event_hub_connection = format("Endpoint=sb://%s.servicebus.windows.net/;SharedAccessKeyName=%s;SharedAccessKey=%s;EntityPath=%s",
     var.eventhub_namespace_name,
-    var.eventhub_authorization_rule_name,
-    data.azurerm_eventhub_namespace_authorization_rule.eventhub_auth.primary_key,
+    var.eventhub_sas_policy_name,
+    data.azurerm_eventhub_authorization_rule.eventhub_sas_policy.primary_key,
     var.eventhub_name
   )
 

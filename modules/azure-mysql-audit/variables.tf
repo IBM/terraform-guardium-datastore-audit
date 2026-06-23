@@ -39,6 +39,11 @@ variable "eventhub_authorization_rule_name" {
   default     = "RootManageSharedAccessKey"
 }
 
+variable "eventhub_sas_policy_name" {
+  type        = string
+  description = "Name of the Event Hub shared access policy used to build the UC connection string"
+}
+
 variable "storage_account_name" {
   type        = string
   description = "Name of the storage account for Event Hub checkpointing"
