@@ -703,6 +703,56 @@ module "cosmos_audit" {
 }
 ```
 
+### Azure MySQL Flexible Server Audit Configuration
+
+Monitor Azure MySQL Flexible Server with diagnostic settings and Event Hub integration:
+
+```hcl
+module "mysql_audit" {
+  source = "IBM/datastore-audit/guardium//modules/azure-mysql-audit"
+
+  # Azure Configuration
+  azure_region                     = "eastus"
+  resource_group_name              = "my-resource-group"
+  mysql_server_name                = "my-mysql-server"
+  eventhub_namespace_name          = "my-eventhub-namespace"
+  eventhub_name                    = "my-eventhub"
+  eventhub_authorization_rule_name = "RootManageSharedAccessKey"
+  eventhub_sas_policy_name         = "my-mysql-eh-auth-rule"
+  storage_account_name             = "mystorageaccount"
+
+  # Optional local access
+  firewall_rules = {
+    admin_laptop = {
+      start_ip = "203.0.113.25"
+      end_ip   = "203.0.113.25"
+    }
+  }
+
+  # MySQL Audit Configuration
+  audit_log_events = "CONNECTION,GENERAL"
+
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+
+  # Universal Connector Configuration
+  udc_azure_credential   = "azure-credential-name"
+  gdp_mu_host            = "guardium-mu.example.com"
+  consumer_group         = "$Default"
+  initial_position       = "end"
+
+  tags = {
+    Environment = "production"
+    Project     = "data-security"
+  }
+}
+```
+
 ### Azure PostgreSQL Flexible Server Audit Configuration
 
 Monitor Azure PostgreSQL Flexible Server with pgAudit and Event Hub integration:
