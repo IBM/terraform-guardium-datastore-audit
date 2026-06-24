@@ -5,7 +5,7 @@ Terraform module which configures AWS, Azure datastores and Couchbase Capella fo
 
 ## Scope
 
-This module automates the configuration of audit logging for various AWS and Azure datastores (AWS: DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, OpenSearch, PostgreSQL RDS, Aurora PostgreSQL, Redshift; Azure: Cosmos DB) and Couchbase Capella, and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
+This module automates the configuration of audit logging for various AWS and Azure datastores (AWS: DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, OpenSearch, PostgreSQL RDS, Aurora PostgreSQL, Redshift; Azure: Cosmos DB, MySQL Flexible Server, PostgreSQL Flexible Server) and Couchbase Capella, and establishes integration with IBM Guardium Data Protection for comprehensive database activity monitoring, security analysis, and compliance reporting.
 
 ## High-Level Architecture
 
@@ -128,6 +128,8 @@ The following diagram illustrates how this module orchestrates the configuration
   
   **Azure Datastores:**
   - **Cosmos DB**: Enables diagnostic settings to capture data plane, query runtime, and control plane logs
+  - **MySQL Flexible Server**: Enables diagnostic settings to stream audit logs to Azure Event Hub
+  - **PostgreSQL Flexible Server**: Enables diagnostic settings to stream pgAudit logs to Azure Event Hub
   - **SQL Database**: Enables server-level and database-level auditing to Azure Storage Account
 
   **Cloud-Native Datastores:**
@@ -190,12 +192,7 @@ This module provides audit configuration for the following AWS and Azure datasto
 |-----------|-------------|--------------|-----------------|
 | Azure Cosmos DB | `modules/azure-cosmos-audit` | Diagnostic Settings | Azure Event Hub |
 | Azure MySQL Flexible Server | `modules/azure-mysql-audit` | Diagnostic Settings | Azure Event Hub |
-
-### Azure Datastores
-
-| Datastore | Module Path | Audit Method | Log Destination |
-|-----------|-------------|--------------|-----------------|
-| Azure Cosmos DB | `modules/azure-cosmos-audit` | Diagnostic Settings | Azure Event Hub |
+| Azure PostgreSQL Flexible Server | `modules/azure-postgres-audit` | Diagnostic Settings + pgAudit | Azure Event Hub |
 | Azure SQL Database | `modules/azure-sql-audit` | Server & Database Auditing | Azure Storage Account |
 
 ## Prerequisites
@@ -706,6 +703,109 @@ module "cosmos_audit" {
 }
 ```
 
+### Azure MySQL Flexible Server Audit Configuration
+
+Monitor Azure MySQL Flexible Server with diagnostic settings and Event Hub integration:
+
+```hcl
+module "mysql_audit" {
+  source = "IBM/datastore-audit/guardium//modules/azure-mysql-audit"
+
+  # Azure Configuration
+  azure_region                     = "eastus"
+  resource_group_name              = "my-resource-group"
+  mysql_server_name                = "my-mysql-server"
+  eventhub_namespace_name          = "my-eventhub-namespace"
+  eventhub_name                    = "my-eventhub"
+  eventhub_authorization_rule_name = "RootManageSharedAccessKey"
+  eventhub_sas_policy_name         = "my-mysql-eh-auth-rule"
+  storage_account_name             = "mystorageaccount"
+
+  # Optional local access
+  firewall_rules = {
+    admin_laptop = {
+      start_ip = "203.0.113.25"
+      end_ip   = "203.0.113.25"
+    }
+  }
+
+  # MySQL Audit Configuration
+  audit_log_events = "CONNECTION,GENERAL"
+
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+
+  # Universal Connector Configuration
+  udc_azure_credential   = "azure-credential-name"
+  gdp_mu_host            = "guardium-mu.example.com"
+  consumer_group         = "$Default"
+  initial_position       = "end"
+
+  tags = {
+    Environment = "production"
+    Project     = "data-security"
+  }
+}
+```
+
+### Azure PostgreSQL Flexible Server Audit Configuration
+
+Monitor Azure PostgreSQL Flexible Server with pgAudit and Event Hub integration:
+
+```hcl
+module "postgres_audit" {
+  source = "IBM/datastore-audit/guardium//modules/azure-postgres-audit"
+
+  # Azure Configuration
+  azure_region                     = "eastus"
+  resource_group_name              = "my-resource-group"
+  postgres_server_name             = "my-postgres-server"
+  eventhub_namespace_name          = "my-eventhub-namespace"
+  eventhub_name                    = "my-eventhub"
+  eventhub_authorization_rule_name = "RootManageSharedAccessKey"
+  eventhub_sas_policy_name         = "my-postgres-eh-auth-rule"
+  storage_account_name             = "mystorageaccount"
+
+  # Optional local access
+  firewall_rules = {
+    admin_laptop = {
+      start_ip = "203.0.113.25"
+      end_ip   = "203.0.113.25"
+    }
+  }
+
+  # pgAudit Configuration
+  pgaudit_log            = "DDL,FUNCTION,READ,WRITE,ROLE"
+  log_error_verbosity    = "VERBOSE"
+  log_line_prefix        = "%t:%r:%u@%d:[%p]:%a:%e"
+
+  # Guardium Configuration
+  gdp_server             = "guardium.example.com"
+  gdp_port               = "8443"
+  gdp_username           = "admin"
+  gdp_password           = "password"
+  gdp_client_id          = "client1"
+  gdp_client_secret      = "client-secret"
+  azure_enrollment_id    = "1234567"
+  
+  # Universal Connector Configuration
+  udc_azure_credential   = "azure-credential-name"
+  gdp_mu_host            = "guardium-mu.example.com"
+  consumer_group         = "$Default"
+  initial_position       = "end"
+
+  tags = {
+    Environment = "production"
+    Project     = "data-security"
+  }
+}
+```
+
 ## Examples
 
 Complete working examples are available in the `examples/` directory:
@@ -732,10 +832,7 @@ Complete working examples are available in the `examples/` directory:
 
 - [azure-cosmos-audit](examples/azure-cosmos-audit) - Azure Cosmos DB audit configuration with Event Hub and Universal Connector
 - [azure-mysql-audit](examples/azure-mysql-audit) - Azure MySQL Flexible Server audit configuration with Event Hub and Universal Connector
-
-### Azure Examples
-
-- [azure-cosmos-audit](examples/azure-cosmos-audit) - Azure Cosmos DB audit configuration with Event Hub and Universal Connector
+- [azure-postgres-audit](examples/azure-postgres-audit) - Azure PostgreSQL Flexible Server audit configuration with Event Hub and Universal Connector
 
 Each example includes:
 - Complete Terraform configuration
@@ -746,7 +843,7 @@ Each example includes:
 
 - **Automated Configuration**: Automatically configures audit logging for AWS and Azure datastores and Couchbase Capella
 - **Universal Connector Integration**: Seamlessly integrates with Guardium Universal Connector
-- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, OpenSearch, PostgreSQL RDS, RedShift, Aurora PostgreSQL and Azure Cosmos
+- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, OpenSearch, PostgreSQL RDS, RedShift, Aurora PostgreSQL, Azure Cosmos, Azure MySQL, and Azure PostgreSQL
 - **Flexible Audit Levels**: Choose between object-level and session-level auditing for PostgreSQL and Aurora PostgreSQL
 - **CloudWatch Integration**: Leverages CloudWatch Logs for centralized log management
 - **Aurora Cluster Support**: Native support for Aurora MySQL and Aurora PostgreSQL clusters with automatic parameter group management

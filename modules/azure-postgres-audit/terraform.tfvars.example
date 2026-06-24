@@ -4,7 +4,7 @@
 #
 
 ###############################################################################
-# Azure MySQL Audit Configuration - Example Terraform Variables
+# Azure PostgreSQL Audit Configuration - Example Terraform Variables
 ###############################################################################
 
 #------------------------------------------------------------------------------
@@ -14,11 +14,14 @@
 # Azure region where resources are deployed
 azure_region = "eastus"
 
-# Name of the Azure resource group containing the MySQL server
+# Name of the Azure resource group containing the PostgreSQL server
 resource_group_name = "my-resource-group"
 
-# Name of the Azure MySQL Flexible Server to be monitored
-mysql_server_name = "my-mysql-server"
+# Name of the Azure PostgreSQL Flexible Server to be monitored
+postgres_server_name = "my-postgres-server"
+
+# Azure Enrollment ID (required)
+azure_enrollment_id = "12345678"
 
 #------------------------------------------------------------------------------
 # Event Hub Configuration
@@ -28,7 +31,7 @@ mysql_server_name = "my-mysql-server"
 eventhub_namespace_name = "my-eventhub-namespace"
 
 # Name of the Event Hub for audit log streaming
-eventhub_name = "mysql-audit-logs"
+eventhub_name = "postgres-audit-logs"
 
 # Name of the Event Hub namespace authorization rule
 # Default: "RootManageSharedAccessKey"
@@ -46,10 +49,39 @@ consumer_group = "$Default"
 #------------------------------------------------------------------------------
 
 # Name of the diagnostic setting
-diagnostic_setting_name = "mysql-audit-to-eventhub"
+diagnostic_setting_name = "postgres-audit-to-eventhub"
 
-# Enable MySQL Audit logs
-enable_mysql_audit_logs = true
+#------------------------------------------------------------------------------
+# PostgreSQL pgAudit Configuration
+#------------------------------------------------------------------------------
+
+# Specifies which classes of statements will be logged by pgAudit
+# Options: READ, WRITE, FUNCTION, ROLE, DDL, MISC, ALL
+# Use comma-separated values for multiple classes
+pgaudit_log = "DDL,FUNCTION,READ,WRITE,ROLE"
+
+# Specifies whether session audit logging should create a separate log entry
+# for statements in the PostgreSQL catalog
+pgaudit_log_catalog = false
+
+# Specifies whether audit messages should be visible to the client
+pgaudit_log_client = false
+
+# Specifies whether parameters should be included in the audit log
+pgaudit_log_parameter = false
+
+# Causes checkpoints and restartpoints to be logged in the server log
+log_checkpoints = false
+
+# Controls the amount of detail written in the server log for each message
+# Valid values: TERSE, DEFAULT, VERBOSE
+log_error_verbosity = "VERBOSE"
+
+# Controls information prefixed to each log line
+# Should include: timestamp (%t), client ip:port (%r), username (%u),
+# database (%d), process id (%p), application name (%a), sql state (%e)
+# Example: %t:%r:%u@%d:[%p]:%a:%e
+log_line_prefix = "%t:%r:%u@%d:[%p]:%a:%e"
 
 #------------------------------------------------------------------------------
 # Guardium Configuration

@@ -7,14 +7,14 @@ provider "azurerm" {
   features {}
 }
 
-module "datastore-audit_azure-mysql-audit" {
-  source = "../../modules/azure-mysql-audit"
+module "datastore-audit_azure-postgres-audit" {
+  source = "../../modules/azure-postgres-audit"
 
   # Azure Configuration
-  azure_region        = var.azure_region
-  azure_enrollment_id = var.azure_enrollment_id
-  resource_group_name = var.resource_group_name
-  mysql_server_name   = var.mysql_server_name
+  azure_region         = var.azure_region
+  azure_enrollment_id  = var.azure_enrollment_id
+  resource_group_name  = var.resource_group_name
+  postgres_server_name = var.postgres_server_name
 
   # Event Hub Configuration
   eventhub_namespace_name          = var.eventhub_namespace_name
@@ -27,8 +27,15 @@ module "datastore-audit_azure-mysql-audit" {
 
   # Diagnostic Settings Configuration
   diagnostic_setting_name = var.diagnostic_setting_name
-  enable_mysql_audit_logs = var.enable_mysql_audit_logs
-  audit_log_events        = var.audit_log_events
+
+  # pgAudit Configuration
+  pgaudit_log           = var.pgaudit_log
+  pgaudit_log_catalog   = var.pgaudit_log_catalog
+  pgaudit_log_client    = var.pgaudit_log_client
+  pgaudit_log_parameter = var.pgaudit_log_parameter
+  log_checkpoints       = var.log_checkpoints
+  log_error_verbosity   = var.log_error_verbosity
+  log_line_prefix       = var.log_line_prefix
 
   # Guardium Configuration
   gdp_client_id     = var.gdp_client_id

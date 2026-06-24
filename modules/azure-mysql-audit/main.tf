@@ -40,11 +40,29 @@ data "azurerm_storage_account" "checkpoint" {
   resource_group_name = var.resource_group_name
 }
 
-# Get Event Hub authorization rule
+# Get Event Hub namespace authorization rule for diagnostic settings
 data "azurerm_eventhub_namespace_authorization_rule" "eventhub_auth" {
   name                = var.eventhub_authorization_rule_name
   namespace_name      = var.eventhub_namespace_name
   resource_group_name = var.resource_group_name
+}
+
+# Get Event Hub authorization rule for UC connection string
+data "azurerm_eventhub_authorization_rule" "eventhub_sas_policy" {
+  name                = var.eventhub_sas_policy_name
+  namespace_name      = var.eventhub_namespace_name
+  eventhub_name       = var.eventhub_name
+  resource_group_name = var.resource_group_name
+}
+
+# Optional MySQL firewall rules for client access
+resource "azurerm_mysql_flexible_server_firewall_rule" "custom_rules" {
+  for_each            = var.firewall_rules
+  name                = each.key
+  resource_group_name = var.resource_group_name
+  server_name         = var.mysql_server_name
+  start_ip_address    = each.value.start_ip
+  end_ip_address      = each.value.end_ip
 }
 
 ######
@@ -84,14 +102,6 @@ resource "azurerm_monitor_diagnostic_setting" "mysql_audit" {
     }
   }
 
-  # Enable MySQL Slow Query logs
-  dynamic "enabled_log" {
-    for_each = var.enable_slow_query_logs ? [1] : []
-    content {
-      category = "MySqlSlowLogs"
-    }
-  }
-
   depends_on = [
     data.azurerm_mysql_flexible_server.mysql,
     data.azurerm_eventhub.eventhub,
@@ -110,8 +120,8 @@ locals {
   # Build Event Hub connection string
   event_hub_connection = format("Endpoint=sb://%s.servicebus.windows.net/;SharedAccessKeyName=%s;SharedAccessKey=%s;EntityPath=%s",
     var.eventhub_namespace_name,
-    var.eventhub_authorization_rule_name,
-    data.azurerm_eventhub_namespace_authorization_rule.eventhub_auth.primary_key,
+    var.eventhub_sas_policy_name,
+    data.azurerm_eventhub_authorization_rule.eventhub_sas_policy.primary_key,
     var.eventhub_name
   )
 
@@ -152,5 +162,5 @@ module "common_azure-eventhub-registration" {
   gdp_password               = var.gdp_password
   gdp_mu_host                = var.gdp_mu_host
   enable_universal_connector = var.enable_universal_connector
-  csv_start_position         = var.csv_start_position
+  csv_start_position         = var.initial_position
 }

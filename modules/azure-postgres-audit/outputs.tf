@@ -8,14 +8,14 @@ output "udc_name" {
   value       = local.udc_name
 }
 
-output "mysql_server_name" {
-  description = "Name of the MySQL server"
-  value       = var.mysql_server_name
+output "postgres_server_name" {
+  description = "Name of the PostgreSQL server"
+  value       = var.postgres_server_name
 }
 
-output "mysql_server_endpoint" {
-  description = "Fully qualified domain name of the MySQL server"
-  value       = data.azurerm_mysql_flexible_server.mysql.fqdn
+output "postgres_server_endpoint" {
+  description = "Fully qualified domain name of the PostgreSQL server"
+  value       = data.azurerm_postgresql_flexible_server.postgres.fqdn
 }
 
 output "eventhub_namespace_name" {
@@ -50,18 +50,24 @@ output "resource_group_name" {
 
 output "diagnostic_setting_name" {
   description = "Name of the diagnostic setting"
-  value       = azurerm_monitor_diagnostic_setting.mysql_audit.name
+  value       = azurerm_monitor_diagnostic_setting.postgres_audit.name
 }
 
 output "diagnostic_setting_id" {
   description = "ID of the diagnostic setting"
-  value       = azurerm_monitor_diagnostic_setting.mysql_audit.id
+  value       = azurerm_monitor_diagnostic_setting.postgres_audit.id
 }
 
-output "mysql_audit_configuration" {
-  description = "MySQL audit configuration summary"
+output "pgaudit_configuration" {
+  description = "pgAudit configuration summary"
   value = {
-    audit_log_enabled = azurerm_mysql_flexible_server_configuration.audit_log_enabled.value
-    audit_log_events  = var.enable_mysql_audit_logs ? azurerm_mysql_flexible_server_configuration.audit_log_events[0].value : "N/A"
+    shared_preload_libraries = "PGAUDIT"
+    pgaudit_log              = var.pgaudit_log
+    pgaudit_log_catalog      = var.pgaudit_log_catalog
+    pgaudit_log_client       = var.pgaudit_log_client
+    pgaudit_log_parameter    = var.pgaudit_log_parameter
+    log_checkpoints          = var.log_checkpoints
+    log_error_verbosity      = var.log_error_verbosity
+    log_line_prefix          = var.log_line_prefix
   }
 }
