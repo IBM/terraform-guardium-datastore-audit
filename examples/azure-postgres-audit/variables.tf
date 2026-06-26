@@ -13,14 +13,19 @@ variable "azure_region" {
   default     = "eastus"
 }
 
-variable "resource_group_name" {
+variable "azure_enrollment_id" {
+  description = "Azure Enrollment ID (required)"
   type        = string
-  description = "Name of the Azure resource group containing the MySQL server"
 }
 
-variable "mysql_server_name" {
+variable "resource_group_name" {
   type        = string
-  description = "Name of the Azure MySQL Flexible Server to be monitored"
+  description = "Name of the Azure resource group containing the PostgreSQL server"
+}
+
+variable "postgres_server_name" {
+  type        = string
+  description = "Name of the Azure PostgreSQL Flexible Server to be monitored"
 }
 
 //////
@@ -64,14 +69,8 @@ variable "firewall_rules" {
     start_ip = string
     end_ip   = string
   }))
-  description = "Map of MySQL firewall rules to create (name => {start_ip, end_ip})"
+  description = "Map of PostgreSQL firewall rules to create (name => {start_ip, end_ip})"
   default     = {}
-}
-
-variable "azure_enrollment_id" {
-  type        = string
-  description = "Azure Enrollment ID (optional)"
-  default     = ""
 }
 
 //////
@@ -81,19 +80,53 @@ variable "azure_enrollment_id" {
 variable "diagnostic_setting_name" {
   type        = string
   description = "Name of the diagnostic setting"
-  default     = "mysql-audit-to-eventhub"
+  default     = "postgres-audit-to-eventhub"
 }
 
-variable "enable_mysql_audit_logs" {
-  type        = bool
-  description = "Enable MySQL Audit logs"
-  default     = true
-}
+//////
+// PostgreSQL pgAudit Configuration
+//////
 
-variable "audit_log_events" {
+variable "pgaudit_log" {
   type        = string
-  description = "MySQL audit log events to capture. Options: CONNECTION (connection events), GENERAL (DML_SELECT, DML_NONSELECT, DML, DDL, DCL, ADMIN)"
-  default     = "CONNECTION,GENERAL"
+  description = "Specifies which classes of statements will be logged by pgAudit. Options: READ, WRITE, FUNCTION, ROLE, DDL, MISC, ALL"
+  default     = "DDL,FUNCTION,READ,WRITE,ROLE"
+}
+
+variable "pgaudit_log_catalog" {
+  type        = bool
+  description = "Specifies whether session audit logging should create a separate log entry for statements in the PostgreSQL catalog"
+  default     = false
+}
+
+variable "pgaudit_log_client" {
+  type        = bool
+  description = "Specifies whether audit messages should be visible to the client"
+  default     = false
+}
+
+variable "pgaudit_log_parameter" {
+  type        = bool
+  description = "Specifies whether parameters should be included in the audit log"
+  default     = false
+}
+
+variable "log_checkpoints" {
+  type        = bool
+  description = "Causes checkpoints and restartpoints to be logged in the server log"
+  default     = false
+}
+
+variable "log_error_verbosity" {
+  type        = string
+  description = "Controls the amount of detail written in the server log for each message. Valid values: TERSE, DEFAULT, VERBOSE"
+  default     = "VERBOSE"
+}
+
+variable "log_line_prefix" {
+  type        = string
+  description = "Controls information prefixed to each log line. Example: %t:%r:%u@%d:[%p]:%a:%e"
+  default     = "%t:%r:%u@%d:[%p]:%a:%e"
 }
 
 //////

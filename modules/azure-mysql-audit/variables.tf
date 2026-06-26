@@ -39,6 +39,11 @@ variable "eventhub_authorization_rule_name" {
   default     = "RootManageSharedAccessKey"
 }
 
+variable "eventhub_sas_policy_name" {
+  type        = string
+  description = "Name of the Event Hub shared access policy used to build the UC connection string"
+}
+
 variable "storage_account_name" {
   type        = string
   description = "Name of the storage account for Event Hub checkpointing"
@@ -50,16 +55,19 @@ variable "consumer_group" {
   default     = "$Default"
 }
 
+variable "firewall_rules" {
+  type = map(object({
+    start_ip = string
+    end_ip   = string
+  }))
+  description = "Map of MySQL firewall rules to create (name => {start_ip, end_ip})"
+  default     = {}
+}
+
 variable "diagnostic_setting_name" {
   type        = string
   description = "Name of the diagnostic setting"
   default     = "mysql-audit-to-eventhub"
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "Map of tags to apply to resources"
-  default     = {}
 }
 
 variable "azure_enrollment_id" {
@@ -76,12 +84,6 @@ variable "enable_mysql_audit_logs" {
   type        = bool
   description = "Enable MySQL Audit logs"
   default     = true
-}
-
-variable "enable_slow_query_logs" {
-  type        = bool
-  description = "Enable MySQL Slow Query logs"
-  default     = false
 }
 
 variable "audit_log_events" {
@@ -130,6 +132,7 @@ variable "gdp_password" {
 variable "gdp_mu_host" {
   type        = string
   description = "Comma separated list of Guardium Managed Units to deploy profile"
+  default     = ""
 }
 
 //////
@@ -142,28 +145,10 @@ variable "enable_universal_connector" {
   default     = true
 }
 
-variable "csv_start_position" {
+variable "initial_position" {
   type        = string
-  description = "Start position for UDC (beginning or end)"
+  description = "Initial position for Event Hub consumer (beginning or end)"
   default     = "end"
-}
-
-variable "csv_interval" {
-  type        = string
-  description = "Polling interval for UDC in seconds"
-  default     = "5"
-}
-
-variable "csv_event_filter" {
-  type        = string
-  description = "UDC Event filters"
-  default     = ""
-}
-
-variable "codec_pattern" {
-  type        = string
-  description = "Codec pattern for the Universal Connector"
-  default     = ""
 }
 
 //////

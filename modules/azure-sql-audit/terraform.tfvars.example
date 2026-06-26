@@ -1,10 +1,5 @@
-#
-# Copyright IBM Corp. 2026
-# SPDX-License-Identifier: Apache-2.0
-#
-
 ###############################################################################
-# Azure MySQL Audit Configuration - Example Terraform Variables
+# Azure SQL Database Audit Configuration - Terraform Variables Example
 ###############################################################################
 
 #------------------------------------------------------------------------------
@@ -14,42 +9,41 @@
 # Azure region where resources are deployed
 azure_region = "eastus"
 
-# Name of the Azure resource group containing the MySQL server
+# Name of the Azure resource group containing the SQL Server
 resource_group_name = "my-resource-group"
 
-# Name of the Azure MySQL Flexible Server to be monitored
-mysql_server_name = "my-mysql-server"
+# Name of the Azure SQL Server to be monitored
+sql_server_name = "my-sql-server"
 
-#------------------------------------------------------------------------------
-# Event Hub Configuration
-#------------------------------------------------------------------------------
+# Name of the Azure SQL Database to be monitored
+sql_database_name = "my-database"
 
-# Name of the Event Hub namespace for audit log streaming
-eventhub_namespace_name = "my-eventhub-namespace"
-
-# Name of the Event Hub for audit log streaming
-eventhub_name = "mysql-audit-logs"
-
-# Name of the Event Hub namespace authorization rule
-# Default: "RootManageSharedAccessKey"
-eventhub_authorization_rule_name = "RootManageSharedAccessKey"
-
-# Name of the storage account for Event Hub checkpointing
+# Name of the storage account for audit log storage
 storage_account_name = "mystorageaccount"
 
-# Event Hub consumer group name
-# Default: "$Default"
-consumer_group = "$Default"
+# Name of the storage container for audit logs
+# Default: "sqldbauditlogs"
+audit_container_name = "sqldbauditlogs"
+
+# Number of days to retain audit logs
+# Default: 90
+retention_in_days = 90
 
 #------------------------------------------------------------------------------
-# Diagnostic Settings Configuration
+# JDBC Configuration
 #------------------------------------------------------------------------------
 
-# Name of the diagnostic setting
-diagnostic_setting_name = "mysql-audit-to-eventhub"
+# Name of the JDBC credential configured in Guardium CM
+# Default: "azure-sql-jdbc-cred"
+credential_name = "azure-sql-jdbc-cred"
 
-# Enable MySQL Audit logs
-enable_mysql_audit_logs = true
+# Name of the JDBC driver JAR file uploaded to Guardium CM
+# Default: "mssql-jdbc-7.4.1.jre8.jar"
+jdbc_driver_library = "mssql-jdbc-7.4.1.jre8.jar"
+
+# Azure enrollment ID for multi-tenant support
+# Default: "123456789"
+enrollment_id = "123456789"
 
 #------------------------------------------------------------------------------
 # Guardium Configuration
@@ -59,6 +53,7 @@ enable_mysql_audit_logs = true
 gdp_server = "guardium.example.com"
 
 # Port of Guardium Central Manager
+# Default: "8443"
 gdp_port = "8443"
 
 # Username of Guardium Web UI user
@@ -82,20 +77,32 @@ gdp_mu_host = "guardium-mu.example.com"
 
 # Whether to enable the universal connector module
 # Set to false to completely disable the universal connector for a run
+# Default: true
 enable_universal_connector = true
 
-# Initial position for Event Hub consumer (beginning or end)
-initial_position = "end"
+# Start position for UDC (beginning or end)
+# Default: "end"
+csv_start_position = "end"
+
+# Polling interval for UDC in seconds
+# Default: "60"
+csv_interval = "60"
+
+# UDC Event filters (optional)
+# Default: ""
+csv_event_filter = ""
+
+# Codec pattern for the Universal Connector (optional)
+# Default: ""
+codec_pattern = ""
 
 #------------------------------------------------------------------------------
-# Event Hub Advanced Configuration
+# Tags
 #------------------------------------------------------------------------------
 
-# Configuration mode for Event Hub input (basic or advanced)
-config_mode = "basic"
-
-# Number of threads for Event Hub consumer
-threads = 8
-
-# Whether to decorate events with Event Hub metadata
-decorate_events = true
+# Map of tags to apply to resources
+tags = {
+  Environment = "production"
+  Project     = "data-security"
+  ManagedBy   = "terraform"
+}
