@@ -1,6 +1,6 @@
 # AWS OpenSearch Audit Configuration
 
-This module configures audit logging for AWS OpenSearch domains with IBM Guardium Data Protection. It enables OpenSearch audit logging via the native `aws_opensearch_domain` resource and configures log collection via CloudWatch.
+This module configures audit logging for AWS OpenSearch domains with IBM Guardium Data Protection. It enables OpenSearch audit logging via the native `aws_opensearch_domain` resource and configures log collection via CloudWatch. The module supports both Logstash-based and Kafka-based Universal Connector modes through the `uc_mode` variable.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 
@@ -12,6 +12,7 @@ Before using this module, you need to:
 2. Have Guardium set up with appropriate credentials
 3. **Important**: Advanced security options must be enabled on your OpenSearch domain
 4. **Important**: You must import the existing OpenSearch domain into Terraform state before applying this module
+5. For Kafka mode, ensure a Kafka cluster is configured in Guardium
 
 ## Requirements
 
@@ -27,13 +28,57 @@ Before using this module, you need to:
 - Configures existing OpenSearch domain for audit logging
 - Enables audit log publishing to CloudWatch
 - Optional profiler logs (INDEX_SLOW_LOGS) support
+- Supports both Logstash-based and Kafka-based Universal Connector modes
 - Integrates with Guardium for audit data collection via CloudWatch
+
+## Universal Connector Modes
+
+This module now supports two Universal Connector modes through the `uc_mode` variable:
+
+- `logstash` - Uses the existing CloudWatch / Logstash-style Universal Connector flow
+- `kafka` - Uses the Kafka-based Universal Connector flow
+
+### Mode-specific Variables
+
+#### Logstash mode (`uc_mode = "logstash"`)
+
+Use these variables when running in logstash mode:
+
+- `csv_start_position`
+- `csv_interval`
+- `csv_event_filter`
+- `codec_pattern`
+- `use_aws_bundled_ca`
+- `log_group_prefix`
+
+#### Kafka mode (`uc_mode = "kafka"`)
+
+Use these variables when running in kafka mode:
+
+- `udc_description`
+- `kafka_cluster_name`
+- `use_elb`
+- `mu_count`
+- `event_delay`
+- `nodata_threshold_min`
+- `filter_pattern`
+
+The `unmask` variable applies to both modes.
 
 ## Usage
 
-### 1. Create a tfvars File
+### 1. Choose a Universal Connector Mode
 
-Create a `defaults.tfvars` file with your configuration. See [terraform.tfvars.example](./terraform.tfvars.example) for an example with available options and detailed comments.
+Set `uc_mode` based on the connector type you want to use:
+
+- `uc_mode = "logstash"` for the standard CloudWatch / Logstash-style Universal Connector flow
+- `uc_mode = "kafka"` for the Kafka-based Universal Connector flow
+
+See [terraform.tfvars.example](./terraform.tfvars.example) for a combined example showing common variables plus mode-specific sections.
+
+### 2. Create a tfvars File
+
+Create a `defaults.tfvars` file with your configuration. Include the common variables and the variables for the selected `uc_mode`.
 
 ### 2. Initialize Terraform
 
@@ -153,6 +198,8 @@ For the complete list of supported audit categories and their descriptions, refe
 
 ## Inputs
 
+### Common Inputs
+
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | aws_region | AWS region | string | `"us-east-1"` | no |
@@ -173,12 +220,31 @@ For the complete list of supported audit categories and their descriptions, refe
 | gdp_password | Guardium password | string | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units | string | n/a | yes |
 | enable_universal_connector | Whether to enable the universal connector | bool | `true` | no |
+| uc_mode | Universal Connector mode: `logstash` or `kafka` | string | `"logstash"` | no |
+| unmask | Whether to unmask sensitive data in audit logs | bool | `true` | no |
+
+### Logstash Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
 | csv_start_position | Start position for UDC | string | `"end"` | no |
 | csv_interval | Polling interval for UDC | string | `"5"` | no |
 | csv_event_filter | UDC Event filters | string | `""` | no |
+| codec_pattern | Codec pattern for the Universal Connector | string | `""` | no |
 | use_aws_bundled_ca | Whether to use AWS bundled CA certificates | bool | `true` | no |
 | log_group_prefix | Whether the log group name includes a prefix | bool | `false` | no |
-| unmask | Whether to unmask sensitive data in audit logs | bool | `true` | no |
+
+### Kafka Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| udc_description | Description for the Universal Connector | string | `""` | no |
+| kafka_cluster_name | Kafka cluster name for Kafka-based UC | string | `"kafka"` | no |
+| use_elb | Whether to use ELB for Kafka-based UC | bool | `false` | no |
+| mu_count | Number of managed units for Kafka-based UC | number | `2` | no |
+| event_delay | Event delay in seconds for Kafka-based UC | number | `15` | no |
+| nodata_threshold_min | No data threshold in minutes for Kafka-based UC | number | `60` | no |
+| filter_pattern | CloudWatch Logs filter pattern for filtering audit logs | string | `"None"` | no |
 
 
 ## Outputs

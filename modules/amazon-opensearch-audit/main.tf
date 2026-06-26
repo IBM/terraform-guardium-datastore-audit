@@ -6,15 +6,13 @@
 locals {
   udc_name       = format("%s-%s-%s", var.aws_region, var.opensearch_domain_name, local.aws_account_id)
   aws_partition  = data.aws_partition.current.partition
-  aws_region     = data.aws_region.current.id
+  aws_region     = var.aws_region
   aws_account_id = data.aws_caller_identity.current.account_id
 }
 
 data "aws_caller_identity" "current" {}
 
 data "aws_partition" "current" {}
-
-data "aws_region" "current" {}
 
 //////
 // CloudWatch Log Groups for OpenSearch Audit and Profiler Logs
@@ -91,7 +89,7 @@ resource "aws_opensearch_domain" "audit" {
 
   lifecycle {
     # Prevent accidental domain destruction
-    prevent_destroy = true
+    prevent_destroy = false
 
     # Ignore ALL domain configuration except log_publishing_options and tags
     # This ensures we only manage logging, not the entire domain
@@ -143,7 +141,11 @@ locals {
   # Combine log groups based on what's enabled
   log_groups = var.enable_profiler_logs ? "${local.audit_log_group_name},${local.profiler_log_group_name}" : local.audit_log_group_name
 
-  opensearch_csv = templatefile("${path.module}/templates/opensearchCloudwatch.tpl", {
+  # Default description based on mode
+  default_description = var.udc_description != "" ? var.udc_description : "GDP AWS OpenSearch ${var.uc_mode} connector for ${var.opensearch_domain_name}"
+
+  # CloudWatch (Logstash) template
+  opensearch_cloudwatch_csv = templatefile("${path.module}/templates/opensearchCloudwatch.tpl", {
     udc_name            = local.udc_name
     credential_name     = var.udc_aws_credential
     aws_region          = var.aws_region
@@ -153,25 +155,47 @@ locals {
     interval            = var.csv_interval
     codec_pattern       = var.codec_pattern
     event_filter        = var.csv_event_filter
-    description         = "GDP AWS OpenSearch connector for ${var.opensearch_domain_name}"
+    description         = local.default_description
     cluster_name        = var.opensearch_domain_name
     opensearch_endpoint = aws_opensearch_domain.audit.endpoint
     use_aws_bundled_ca  = var.use_aws_bundled_ca
     log_group_prefix    = var.log_group_prefix
     unmask              = var.unmask
   })
+
+  # Kafka template
+  opensearch_kafka_csv = templatefile("${path.module}/templates/opensearchKafka.tpl", {
+    udc_name               = local.udc_name
+    credential_name        = var.udc_aws_credential
+    cluster_name           = var.kafka_cluster_name
+    use_elb                = var.use_elb
+    mu_count               = var.mu_count
+    aws_region             = var.aws_region
+    aws_log_group          = local.log_groups
+    aws_account_id         = local.aws_account_id
+    database_cluster_name  = var.opensearch_domain_name
+    event_delay            = var.event_delay
+    nodata_threshold_min   = var.nodata_threshold_min
+    unmask                 = var.unmask
+    filter_pattern         = var.filter_pattern
+    description            = local.default_description
+  })
+
+  # Select the appropriate CSV based on uc_mode
+  opensearch_csv = var.uc_mode == "kafka" ? local.opensearch_kafka_csv : local.opensearch_cloudwatch_csv
 }
 
 module "gdp_connect-datasource-to-uc" {
-  source         = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  count          = var.enable_universal_connector ? 1 : 0 # Skip creation when disabled
-  udc_name       = local.udc_name
-  udc_csv_parsed = local.opensearch_csv
-  client_id      = var.gdp_client_id
-  client_secret  = var.gdp_client_secret
-  gdp_server     = var.gdp_server
-  gdp_port       = var.gdp_port
-  gdp_username   = var.gdp_username
-  gdp_password   = var.gdp_password
-  gdp_mu_host    = var.gdp_mu_host
+  source           = "../../../terraform-guardium-gdp/modules/connect-datasource-to-uc"
+  count            = var.enable_universal_connector ? 1 : 0 # Skip creation when disabled
+  udc_name         = local.udc_name
+  udc_csv_parsed   = local.opensearch_csv
+  client_id        = var.gdp_client_id
+  client_secret    = var.gdp_client_secret
+  gdp_server       = var.gdp_server
+  gdp_port         = var.gdp_port
+  gdp_username     = var.gdp_username
+  gdp_password     = var.gdp_password
+  gdp_mu_host      = var.gdp_mu_host
+  test_connections = var.uc_mode == "kafka" ? true : false
 }
