@@ -115,6 +115,17 @@ variable "enable_universal_connector" {
   default     = true
 }
 
+variable "uc_mode" {
+  type        = string
+  description = "Universal Connector mode: logstash or kafka"
+  default     = "logstash"
+
+  validation {
+    condition     = contains(["logstash", "kafka"], var.uc_mode)
+    error_message = "uc_mode must be either 'logstash' or 'kafka'."
+  }
+}
+
 variable "csv_start_position" {
   type        = string
   description = "Start position for UDC"
@@ -151,10 +162,52 @@ variable "log_group_prefix" {
   default     = false
 }
 
+variable "udc_description" {
+  type        = string
+  description = "Description for the Universal Connector"
+  default     = ""
+}
+
+variable "kafka_cluster_name" {
+  type        = string
+  description = "Kafka cluster name for Kafka-based UC"
+  default     = "kafka"
+}
+
+variable "use_elb" {
+  type        = bool
+  description = "Whether to use ELB for Kafka-based UC"
+  default     = false
+}
+
+variable "mu_count" {
+  type        = number
+  description = "Number of managed units for Kafka-based UC"
+  default     = 2
+}
+
+variable "event_delay" {
+  type        = number
+  description = "Event delay in seconds for Kafka-based UC"
+  default     = 15
+}
+
+variable "nodata_threshold_min" {
+  type        = number
+  description = "No data threshold in minutes for Kafka-based UC"
+  default     = 60
+}
+
 variable "unmask" {
   type        = bool
   description = "Whether to unmask sensitive data in audit logs"
   default     = true
+}
+
+variable "filter_pattern" {
+  type        = string
+  description = "CloudWatch Logs filter pattern for filtering audit logs"
+  default     = "None"
 }
 
 //////

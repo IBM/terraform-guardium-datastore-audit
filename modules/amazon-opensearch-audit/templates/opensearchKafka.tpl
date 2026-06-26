@@ -1,0 +1,2 @@
+profile_definition_name,name,description,credential_name,cluster_name,use_elb,mu_count,region,log_group,account_id,database_cluster_name,event_delay,nodata_threshold_min,unmask,filter_pattern
+AWS OpenSearch Over Cloudwatch Connect 2.0,${udc_name},${description},${credential_name},${cluster_name},${use_elb},${mu_count},${aws_region},"${aws_log_group}",${aws_account_id},${database_cluster_name},${event_delay},${nodata_threshold_min},${unmask},"${filter_pattern}"

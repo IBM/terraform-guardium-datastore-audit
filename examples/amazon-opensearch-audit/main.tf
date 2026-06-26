@@ -14,6 +14,7 @@ module "datastore-audit_amazon-opensearch-audit" {
   aws_region             = var.aws_region
   opensearch_domain_name = var.opensearch_domain_name
   enable_profiler_logs   = var.enable_profiler_logs
+  uc_mode                = "logstash"
 
   # OpenSearch Security Plugin Auditing
   enable_security_plugin_auditing     = var.enable_security_plugin_auditing
