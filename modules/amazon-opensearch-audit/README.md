@@ -35,7 +35,7 @@ Before using this module, you need to:
 
 This module now supports two Universal Connector modes through the `uc_mode` variable:
 
-- `logstash` - Uses the existing CloudWatch / Logstash-style Universal Connector flow
+- `logstash` - Uses the Logstash Universal Connector flow
 - `kafka` - Uses the Kafka-based Universal Connector flow
 
 ### Mode-specific Variables
@@ -71,7 +71,7 @@ The `unmask` variable applies to both modes.
 
 Set `uc_mode` based on the connector type you want to use:
 
-- `uc_mode = "logstash"` for the standard CloudWatch / Logstash-style Universal Connector flow
+- `uc_mode = "logstash"` for the Logstash Universal Connector flow
 - `uc_mode = "kafka"` for the Kafka-based Universal Connector flow
 
 See [terraform.tfvars.example](./terraform.tfvars.example) for a combined example showing common variables plus mode-specific sections.
