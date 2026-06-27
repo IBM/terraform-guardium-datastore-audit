@@ -11,10 +11,6 @@ locals {
 
 data "azurerm_client_config" "current" {}
 
-data "azurerm_resource_group" "rg" {
-  name = var.resource_group_name
-}
-
 # Get MySQL Server details
 data "azurerm_mysql_flexible_server" "mysql" {
   name                = var.mysql_server_name
