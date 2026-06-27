@@ -1,0 +1,111 @@
+###############################################################################
+# Amazon OpenSearch Audit Kafka Configuration - Example Terraform Variables
+###############################################################################
+
+#------------------------------------------------------------------------------
+# AWS Configuration
+#------------------------------------------------------------------------------
+
+# AWS region where the OpenSearch domain is deployed
+aws_region = "us-east-1"
+
+# Name of the existing OpenSearch domain to be monitored
+opensearch_domain_name = "my-opensearch-domain"
+
+# Enable profiler logs (INDEX_SLOW_LOGS) in addition to audit logs
+enable_profiler_logs = false
+
+#------------------------------------------------------------------------------
+# OpenSearch Security Plugin Auditing
+#------------------------------------------------------------------------------
+
+# Enable security plugin auditing (requires master credentials)
+enable_security_plugin_auditing = true
+
+# OpenSearch master username
+opensearch_master_username = "admin"
+
+# OpenSearch master password
+opensearch_master_password = "YourSecurePassword123!"
+
+# Optional: Disable specific REST audit categories
+# Example: ["GRANTED_PRIVILEGES", "AUTHENTICATED"]
+audit_rest_disabled_categories = []
+
+# Optional: Disable specific Transport audit categories
+# Example: ["COMPLIANCE_DOC_READ"]
+audit_disabled_transport_categories = []
+
+#------------------------------------------------------------------------------
+# Guardium Configuration
+#------------------------------------------------------------------------------
+
+# AWS credential name configured in Guardium
+udc_aws_credential = "my-aws-credential"
+
+# Hostname/IP address of Guardium Central Manager
+gdp_server = "guardium.example.com"
+
+# Port of Guardium Central Manager
+gdp_port = "8443"
+
+# Username of Guardium Web UI user
+gdp_username = "admin"
+
+# Password of Guardium Web UI user
+gdp_password = "your-password-here"
+
+# Client ID used when running grdapi register_oauth_client
+gdp_client_id = "client1"
+
+# Client secret from output of grdapi register_oauth_client
+gdp_client_secret = "your-client-secret-here"
+
+# Comma separated list of Guardium Managed Units to deploy profile
+gdp_mu_host = "guardium-mu-1.example.com,guardium-mu-2.example.com"
+
+#------------------------------------------------------------------------------
+# Universal Connector Configuration
+#------------------------------------------------------------------------------
+
+# Whether to enable the universal connector module
+enable_universal_connector = true
+
+# Optional custom description for the Universal Connector
+udc_description = "GDP AWS OpenSearch Kafka connector"
+
+#------------------------------------------------------------------------------
+# Kafka-specific Configuration
+#------------------------------------------------------------------------------
+
+# Kafka cluster name configured in Guardium
+kafka_cluster_name = "kafka"
+
+# Whether to use ELB for Kafka-based UC
+use_elb = false
+
+# Number of managed units for Kafka-based UC
+mu_count = 2
+
+# Event delay in seconds for Kafka-based UC
+event_delay = 15
+
+# No data threshold in minutes for Kafka-based UC
+nodata_threshold_min = 60
+
+# Whether to unmask sensitive data in audit logs
+unmask = false
+
+# CloudWatch Logs filter pattern for filtering audit logs
+filter_pattern = "None"
+
+#------------------------------------------------------------------------------
+# Tags
+#------------------------------------------------------------------------------
+
+# Map of tags to apply to resources
+tags = {
+  Environment = "production"
+  Project     = "data-security"
+  ManagedBy   = "terraform"
+}
