@@ -11,10 +11,6 @@ locals {
 
 data "azurerm_client_config" "current" {}
 
-data "azurerm_resource_group" "rg" {
-  name = var.resource_group_name
-}
-
 # Get PostgreSQL Flexible Server
 data "azurerm_postgresql_flexible_server" "postgres" {
   name                = var.postgres_server_name
