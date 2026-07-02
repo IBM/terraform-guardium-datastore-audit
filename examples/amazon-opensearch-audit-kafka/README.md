@@ -48,8 +48,9 @@ Before using this example, ensure you have:
 
 2. **Guardium Data Protection**:
    - A running Guardium Data Protection instance (version 12.2.1 or above)
-   - OAuth client registered via `grdapi register_oauth_client`
-   - AWS credentials configured in Guardium
+   - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
+      - OAuth client registered via `grdapi register_oauth_client`
+      - AWS credentials configured in Guardium Data Protection
    - A Kafka cluster configured in Guardium
    - One or more Guardium Managed Units available for UC deployment
 
@@ -137,7 +138,7 @@ This example uses Kafka-based Universal Connectors, which are intended for envir
 | nodata_threshold_min | No data threshold in minutes for Kafka-based UC | `number` | `60` | no |
 | unmask | Whether to unmask sensitive data in audit logs | `bool` | `false` | no |
 | filter_pattern | CloudWatch Logs filter pattern for filtering audit logs | `string` | `"None"` | no |
-| tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
+| tags | Map of tags to apply to resources | `map(string)` | n/a | yes |
 
 ## Outputs
 

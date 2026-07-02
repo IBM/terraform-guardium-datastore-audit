@@ -814,6 +814,7 @@ Complete working examples are available in the `examples/` directory:
 
 - [aws-aurora-mysql-audit](examples/aws-aurora-mysql-audit) - Aurora MySQL audit configuration with Universal Connector
 - [amazon-opensearch-audit](examples/amazon-opensearch-audit) - OpenSearch audit configuration with Universal Connector
+- [amazon-opensearch-audit-kafka](examples/amazon-opensearch-audit-kafka) - OpenSearch audit configuration with Kafka-based Universal Connector
 - [aws-aurora-postgres-object](examples/aws-aurora-postgres-object) - Aurora PostgreSQL object-level auditing
 - [aws-aurora-postgres-session](examples/aws-aurora-postgres-session) - Aurora PostgreSQL session-level auditing
 - [aws-documentdb](examples/aws-documentdb) - DocumentDB audit configuration with Universal Connector
