@@ -188,7 +188,7 @@ variable "use_elb" {
 
 variable "event_delay" {
   type        = number
-  description = "Event delay in seconds for Kafka-based UC"
+  description = "Event delay in minutes for Kafka-based UC"
   default     = 15
 }
 
