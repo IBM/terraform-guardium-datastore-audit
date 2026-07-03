@@ -35,16 +35,19 @@ module "datastore-audit_amazon-opensearch-audit-kafka" {
 
   # Universal Connector Configuration
   enable_universal_connector = var.enable_universal_connector
+  udc_name                   = var.udc_name
   udc_description            = var.udc_description
 
   # Kafka-specific Configuration
   kafka_cluster_name   = var.kafka_cluster_name
   use_elb              = var.use_elb
-  mu_count             = var.mu_count
   event_delay          = var.event_delay
   nodata_threshold_min = var.nodata_threshold_min
   unmask               = var.unmask
   filter_pattern       = var.filter_pattern
+  poll_interval        = var.poll_interval
+  event_limit          = var.event_limit
+  start_time           = var.start_time
 
   # Tags
   tags = var.tags

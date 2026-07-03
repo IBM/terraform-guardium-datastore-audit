@@ -4,7 +4,7 @@
 #
 
 locals {
-  udc_name       = format("%s-%s-%s", var.aws_region, var.opensearch_domain_name, local.aws_account_id)
+  udc_name       = var.udc_name != "" ? var.udc_name : format("%s-%s-%s", var.aws_region, var.opensearch_domain_name, local.aws_account_id)
   aws_partition  = data.aws_partition.current.partition
   aws_region     = var.aws_region
   aws_account_id = data.aws_caller_identity.current.account_id
@@ -169,7 +169,6 @@ locals {
     credential_name        = var.udc_aws_credential
     cluster_name           = var.kafka_cluster_name
     use_elb                = var.use_elb
-    mu_count               = var.mu_count
     aws_region             = var.aws_region
     aws_log_group          = local.log_groups
     aws_account_id         = local.aws_account_id
@@ -178,6 +177,9 @@ locals {
     nodata_threshold_min   = var.nodata_threshold_min
     unmask                 = var.unmask
     filter_pattern         = var.filter_pattern
+    poll_interval          = var.poll_interval
+    event_limit            = var.event_limit
+    start_time             = var.start_time
     description            = local.default_description
   })
 

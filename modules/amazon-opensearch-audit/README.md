@@ -236,14 +236,14 @@ For the complete list of supported audit categories and their descriptions, refe
 
 ### Kafka Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| udc_description | Description for the Universal Connector | string | `""` | no |
-| kafka_cluster_name | Kafka cluster name for Kafka-based UC | string | `"kafka"` | no |
-| use_elb | Whether to use ELB for Kafka-based UC | bool | `false` | no |
-| mu_count | Number of managed units for Kafka-based UC | number | `2` | no |
-| event_delay | Event delay in seconds for Kafka-based UC | number | `15` | no |
-| nodata_threshold_min | No data threshold in minutes for Kafka-based UC | number | `60` | no |
+| Name | Description                                             | Type | Default | Required |
+|------|---------------------------------------------------------|------|---------|:--------:|
+| udc_description | Description for the Universal Connector                 | string | `""` | no |
+| kafka_cluster_name | Kafka cluster name for Kafka-based UC                   | string | `"kafka"` | no |
+| use_elb | Whether to use ELB for Kafka-based UC                   | bool | `false` | no |
+| mu_count | Number of managed units for Kafka-based UC              | number | `2` | no |
+| event_delay | Event delay in minutes for Kafka-based UC               | number | `15` | no |
+| nodata_threshold_min | No data threshold in minutes for Kafka-based UC         | number | `60` | no |
 | filter_pattern | CloudWatch Logs filter pattern for filtering audit logs | string | `"None"` | no |
 
 

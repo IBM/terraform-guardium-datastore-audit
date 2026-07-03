@@ -111,34 +111,36 @@ This example uses Kafka-based Universal Connectors, which are intended for envir
 
 ## Input Variables
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| aws_region | AWS region where resources are deployed | `string` | `"us-east-1"` | no |
-| opensearch_domain_name | Name of the existing OpenSearch domain to be monitored | `string` | n/a | yes |
-| enable_profiler_logs | Enable profiler logs in addition to audit logs | `bool` | `false` | no |
-| enable_security_plugin_auditing | Enable OpenSearch security plugin auditing | `bool` | `true` | no |
-| opensearch_master_username | OpenSearch master username | `string` | n/a | yes |
-| opensearch_master_password | OpenSearch master password | `string` | n/a | yes |
-| audit_rest_disabled_categories | REST audit categories to disable | `list(string)` | `[]` | no |
-| audit_disabled_transport_categories | Transport audit categories to disable | `list(string)` | `[]` | no |
-| udc_aws_credential | Name of AWS credential defined in Guardium | `string` | n/a | yes |
-| gdp_client_id | Guardium OAuth client ID | `string` | n/a | yes |
-| gdp_client_secret | Guardium OAuth client secret | `string` | n/a | yes |
-| gdp_server | Guardium Central Manager hostname/IP | `string` | n/a | yes |
-| gdp_port | Guardium Central Manager port | `string` | `"8443"` | no |
-| gdp_username | Guardium Web UI username | `string` | n/a | yes |
-| gdp_password | Guardium Web UI password | `string` | n/a | yes |
-| gdp_mu_host | Comma separated list of Guardium Managed Units | `string` | n/a | yes |
-| enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
-| udc_description | Description for the Universal Connector | `string` | `""` | no |
-| kafka_cluster_name | Kafka cluster name configured in Guardium | `string` | `"kafka"` | no |
-| use_elb | Whether to use ELB for Kafka-based UC | `bool` | `false` | no |
-| mu_count | Number of managed units for Kafka-based UC | `number` | `2` | no |
-| event_delay | Event delay in seconds for Kafka-based UC | `number` | `15` | no |
-| nodata_threshold_min | No data threshold in minutes for Kafka-based UC | `number` | `60` | no |
-| unmask | Whether to unmask sensitive data in audit logs | `bool` | `false` | no |
+| Name | Description                                             | Type | Default | Required |
+|------|---------------------------------------------------------|------|---------|:--------:|
+| aws_region | AWS region where resources are deployed                 | `string` | `"us-east-1"` | no |
+| opensearch_domain_name | Name of the existing OpenSearch domain to be monitored  | `string` | n/a | yes |
+| enable_profiler_logs | Enable profiler logs in addition to audit logs          | `bool` | `false` | no |
+| enable_security_plugin_auditing | Enable OpenSearch security plugin auditing              | `bool` | `true` | no |
+| opensearch_master_username | OpenSearch master username                              | `string` | n/a | yes |
+| opensearch_master_password | OpenSearch master password                              | `string` | n/a | yes |
+| audit_rest_disabled_categories | REST audit categories to disable                        | `list(string)` | `[]` | no |
+| audit_disabled_transport_categories | Transport audit categories to disable                   | `list(string)` | `[]` | no |
+| udc_aws_credential | Name of AWS credential defined in Guardium              | `string` | n/a | yes |
+| gdp_client_id | Guardium OAuth client ID                                | `string` | n/a | yes |
+| gdp_client_secret | Guardium OAuth client secret                            | `string` | n/a | yes |
+| gdp_server | Guardium Central Manager hostname/IP                    | `string` | n/a | yes |
+| gdp_port | Guardium Central Manager port                           | `string` | `"8443"` | no |
+| gdp_username | Guardium Web UI username                                | `string` | n/a | yes |
+| gdp_password | Guardium Web UI password                                | `string` | n/a | yes |
+| gdp_mu_host | Comma separated list of Guardium Managed Units          | `string` | n/a | yes |
+| enable_universal_connector | Whether to enable the universal connector               | `bool` | `true` | no |
+| udc_description | Description for the Universal Connector                 | `string` | `""` | no |
+| kafka_cluster_name | Kafka cluster name configured in Guardium               | `string` | `"kafka"` | no |
+| use_elb | Whether to use ELB for Kafka-based UC                   | `bool` | `false` | no |
+| event_delay | Event delay in minutes for Kafka-based UC               | `number` | `15` | no |
+| nodata_threshold_min | No data threshold in minutes for Kafka-based UC         | `number` | `60` | no |
+| unmask | Whether to unmask sensitive data in audit logs          | `bool` | `false` | no |
 | filter_pattern | CloudWatch Logs filter pattern for filtering audit logs | `string` | `"None"` | no |
-| tags | Map of tags to apply to resources | `map(string)` | n/a | yes |
+| poll_interval | Poll interval in minutes for Kafka-based UC             | `number` | `1` | no |
+| event_limit | Maximum number of events to retrieve per poll           | `number` | `1000` | no |
+| start_time | Start time as epoch in milliseconds (0 = disabled)      | `number` | `0` | no |
+| tags | Map of tags to apply to resources                       | `map(string)` | n/a | yes |
 
 ## Outputs
 

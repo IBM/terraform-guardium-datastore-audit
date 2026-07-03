@@ -27,6 +27,10 @@ audit_disabled_transport_categories = []                         # Optional: Lis
 # Universal Connector Configuration
 #----------------------------------------
 enable_universal_connector = true
+
+# Optional: Override the auto-generated UC profile name ({aws_region}-{opensearch_domain_name}-{aws_account_id})
+# udc_name = "jasmine-test-opensearch-uc"
+
 udc_aws_credential         = "guardium-aws"  # Name of the AWS credential stored in Guardium Central Manager
 
 # CSV Configuration

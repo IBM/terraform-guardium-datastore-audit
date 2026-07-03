@@ -68,7 +68,7 @@ Before using this example, ensure you have:
    - Audit log events configured (e.g., `audit_log_events = CONNECTION,DML,DDL,DCL,ADMIN`)
 
 4. **Guardium Data Protection**:
-   - A running Guardium Data Protection instance (version 12.2.1 or above)
+   - A running Guardium Data Protection instance (version 12.2.2 or above)
    - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
       - OAuth client registered via `grdapi register_oauth_client`
       - Azure credentials configured in Guardium Data Protection
