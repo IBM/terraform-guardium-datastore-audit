@@ -120,6 +120,12 @@ variable "enable_universal_connector" {
   default     = true
 }
 
+variable "udc_name" {
+  type        = string
+  description = "Override name for the Universal Connector profile. If not provided, defaults to {aws_region}-{opensearch_domain_name}-{aws_account_id}."
+  default     = ""
+}
+
 variable "udc_description" {
   type        = string
   description = "Description for the Universal Connector"
@@ -140,12 +146,6 @@ variable "use_elb" {
   type        = bool
   description = "Whether to use ELB for Kafka-based UC"
   default     = false
-}
-
-variable "mu_count" {
-  type        = number
-  description = "Number of managed units for Kafka-based UC"
-  default     = 2
 }
 
 variable "event_delay" {
@@ -170,4 +170,22 @@ variable "filter_pattern" {
   type        = string
   description = "CloudWatch Logs filter pattern for filtering audit logs"
   default     = "None"
+}
+
+variable "poll_interval" {
+  type        = number
+  description = "Poll interval in minutes for Kafka-based UC"
+  default     = 1
+}
+
+variable "event_limit" {
+  type        = number
+  description = "Maximum number of events to retrieve per poll for Kafka-based UC"
+  default     = 1000
+}
+
+variable "start_time" {
+  type        = number
+  description = "Start time as epoch in milliseconds for Kafka-based UC (0 = disabled)"
+  default     = 0
 }

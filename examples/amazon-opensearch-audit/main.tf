@@ -35,6 +35,7 @@ module "datastore-audit_amazon-opensearch-audit" {
 
   # Universal Connector Configuration
   enable_universal_connector = var.enable_universal_connector
+  udc_name                   = var.udc_name
   csv_start_position         = var.csv_start_position
   csv_interval               = var.csv_interval
   codec_pattern              = var.codec_pattern

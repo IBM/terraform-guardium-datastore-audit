@@ -71,6 +71,9 @@ gdp_mu_host = "guardium-mu-1.example.com,guardium-mu-2.example.com"
 # Whether to enable the universal connector module
 enable_universal_connector = true
 
+# Optional: Override the auto-generated UC profile name ({aws_region}-{opensearch_domain_name}-{aws_account_id})
+# udc_name = "my-opensearch-uc"
+
 # Optional custom description for the Universal Connector
 udc_description = "GDP AWS OpenSearch Kafka connector"
 
@@ -84,10 +87,7 @@ kafka_cluster_name = "kafka"
 # Whether to use ELB for Kafka-based UC
 use_elb = false
 
-# Number of managed units for Kafka-based UC
-mu_count = 2
-
-# Event delay in seconds for Kafka-based UC
+# Event delay in minutes for Kafka-based UC
 event_delay = 15
 
 # No data threshold in minutes for Kafka-based UC
@@ -98,6 +98,15 @@ unmask = false
 
 # CloudWatch Logs filter pattern for filtering audit logs
 filter_pattern = "None"
+
+# Poll interval in minutes for Kafka-based UC
+poll_interval = 1
+
+# Maximum number of events to retrieve per poll for Kafka-based UC
+event_limit = 1000
+
+# Start time as epoch in milliseconds for Kafka-based UC (0 = disabled)
+start_time = 0
 
 #------------------------------------------------------------------------------
 # Tags
