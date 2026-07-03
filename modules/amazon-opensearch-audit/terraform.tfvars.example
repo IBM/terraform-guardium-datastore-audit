@@ -1,0 +1,81 @@
+##############################
+# AWS Configuration
+##############################
+# AWS region where OpenSearch domain is located
+aws_region = "us-east-1"
+
+# Name of the existing OpenSearch domain
+opensearch_domain_name = "my-opensearch-domain"
+
+# Enable profiler logs (INDEX_SLOW_LOGS) in addition to audit logs
+enable_profiler_logs = false
+
+# Optional: Add tags to resources created by this module
+# tags = {
+#   Environment = "Production"
+#   Project     = "Database Security"
+#   Owner       = "Security Team"
+# }
+
+##############################
+# OpenSearch Security Plugin Auditing
+##############################
+# Enable security plugin auditing (requires master credentials)
+enable_security_plugin_auditing = true
+
+# OpenSearch master username
+opensearch_master_username = "admin"
+
+# OpenSearch master password
+opensearch_master_password = "YourSecurePassword123!"
+
+# Optional: Disable specific REST audit categories
+audit_rest_disabled_categories = []
+
+# Optional: Disable specific Transport audit categories
+audit_disabled_transport_categories = []
+
+##############################
+# Guardium Configuration
+##############################
+# AWS credential name in Guardium
+udc_aws_credential = "my-aws-credential"
+
+# Guardium Data Protection client ID
+gdp_client_id = "my-client-id"
+
+# Guardium Data Protection client secret
+gdp_client_secret = "my-client-secret"
+
+# Guardium Data Protection server hostname
+gdp_server = "guardium.example.com"
+
+# Guardium Data Protection server port
+gdp_port = "8443"
+
+# Guardium Data Protection username
+gdp_username = "admin"
+
+# Guardium Data Protection password
+gdp_password = "guardium-password"
+
+# Comma-separated list of managed unit hosts
+gdp_mu_host = "managed-unit-1,managed-unit-2"
+
+##############################
+# Universal Connector Configuration
+##############################
+# Enable Universal Connector integration
+enable_universal_connector = true
+
+# Start position for reading logs: "beginning" or "end"
+csv_start_position = "end"
+
+# Interval in seconds for polling CloudWatch logs
+csv_interval = "5"
+
+# Optional: Event filter pattern
+csv_event_filter = ""
+
+# Use AWS bundled CA certificates
+use_aws_bundled_ca = true
