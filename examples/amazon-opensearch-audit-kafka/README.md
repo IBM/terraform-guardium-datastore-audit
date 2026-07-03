@@ -130,6 +130,7 @@ This example uses Kafka-based Universal Connectors, which are intended for envir
 | gdp_password | Guardium Web UI password                                | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units          | `string` | n/a | yes |
 | enable_universal_connector | Whether to enable the universal connector               | `bool` | `true` | no |
+| udc_name | Override name for the Universal Connector profile. Defaults to `{aws_region}-{opensearch_domain_name}-{aws_account_id}` | `string` | `""` | no |
 | udc_description | Description for the Universal Connector                 | `string` | `""` | no |
 | kafka_cluster_name | Kafka cluster name configured in Guardium               | `string` | `"kafka"` | no |
 | use_elb | Whether to use ELB for Kafka-based UC                   | `bool` | `false` | no |
