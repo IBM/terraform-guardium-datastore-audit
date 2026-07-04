@@ -99,16 +99,6 @@ After successful application:
 4. Verify that the Kafka-based OpenSearch datasource profile has been created.
 5. Confirm the profile is deployed to the expected managed units.
 
-## Kafka-based UC Notes
-
-This example uses Kafka-based Universal Connectors, which are intended for environments that require:
-
-- Better scalability for high-volume audit streams
-- Load balancing across multiple managed units
-- Kafka cluster integration in Guardium
-- Optional ELB support
-- Configurable event delay and no-data thresholds
-
 ## Input Variables
 
 | Name | Description                                             | Type | Default | Required |
