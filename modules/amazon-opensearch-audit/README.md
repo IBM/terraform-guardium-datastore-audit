@@ -58,10 +58,12 @@ Use these variables when running in kafka mode:
 - `udc_description`
 - `kafka_cluster_name`
 - `use_elb`
-- `mu_count`
 - `event_delay`
 - `nodata_threshold_min`
 - `filter_pattern`
+- `poll_interval`
+- `event_limit`
+- `start_time`
 
 The `unmask` variable applies to both modes.
 
