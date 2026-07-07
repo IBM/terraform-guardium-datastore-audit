@@ -12,7 +12,7 @@ terraform {
     }
 
     guardium-data-protection = {
-      source  = "IBM/guardium-data-protection"
+      source = "IBM/guardium-data-protection"
     }
   }
 }
