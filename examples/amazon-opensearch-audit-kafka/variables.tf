@@ -1,5 +1,5 @@
 #
-# Copyright IBM Corp. 2025
+# Copyright IBM Corp. 2026
 # SPDX-License-Identifier: Apache-2.0
 #
 
@@ -9,7 +9,7 @@
 
 variable "aws_region" {
   type        = string
-  description = "This is the AWS region."
+  description = "AWS region"
   default     = "us-east-1"
 }
 
@@ -17,6 +17,10 @@ variable "tags" {
   type        = map(string)
   description = "Map of tags to apply to resources"
 }
+
+//////
+// OpenSearch variables
+//////
 
 variable "opensearch_domain_name" {
   type        = string
@@ -59,18 +63,13 @@ variable "audit_disabled_transport_categories" {
   default     = []
 }
 
-variable "udc_name" {
-  type        = string
-  description = "Override name for the Universal Connector profile. If not provided, defaults to {aws_region}-{opensearch_domain_name}-{aws_account_id}."
-  default     = ""
-}
+//////
+// Guardium variables
+//////
 
-//////
-// General variables
-//////
 variable "udc_aws_credential" {
   type        = string
-  description = "name of AWS credential defined in Guardium"
+  description = "Name of AWS credential defined in Guardium"
 }
 
 variable "gdp_client_secret" {
@@ -112,7 +111,7 @@ variable "gdp_mu_host" {
 }
 
 //////
-// Universal Connector Control
+// Universal Connector variables
 //////
 
 variable "enable_universal_connector" {
@@ -121,51 +120,10 @@ variable "enable_universal_connector" {
   default     = true
 }
 
-variable "uc_mode" {
+variable "udc_name" {
   type        = string
-  description = "Universal Connector mode: logstash or kafka"
-  default     = "logstash"
-
-  validation {
-    condition     = contains(["logstash", "kafka"], var.uc_mode)
-    error_message = "uc_mode must be either 'logstash' or 'kafka'."
-  }
-}
-
-variable "csv_start_position" {
-  type        = string
-  description = "Start position for UDC"
-  default     = "end"
-}
-
-variable "csv_interval" {
-  type        = string
-  description = "Polling interval for UDC"
-  default     = "5"
-}
-
-variable "csv_event_filter" {
-  type        = string
-  description = "UDC Event filters"
+  description = "Override name for the Universal Connector profile. If not provided, defaults to {aws_region}-{opensearch_domain_name}-{aws_account_id}."
   default     = ""
-}
-
-variable "codec_pattern" {
-  type        = string
-  description = "Codec pattern for the Universal Connector"
-  default     = ""
-}
-
-variable "use_aws_bundled_ca" {
-  type        = bool
-  description = "Whether to use AWS bundled CA certificates for OpenSearch connections"
-  default     = true
-}
-
-variable "log_group_prefix" {
-  type        = bool
-  description = "Whether the log group name includes a prefix"
-  default     = false
 }
 
 variable "udc_description" {
@@ -173,6 +131,10 @@ variable "udc_description" {
   description = "Description for the Universal Connector"
   default     = ""
 }
+
+//////
+// Kafka-specific UC variables
+//////
 
 variable "kafka_cluster_name" {
   type        = string
@@ -201,7 +163,7 @@ variable "nodata_threshold_min" {
 variable "unmask" {
   type        = bool
   description = "Whether to unmask sensitive data in audit logs"
-  default     = true
+  default     = false
 }
 
 variable "filter_pattern" {
@@ -227,7 +189,3 @@ variable "start_time" {
   description = "Start time as epoch in milliseconds for Kafka-based UC (0 = disabled)"
   default     = 0
 }
-
-//////
-// SFTP and Multipart Upload Configuration
-//////

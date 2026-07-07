@@ -123,6 +123,7 @@ After successful application:
 | gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units | `string` | n/a | yes |
 | enable_universal_connector | Whether to enable the universal connector | `bool` | `true` | no |
+| udc_name | Override name for the Universal Connector profile. Defaults to `{aws_region}-{opensearch_domain_name}-{aws_account_id}` | `string` | `""` | no |
 | csv_start_position | Start position for UDC | `string` | `"end"` | no |
 | csv_interval | Polling interval for UDC | `string` | `"5"` | no |
 | csv_event_filter | UDC Event filters | `string` | `""` | no |
