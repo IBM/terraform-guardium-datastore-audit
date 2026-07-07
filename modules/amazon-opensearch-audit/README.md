@@ -47,7 +47,6 @@ Use these variables when running in logstash mode:
 - `csv_start_position`
 - `csv_interval`
 - `csv_event_filter`
-- `codec_pattern`
 - `use_aws_bundled_ca`
 - `log_group_prefix`
 
@@ -233,7 +232,6 @@ For the complete list of supported audit categories and their descriptions, refe
 | csv_start_position | Start position for UDC | string | `"end"` | no |
 | csv_interval | Polling interval for UDC | string | `"5"` | no |
 | csv_event_filter | UDC Event filters | string | `""` | no |
-| codec_pattern | Codec pattern for the Universal Connector | string | `""` | no |
 | use_aws_bundled_ca | Whether to use AWS bundled CA certificates | bool | `true` | no |
 | log_group_prefix | Whether the log group name includes a prefix | bool | `false` | no |
 
