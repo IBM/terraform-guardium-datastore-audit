@@ -17,10 +17,10 @@ module "datastore-audit_amazon-opensearch-audit-kafka" {
   uc_mode                = "kafka"
 
   # OpenSearch Security Plugin Auditing
-  enable_security_plugin_auditing    = var.enable_security_plugin_auditing
-  opensearch_master_username         = var.opensearch_master_username
-  opensearch_master_password         = var.opensearch_master_password
-  audit_rest_disabled_categories     = var.audit_rest_disabled_categories
+  enable_security_plugin_auditing     = var.enable_security_plugin_auditing
+  opensearch_master_username          = var.opensearch_master_username
+  opensearch_master_password          = var.opensearch_master_password
+  audit_rest_disabled_categories      = var.audit_rest_disabled_categories
   audit_disabled_transport_categories = var.audit_disabled_transport_categories
 
   # Guardium Configuration

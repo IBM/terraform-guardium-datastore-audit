@@ -165,22 +165,22 @@ locals {
 
   # Kafka template
   opensearch_kafka_csv = templatefile("${path.module}/templates/opensearchKafka.tpl", {
-    udc_name               = local.udc_name
-    credential_name        = var.udc_aws_credential
-    cluster_name           = var.kafka_cluster_name
-    use_elb                = var.use_elb
-    aws_region             = var.aws_region
-    aws_log_group          = local.log_groups
-    aws_account_id         = local.aws_account_id
-    database_cluster_name  = var.opensearch_domain_name
-    event_delay            = var.event_delay
-    nodata_threshold_min   = var.nodata_threshold_min
-    unmask                 = var.unmask
-    filter_pattern         = var.filter_pattern
-    poll_interval          = var.poll_interval
-    event_limit            = var.event_limit
-    start_time             = var.start_time
-    description            = local.default_description
+    udc_name              = local.udc_name
+    credential_name       = var.udc_aws_credential
+    cluster_name          = var.kafka_cluster_name
+    use_elb               = var.use_elb
+    aws_region            = var.aws_region
+    aws_log_group         = local.log_groups
+    aws_account_id        = local.aws_account_id
+    database_cluster_name = var.opensearch_domain_name
+    event_delay           = var.event_delay
+    nodata_threshold_min  = var.nodata_threshold_min
+    unmask                = var.unmask
+    filter_pattern        = var.filter_pattern
+    poll_interval         = var.poll_interval
+    event_limit           = var.event_limit
+    start_time            = var.start_time
+    description           = local.default_description
   })
 
   # Select the appropriate CSV based on uc_mode
