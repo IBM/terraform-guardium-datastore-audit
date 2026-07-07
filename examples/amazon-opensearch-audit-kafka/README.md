@@ -92,8 +92,7 @@ Review the planned changes and type `yes` to apply them.
 After successful application:
 
 1. Verify the CloudWatch log group exists for:
-   - `/aws/OpenSearchService/domains/<domain_name>/audit-logs`
-   - `/aws/OpenSearchService/domains/<domain_name>/index-slow-logs` (if profiler logs are enabled)
+   - `/aws/OpenSearchService/domains/<domain_name>/audit`
 2. Log in to Guardium Data Protection.
 3. Navigate to **Universal Connector** → **Datasource Profile Management**.
 4. Verify that the Kafka-based OpenSearch datasource profile has been created.
