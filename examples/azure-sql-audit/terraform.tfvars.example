@@ -23,10 +23,6 @@ gdp_mu_host       = "guardium-mu1.example.com,guardium-mu2.example.com"
 
 # Universal Connector Configuration
 enable_universal_connector = true
-csv_start_position         = "end"
-csv_interval               = "60"
-codec_pattern              = ""
-csv_event_filter           = ""
 
 # Tags
 tags = {

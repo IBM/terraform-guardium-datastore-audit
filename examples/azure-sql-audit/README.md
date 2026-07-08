@@ -73,24 +73,36 @@ Create a `terraform.tfvars` file with your configuration. See [terraform.tfvars.
   terraform init
   ```
 
-### 3. Import the Audit Policy (if already exists)
+### 3. Import Existing Audit Policies (if already configured)
 
-If your Azure SQL Server already has an audit policy configured, you need to import it into Terraform state before applying:
+If your Azure SQL Server already has audit policies configured, you need to import them into Terraform state before applying. **Both server-level and database-level audit policies must be imported separately.**
 
 ```bash
-# Get the resource ID of your SQL Server
-RESOURCE_ID="/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.Sql/servers/<server-name>"
+# Set your Azure resource details
+SUBSCRIPTION_ID="<subscription-id>"
+RESOURCE_GROUP="<resource-group>"
+SERVER_NAME="<server-name>"
+DATABASE_NAME="<database-name>"
 
-# Import the existing audit policy
-terraform import 'module.azure_sql_audit.module.audit_settings.azurerm_mssql_server_extended_auditing_policy.this' "${RESOURCE_ID}/extendedAuditingSettings/default"
+# Import Server-Level Audit Policy
+terraform import 'module.azure_sql_audit.module.common_azure-sql-audit-settings.azurerm_mssql_server_extended_auditing_policy.server_audit[0]' \
+  "/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP}/providers/Microsoft.Sql/servers/${SERVER_NAME}/extendedAuditingSettings/Default"
+
+# Import Database-Level Audit Policy
+terraform import 'module.azure_sql_audit.module.common_azure-sql-audit-settings.azurerm_mssql_database_extended_auditing_policy.database_audit[0]' \
+  "/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP}/providers/Microsoft.Sql/servers/${SERVER_NAME}/databases/${DATABASE_NAME}/extendedAuditingSettings/Default"
 ```
 
 Replace the placeholders:
-- `<subscription-id>`: Your Azure subscription ID
-- `<resource-group>`: Your resource group name
-- `<server-name>`: Your SQL Server name
+- `<subscription-id>`: Your Azure subscription ID (e.g., `5c0c81d4-656f-415d-8599-dcd86f2f665e`)
+- `<resource-group>`: Your resource group name (e.g., `guardium-azuresql-1-rg`)
+- `<server-name>`: Your SQL Server name (e.g., `guardium-azuresql-1-sqlserver-2dmd6362`)
+- `<database-name>`: Your SQL Database name (e.g., `guardium-testdb`)
 
-**Note**: If no audit policy exists, skip this step and proceed to apply.
+**Important Notes**:
+- The audit setting name must be `Default` (capital D) in the resource ID
+- Both imports are required if audit policies already exist
+- If no audit policies exist, skip this step and proceed to apply
 
 ### 4. Apply the Configuration
 
