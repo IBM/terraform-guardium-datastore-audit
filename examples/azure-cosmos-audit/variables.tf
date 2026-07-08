@@ -165,24 +165,6 @@ variable "csv_start_position" {
   default     = "end"
 }
 
-variable "csv_interval" {
-  type        = string
-  description = "Polling interval for UDC in seconds"
-  default     = "5"
-}
-
-variable "codec_pattern" {
-  type        = string
-  description = "Codec pattern for the Universal Connector"
-  default     = ""
-}
-
-variable "csv_event_filter" {
-  type        = string
-  description = "UDC Event filters"
-  default     = ""
-}
-
 //////
 // Event Hub Advanced Configuration
 //////
