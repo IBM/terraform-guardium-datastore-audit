@@ -2,7 +2,7 @@
 
 This Terraform module automates the configuration of Apache Cassandra audit log forwarding to Guardium Data Protection using Filebeat. This module configures Filebeat only; you must enable Cassandra audit logging separately before running Terraform.
 
-## Overview
+## What this module does
 
 This module:
 1. Configures Filebeat on the Cassandra server to collect Cassandra audit logs
@@ -16,14 +16,20 @@ This module:
 - Cassandra audit logging enabled before running this module
 - Filebeat installed on the Cassandra server
 - SSH access to the Cassandra server
-- Guardium Data Protection instance with Universal Connector configured
-- OAuth client registered in Guardium (using `grdapi register_oauth_client`)
+- network connectivity from the Cassandra server to Guardium Logstash
+- Guardium OAuth client credentials and Web UI credentials
 
-## Cassandra Audit Configuration
+## Cassandra audit logging
 
 This module enables Filebeat log collection only. It does **not** enable Cassandra audit logging for you. Before using this module, you must enable Cassandra audit logging on the Cassandra server.
 
 For detailed instructions on enabling Cassandra audit logging, see the [Cassandra Guardium documentation](https://github.com/IBM/universal-connectors/blob/main/filter-plugin/logstash-filter-cassandra-guardium/README.md).
+
+After updating `cassandra.yaml`, restart Cassandra so audit logging takes effect:
+
+```bash
+sudo systemctl restart cassandra
+```
 
 ## Usage
 
@@ -37,13 +43,11 @@ module "cassandra_audit" {
   cassandra_host                = "10.0.1.100"
   cassandra_audit_log_path      = "/var/log/cassandra/audit/audit.log"
 
-  # Filebeat Setup (SSH connection to Cassandra server)
   enable_filebeat_setup = true
   server_ip             = "10.0.1.100"
   server_username       = "cassandra"
   server_password       = var.cassandra_server_password
 
-  # Guardium Configuration
   gdp_server        = "guardium.example.com"
   gdp_port          = "8443"
   gdp_username      = "admin"
@@ -52,50 +56,68 @@ module "cassandra_audit" {
   gdp_client_secret = var.gdp_client_secret
   gdp_mu_host       = "guardium-mu-01.example.com"
 
-  # Logstash Configuration
   logstash_port = "5044"
   ssl_enable    = true
   ssl_verify    = true
 }
 ```
 
-## Variables
+## Key inputs
 
-### Required Variables
+Required:
+- `cassandra_instance_identifier`
+- `cassandra_host`
+- `gdp_server`
+- `gdp_username`
+- `gdp_password`
+- `gdp_client_id`
+- `gdp_client_secret`
 
-| Name | Description | Type |
-|------|-------------|------|
-| `cassandra_instance_identifier` | Unique identifier for the Cassandra instance | `string` |
-| `cassandra_host` | Hostname or IP address of the Cassandra server | `string` |
-| `gdp_server` | Hostname/IP address of Guardium Central Manager | `string` |
-| `gdp_username` | Username of Guardium Web UI user | `string` |
-| `gdp_password` | Password of Guardium Web UI user | `string` |
-| `gdp_client_id` | Client ID used when running grdapi register_oauth_client | `string` |
-| `gdp_client_secret` | Client secret from output of grdapi register_oauth_client | `string` |
-
-### Optional Variables
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| `cassandra_audit_log_path` | Path to Cassandra audit log file | `string` | `/var/log/cassandra/audit/audit.log` |
-| `logstash_port` | Port number for Logstash on Guardium server | `string` | `5044` |
-| `enable_filebeat_setup` | Enable Filebeat configuration on Cassandra server | `bool` | `true` |
-| `enable_universal_connector` | Enable the universal connector module | `bool` | `true` |
-| `ssl_enable` | Enable SSL/TLS for Filebeat to Logstash connection | `bool` | `true` |
-| `ssl_verify` | Enable SSL certificate verification | `bool` | `true` |
-| `gdp_port` | Port of Guardium Central Manager | `string` | `8443` |
-| `gdp_mu_host` | Comma separated list of Guardium Managed Units | `string` | `""` |
+Common optional inputs:
+- `cassandra_audit_log_path` default: `/var/log/cassandra/audit/audit.log`
+- `enable_filebeat_setup` default: `true`
+- `logstash_port` default: `5044`
+- `enable_universal_connector` default: `true`
+- `ssl_enable` default: `true`
+- `ssl_verify` default: `true`
+- `gdp_port` default: `8443`
+- `gdp_mu_host` default: empty
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| `udc_name` | Name of the Universal Connector created |
-| `cassandra_instance_identifier` | Identifier of the Cassandra instance |
-| `filebeat_configured` | Whether Filebeat was configured |
-| `universal_connector_enabled` | Whether the Universal Connector was created |
+- `udc_name`
+- `cassandra_instance_identifier`
+- `filebeat_configured`
+- `universal_connector_enabled`
 
-## Notes
+## Verify
+
+### Check Cassandra audit logs
+
+```bash
+ls -lh /var/log/cassandra/audit/
+tail -f /var/log/cassandra/audit/audit.log
+```
+
+### Check Filebeat
+
+```bash
+sudo systemctl status filebeat
+sudo filebeat test config -c /etc/filebeat/filebeat.yml
+```
+
+### Check Guardium
+
+In Guardium, verify the Universal Connector is running and receiving Cassandra audit data.
+
+## Troubleshooting
+
+### No logs in Guardium
+- confirm Cassandra audit logging is enabled in `cassandra.yaml`
+- confirm Cassandra was restarted after enabling audit logging
+- confirm Filebeat is installed and running
+- confirm the audit log path is correct
+- confirm the Cassandra server can reach Guardium Logstash
 
 - Ensure the Cassandra server has Filebeat installed before running this module
 - The module creates a backup of the existing `filebeat.yml` before modification
