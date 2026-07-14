@@ -6,14 +6,10 @@
 locals {
   udc_name        = format("%s-%s", var.postgres_server_name, local.subscription_id)
   subscription_id = data.azurerm_client_config.current.subscription_id
-  azure_region    = data.azurerm_resource_group.rg.location
+  azure_region    = var.azure_region
 }
 
 data "azurerm_client_config" "current" {}
-
-data "azurerm_resource_group" "rg" {
-  name = var.resource_group_name
-}
 
 # Get PostgreSQL Flexible Server
 data "azurerm_postgresql_flexible_server" "postgres" {
