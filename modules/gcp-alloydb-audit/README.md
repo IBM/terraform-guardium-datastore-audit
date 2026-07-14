@@ -130,5 +130,5 @@ In Guardium, go to **Setup → Tools → Universal Connector** and verify the Al
 
 ## License
 
-Copyright IBM Corp. 2025
+Copyright IBM Corp. 2026
 SPDX-License-Identifier: Apache-2.0

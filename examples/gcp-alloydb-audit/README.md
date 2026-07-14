@@ -107,5 +107,5 @@ This removes the Pub/Sub, Cloud Logging, and Guardium registration resources cre
 
 ## License
 
-Copyright IBM Corp. 2025
+Copyright IBM Corp. 2026
 SPDX-License-Identifier: Apache-2.0
