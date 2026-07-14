@@ -2,7 +2,8 @@
 
 This example demonstrates how to configure on-premises Apache Cassandra audit log forwarding with IBM Guardium Data Protection using Filebeat. This example configures Filebeat only; you must enable Cassandra audit logging separately before running Terraform.
 
-## Overview
+
+## What this example does
 
 This example sets up:
 - Filebeat configuration on the Cassandra server to collect Cassandra audit logs
@@ -19,7 +20,7 @@ This example sets up:
 6. **Network Connectivity**: Cassandra server must be able to send logs to Guardium Logstash
 7. **Guardium Credentials**: OAuth client credentials and Web UI credentials
 
-## Cassandra Audit Configuration
+## Cassandra audit logging
 
 This example enables Filebeat log collection only. It does **not** enable Cassandra audit logging for you. Before using this example, you must enable Cassandra audit logging on the Cassandra server.
 
@@ -134,44 +135,62 @@ After applying the configuration:
    - Check the audit reports for your Cassandra instance
    - Verify that the test queries appear in the audit logs
 
-## Troubleshooting
+```bash
+cp terraform.tfvars.example terraform.tfvars
+```
 
-### No Logs Appearing in Guardium
+Set values such as:
 
-1. **Check Cassandra audit logging**:
-   ```bash
-   # Verify audit log file exists and is being written to
-   ls -lh /var/log/cassandra/audit/
-   tail -f /var/log/cassandra/audit/audit.log
-   ```
+```hcl
+cassandra_instance_identifier = "prod-cassandra-01"
+cassandra_host                = "192.168.1.100"
+cassandra_audit_log_path      = "/var/log/cassandra/audit/audit.log"
 
-2. **Check Filebeat status**:
-   ```bash
-   sudo systemctl status filebeat
-   sudo journalctl -u filebeat -f
-   ```
+enable_filebeat_setup = true
+server_ip             = "192.168.1.100"
+server_username       = "cassandra"
+server_password       = "your-secure-password"
 
-3. **Verify Filebeat configuration**:
-   ```bash
-   sudo filebeat test config -c /etc/filebeat/filebeat.yml
-   sudo filebeat test output -c /etc/filebeat/filebeat.yml
-   ```
+gdp_server        = "guardium.example.com"
+gdp_port          = "8443"
+gdp_username      = "admin"
+gdp_password      = "your-secure-password"
+gdp_client_id     = "your-client-id"
+gdp_client_secret = "your-client-secret"
+gdp_mu_host       = "guardium-mu-01"
 
-4. **Check network connectivity**:
-   ```bash
-   # From Cassandra server, test connection to Guardium
-   telnet guardium.example.com 5044
-   ```
+logstash_port = "5044"
+ssl_enable    = true
+ssl_verify    = true
 
-5. **Check firewall rules**:
-   - Ensure Logstash port (default 5044) is open
-   - Verify no network ACLs are blocking traffic
+udc_name                   = "cassandra-prod-filebeat"
+enable_universal_connector = true
+```
 
-6. **Review Guardium logs**:
-   - Check Universal Connector logs for errors
-   - Verify the connector is receiving messages
+### 2. Apply
 
-### Filebeat Configuration Issues
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+
+## Verify
+
+### Check Cassandra audit logs
+
+```bash
+ls -lh /var/log/cassandra/audit/
+tail -f /var/log/cassandra/audit/audit.log
+```
+
+### Check Filebeat
+
+```bash
+sudo systemctl status filebeat
+sudo filebeat test config -c /etc/filebeat/filebeat.yml
+sudo journalctl -u filebeat -f
+```
 
 If Filebeat fails to start:
 - Check `/var/log/filebeat/filebeat` for errors
