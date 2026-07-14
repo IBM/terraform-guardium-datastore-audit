@@ -1,0 +1,108 @@
+###############################################################################
+# Azure SQL Database Audit Configuration - Terraform Variables Example
+###############################################################################
+
+#------------------------------------------------------------------------------
+# Azure Configuration
+#------------------------------------------------------------------------------
+
+# Azure region where resources are deployed
+azure_region = "eastus"
+
+# Name of the Azure resource group containing the SQL Server
+resource_group_name = "my-resource-group"
+
+# Name of the Azure SQL Server to be monitored
+sql_server_name = "my-sql-server"
+
+# Name of the Azure SQL Database to be monitored
+sql_database_name = "my-database"
+
+# Name of the storage account for audit log storage
+storage_account_name = "mystorageaccount"
+
+# Name of the storage container for audit logs
+# Default: "sqldbauditlogs"
+audit_container_name = "sqldbauditlogs"
+
+# Number of days to retain audit logs
+# Default: 90
+retention_in_days = 90
+
+#------------------------------------------------------------------------------
+# JDBC Configuration
+#------------------------------------------------------------------------------
+
+# Name of the JDBC credential configured in Guardium CM
+# Default: "azure-sql-jdbc-cred"
+credential_name = "azure-sql-jdbc-cred"
+
+# Name of the JDBC driver JAR file uploaded to Guardium CM
+# Default: "mssql-jdbc-7.4.1.jre8.jar"
+jdbc_driver_library = "mssql-jdbc-7.4.1.jre8.jar"
+
+# Azure enrollment ID for multi-tenant support
+# Default: "123456789"
+enrollment_id = "123456789"
+
+#------------------------------------------------------------------------------
+# Guardium Configuration
+#------------------------------------------------------------------------------
+
+# Hostname/IP address of Guardium Central Manager
+gdp_server = "guardium.example.com"
+
+# Port of Guardium Central Manager
+# Default: "8443"
+gdp_port = "8443"
+
+# Username of Guardium Web UI user
+gdp_username = "admin"
+
+# Password of Guardium Web UI user
+gdp_password = "your-password-here"
+
+# Client ID used when running grdapi register_oauth_client
+gdp_client_id = "client1"
+
+# Client secret from output of grdapi register_oauth_client
+gdp_client_secret = "your-client-secret-here"
+
+# Comma separated list of Guardium Managed Units to deploy profile
+gdp_mu_host = "guardium-mu.example.com"
+
+#------------------------------------------------------------------------------
+# Universal Connector Configuration
+#------------------------------------------------------------------------------
+
+# Whether to enable the universal connector module
+# Set to false to completely disable the universal connector for a run
+# Default: true
+enable_universal_connector = true
+
+# Start position for UDC (beginning or end)
+# Default: "end"
+csv_start_position = "end"
+
+# Polling interval for UDC in seconds
+# Default: "60"
+csv_interval = "60"
+
+# UDC Event filters (optional)
+# Default: ""
+csv_event_filter = ""
+
+# Codec pattern for the Universal Connector (optional)
+# Default: ""
+codec_pattern = ""
+
+#------------------------------------------------------------------------------
+# Tags
+#------------------------------------------------------------------------------
+
+# Map of tags to apply to resources
+tags = {
+  Environment = "production"
+  Project     = "data-security"
+  ManagedBy   = "terraform"
+}

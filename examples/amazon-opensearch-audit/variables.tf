@@ -120,6 +120,12 @@ variable "enable_universal_connector" {
   default     = true
 }
 
+variable "udc_name" {
+  type        = string
+  description = "Override name for the Universal Connector profile. If not provided, defaults to {aws_region}-{opensearch_domain_name}-{aws_account_id}."
+  default     = ""
+}
+
 variable "csv_start_position" {
   type        = string
   description = "Start position for UDC"

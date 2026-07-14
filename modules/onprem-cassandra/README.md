@@ -1,26 +1,19 @@
 # Apache Cassandra Audit Module
 
-This module configures Filebeat for Apache Cassandra audit logs and registers the datasource with Guardium.
+This Terraform module automates the configuration of Apache Cassandra audit log forwarding to Guardium Data Protection using Filebeat. This module configures Filebeat only; you must enable Cassandra audit logging separately before running Terraform.
 
 ## What this module does
 
-Use this module with an existing on-premises Cassandra deployment.
-
-It:
-- configures Filebeat on the Cassandra server over SSH
-- backs up the existing `/etc/filebeat/filebeat.yml`
-- writes a Filebeat configuration for the Cassandra audit log path
-- tests the Filebeat configuration
-- restarts and enables the Filebeat service
-- registers the Cassandra datasource with Guardium Universal Connector
-
-It does not enable Cassandra audit logging in `cassandra.yaml`.
+This module:
+1. Configures Filebeat on the Cassandra server to collect Cassandra audit logs
+2. Forwards audit logs to Guardium via Logstash
+3. Registers the Cassandra instance as a Universal Connector datasource in Guardium
+4. Does not enable Cassandra audit logging in Cassandra itself
 
 ## Prerequisites
 
-You need:
-- an existing Apache Cassandra server
-- Cassandra audit logging already enabled
+- Apache Cassandra instance
+- Cassandra audit logging enabled before running this module
 - Filebeat installed on the Cassandra server
 - SSH access to the Cassandra server
 - network connectivity from the Cassandra server to Guardium Logstash
@@ -28,21 +21,9 @@ You need:
 
 ## Cassandra audit logging
 
-Before using this module, enable Cassandra audit logging in `cassandra.yaml`:
+This module enables Filebeat log collection only. It does **not** enable Cassandra audit logging for you. Before using this module, you must enable Cassandra audit logging on the Cassandra server.
 
-```yaml
-audit_logging_options:
-    enabled: true
-    logger:
-      - class_name: FileAuditLogger
-    audit_logs_dir: /var/log/cassandra/audit
-    included_keyspaces: ""
-    excluded_keyspaces: "system,system_schema,system_virtual_schema"
-    included_categories: ""
-    excluded_categories: ""
-    included_users: ""
-    excluded_users: ""
-```
+For detailed instructions on enabling Cassandra audit logging, see the [Cassandra Guardium documentation](https://github.com/IBM/universal-connectors/blob/main/filter-plugin/logstash-filter-cassandra-guardium/README.md).
 
 After updating `cassandra.yaml`, restart Cassandra so audit logging takes effect:
 
@@ -56,6 +37,8 @@ sudo systemctl restart cassandra
 module "cassandra_audit" {
   source = "path/to/modules/onprem-cassandra"
 
+  # Cassandra Configuration
+  # Audit logging must already be enabled in cassandra.yaml and logback.xml
   cassandra_instance_identifier = "prod-cassandra-01"
   cassandra_host                = "10.0.1.100"
   cassandra_audit_log_path      = "/var/log/cassandra/audit/audit.log"
@@ -136,12 +119,8 @@ In Guardium, verify the Universal Connector is running and receiving Cassandra a
 - confirm the audit log path is correct
 - confirm the Cassandra server can reach Guardium Logstash
 
-### Filebeat issues
-- check `/var/log/filebeat/filebeat`
-- check `sudo journalctl -u filebeat -f`
-- verify Filebeat can read the Cassandra audit log file
+- Ensure the Cassandra server has Filebeat installed before running this module
+- The module creates a backup of the existing `filebeat.yml` before modification
+- SSL/TLS is recommended for production environments
+- Requires `gdp-middleware-helper` provider version >= 1.0.0 (with on-prem configuration resources)
 
-## License
-
-Copyright IBM Corp. 2026
-SPDX-License-Identifier: Apache-2.0

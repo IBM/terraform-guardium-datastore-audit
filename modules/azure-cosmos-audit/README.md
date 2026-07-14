@@ -199,6 +199,9 @@ na.artifactory.swg-devops.com/ibm/guardium-data-protection
 | eventhub_authorization_rule_name | Name of the Event Hub authorization rule | `string` | `"RootManageSharedAccessKey"` | no |
 | storage_account_name | Name of the storage account for checkpointing | `string` | n/a | yes |
 | consumer_group | Event Hub consumer group name | `string` | `"$Default"` | no |
+| config_mode | Configuration mode for Event Hub input (basic or advanced) | `string` | `"basic"` | no |
+| threads | Number of threads for Event Hub consumer | `number` | `8` | no |
+| decorate_events | Whether to decorate events with Event Hub metadata | `bool` | `true` | no |
 | enable_data_plane_logs | Enable DataPlaneRequests logs | `bool` | `true` | no |
 | enable_query_runtime_logs | Enable QueryRuntimeStatistics logs | `bool` | `true` | no |
 | enable_control_plane_logs | Enable ControlPlaneRequests logs | `bool` | `true` | no |

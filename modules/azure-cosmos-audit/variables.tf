@@ -62,6 +62,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "azure_enrollment_id" {
+  type        = string
+  description = "Azure Enrollment ID (optional)"
+  default     = ""
+}
+
 //////
 // Diagnostic Settings Configuration
 //////
@@ -154,20 +160,24 @@ variable "csv_start_position" {
   default     = "end"
 }
 
-variable "csv_interval" {
+//////
+// Event Hub Advanced Configuration
+//////
+
+variable "config_mode" {
   type        = string
-  description = "Polling interval for UDC in seconds"
-  default     = "5"
+  description = "Configuration mode for Event Hub input (basic or advanced)"
+  default     = "basic"
 }
 
-variable "csv_event_filter" {
-  type        = string
-  description = "UDC Event filters"
-  default     = ""
+variable "threads" {
+  type        = number
+  description = "Number of threads for Event Hub consumer"
+  default     = 8
 }
 
-variable "codec_pattern" {
-  type        = string
-  description = "Codec pattern for the Universal Connector"
-  default     = ""
+variable "decorate_events" {
+  type        = bool
+  description = "Whether to decorate events with Event Hub metadata"
+  default     = true
 }

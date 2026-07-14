@@ -59,6 +59,12 @@ variable "audit_disabled_transport_categories" {
   default     = []
 }
 
+variable "udc_name" {
+  type        = string
+  description = "Override name for the Universal Connector profile. If not provided, defaults to {aws_region}-{opensearch_domain_name}-{aws_account_id}."
+  default     = ""
+}
+
 //////
 // General variables
 //////
@@ -115,6 +121,17 @@ variable "enable_universal_connector" {
   default     = true
 }
 
+variable "uc_mode" {
+  type        = string
+  description = "Universal Connector mode: logstash or kafka"
+  default     = "logstash"
+
+  validation {
+    condition     = contains(["logstash", "kafka"], var.uc_mode)
+    error_message = "uc_mode must be either 'logstash' or 'kafka'."
+  }
+}
+
 variable "csv_start_position" {
   type        = string
   description = "Start position for UDC"
@@ -151,10 +168,64 @@ variable "log_group_prefix" {
   default     = false
 }
 
+variable "udc_description" {
+  type        = string
+  description = "Description for the Universal Connector"
+  default     = ""
+}
+
+variable "kafka_cluster_name" {
+  type        = string
+  description = "Kafka cluster name for Kafka-based UC"
+  default     = "kafka"
+}
+
+variable "use_elb" {
+  type        = bool
+  description = "Whether to use ELB for Kafka-based UC"
+  default     = false
+}
+
+variable "event_delay" {
+  type        = number
+  description = "Event delay in minutes for Kafka-based UC"
+  default     = 15
+}
+
+variable "nodata_threshold_min" {
+  type        = number
+  description = "No data threshold in minutes for Kafka-based UC"
+  default     = 60
+}
+
 variable "unmask" {
   type        = bool
   description = "Whether to unmask sensitive data in audit logs"
   default     = true
+}
+
+variable "filter_pattern" {
+  type        = string
+  description = "CloudWatch Logs filter pattern for filtering audit logs"
+  default     = "None"
+}
+
+variable "poll_interval" {
+  type        = number
+  description = "Poll interval in minutes for Kafka-based UC"
+  default     = 1
+}
+
+variable "event_limit" {
+  type        = number
+  description = "Maximum number of events to retrieve per poll for Kafka-based UC"
+  default     = 1000
+}
+
+variable "start_time" {
+  type        = number
+  description = "Start time as epoch in milliseconds for Kafka-based UC (0 = disabled)"
+  default     = 0
 }
 
 //////

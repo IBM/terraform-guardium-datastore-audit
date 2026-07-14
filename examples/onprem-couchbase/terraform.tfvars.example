@@ -1,0 +1,51 @@
+#
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# Couchbase Instance Configuration
+couchbase_cluster_name   = "production-cluster"
+couchbase_host           = "couchbase.example.com"
+couchbase_admin_port     = "8091"
+couchbase_admin_username = "Administrator"
+couchbase_admin_password = "your-couchbase-admin-password"
+couchbase_audit_log_path = "/opt/couchbase/var/lib/couchbase/logs/*-audit.log"
+
+# Server Connection Configuration (for SSH)
+server_ip       = "couchbase.example.com"
+server_username = "root"
+server_password = "your-ssh-password"
+
+# Guardium Configuration
+gdp_server        = "guardium-cm.example.com"
+gdp_port          = "8443"
+gdp_username      = "admin"
+gdp_password      = "your-guardium-password"
+gdp_client_id     = "client1"
+gdp_client_secret = "your-client-secret-uuid"
+gdp_mu_host       = "guardium-mu-01.example.com"
+
+# Universal Connector Configuration
+udc_name                   = "couchbase-prod-filebeat"
+enable_universal_connector = true
+
+# Filebeat/Logstash Configuration
+logstash_port                      = "5002"
+ssl_enable                         = false
+ssl_verify                         = false
+ssl_cert_path                      = ""
+ssl_certificate_authority_filename = ""
+
+# Audit Configuration
+enable_audit_log = true
+enable_filebeat  = true
+
+# CSV Configuration
+csv_description = "Guardium connector for production Couchbase cluster"
+
+# Tags
+tags = {
+  Environment = "production"
+  Application = "couchbase-audit"
+  ManagedBy   = "terraform"
+}
