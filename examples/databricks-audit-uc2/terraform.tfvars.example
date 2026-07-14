@@ -1,0 +1,77 @@
+# Databricks Audit (UC 2.0 - Unity Catalog) - Example Terraform Variables
+
+#------------------------------------------------------------------------------
+# Azure Configuration
+#------------------------------------------------------------------------------
+azure_region        = "eastus"
+resource_group_name = "my-resource-group"
+
+# Name of the Azure Databricks Unity Catalog workspace to be monitored
+databricks_workspace_name = "my-databricks-uc-workspace"
+
+# Full resource ID of the Databricks workspace
+# Format: /subscriptions/<sub-id>/resourceGroups/<rg>/providers/Microsoft.Databricks/workspaces/<name>
+databricks_workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.Databricks/workspaces/my-databricks-uc-workspace"
+
+azure_enrollment_id = ""
+
+#------------------------------------------------------------------------------
+# Event Hub Configuration
+#------------------------------------------------------------------------------
+eventhub_namespace_name          = "my-eventhub-namespace"
+eventhub_name                    = "databricks-audit-logs"
+# Hub-level rule (used to build the UC Event Hub connection string)
+eventhub_authorization_rule_name = "RootManageSharedAccessKey"
+# Namespace-level rule (used by the Azure Monitor diagnostic setting)
+eventhub_namespace_authorization_rule_name = "RootManageSharedAccessKey"
+storage_account_name             = "mystorageaccount"
+consumer_group                   = "$Default"
+diagnostic_setting_name          = "databricks-uc2-audit-to-eventhub"
+
+#------------------------------------------------------------------------------
+# Event Hub Advanced Configuration
+#------------------------------------------------------------------------------
+config_mode     = "basic"
+threads         = 8
+decorate_events = false
+
+#------------------------------------------------------------------------------
+# Guardium Configuration
+#------------------------------------------------------------------------------
+gdp_server        = "guardium.example.com"
+gdp_port          = "8443"
+gdp_username      = "admin"
+gdp_password      = "your-password-here"
+gdp_client_id     = "client1"
+gdp_client_secret = "your-client-secret-here"
+gdp_mu_host       = "guardium-mu.example.com"
+
+#------------------------------------------------------------------------------
+# Universal Connector Configuration
+#------------------------------------------------------------------------------
+udc_credential             = "udc_credential"
+enable_universal_connector = true
+csv_start_position         = "end"
+
+# Optional: Custom UC profile description
+# udc_description = "GDP Databricks Unity Catalog connector"
+
+#------------------------------------------------------------------------------
+# UC 2.0-specific Configuration
+#------------------------------------------------------------------------------
+# Guardium cluster name to assign the profile to (must exist in Guardium CM, leave empty if not needed)
+gdp_cluster_name         = ""
+mu_count                 = 2
+use_elb                  = false
+eventhub_partition_count = 4
+start_time               = 0
+nodata_threshold_min     = 60
+
+#------------------------------------------------------------------------------
+# Tags
+#------------------------------------------------------------------------------
+tags = {
+  Environment = "production"
+  Project     = "data-security"
+  ManagedBy   = "terraform"
+}
