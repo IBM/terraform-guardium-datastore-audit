@@ -39,6 +39,7 @@ module "datastore-audit_databricks-audit" {
   gdp_mu_host       = var.gdp_mu_host
 
   # Universal Connector Configuration
+  udc_name                   = var.udc_name
   udc_credential             = var.udc_credential
   enable_universal_connector = var.enable_universal_connector
   csv_start_position         = var.csv_start_position

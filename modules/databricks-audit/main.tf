@@ -4,8 +4,10 @@
 #
 
 locals {
-  udc_name        = format("%s-databricks-%s", var.databricks_workspace_name, local.subscription_id)
   subscription_id = data.azurerm_client_config.current.subscription_id
+
+  # If user provides udc_name, use it exactly. Otherwise auto-generate with subscription ID.
+  udc_name = var.udc_name != "" ? var.udc_name : format("%s-databricks-%s", var.databricks_workspace_name, local.subscription_id)
 
   # Default description
   default_description = var.udc_description != "" ? var.udc_description : "GDP Databricks ${var.uc_version == "uc2" ? "Unity Catalog (UC 2.0)" : "UC 1.0"} connector for ${var.databricks_workspace_name}"
@@ -89,7 +91,7 @@ module "common_databricks-eventhub-registration" {
 
   # Profile Configuration
   uc_version               = var.uc_version
-  udc_name                 = var.databricks_workspace_name
+  udc_name                 = local.udc_name
   description              = local.default_description
   udc_credential           = var.udc_credential
   cluster_name             = var.gdp_cluster_name

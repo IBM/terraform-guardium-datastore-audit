@@ -53,6 +53,9 @@ udc_credential             = "udc_credential"
 enable_universal_connector = true
 csv_start_position         = "end"
 
+# Optional: override the auto-generated UDC name (default: {workspace_name}-databricks-{subscription_id})
+# udc_name = "my-databricks-connector"
+
 # Optional: Custom UC profile description
 # udc_description = "GDP Databricks Unity Catalog connector"
 

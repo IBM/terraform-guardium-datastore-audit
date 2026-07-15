@@ -40,6 +40,9 @@ gdp_mu_host       = "guardium-mu.example.com"
 enable_universal_connector = true
 csv_start_position         = "end"
 
+# Optional: override the auto-generated UDC name (default: {workspace_name}-databricks-{subscription_id})
+# udc_name = "my-databricks-connector"
+
 # Optional: Custom UC profile description
 # udc_description = "GDP Databricks UC 1.0 connector"
 

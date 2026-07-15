@@ -142,6 +142,12 @@ variable "csv_start_position" {
   default     = "end"
 }
 
+variable "udc_name" {
+  type        = string
+  description = "Override name for the Universal Connector profile. If not provided, defaults to {databricks_workspace_name}-databricks-{subscription_id}."
+  default     = ""
+}
+
 variable "udc_description" {
   type        = string
   description = "Optional description for the Universal Connector profile"
