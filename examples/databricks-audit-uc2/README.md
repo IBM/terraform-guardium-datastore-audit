@@ -79,7 +79,25 @@ Edit `terraform.tfvars` with your values.
 terraform init
 ```
 
-### 3. Apply the Configuration
+### 3. Import the Existing Diagnostic Setting
+
+The Azure Monitor diagnostic setting already exists and must be imported into Terraform state before applying:
+
+```bash
+terraform import \
+  'module.datastore-audit_databricks-audit-uc2.azurerm_monitor_diagnostic_setting.databricks_audit' \
+  '<databricks_workspace_resource_id>|<diagnostic_setting_name>'
+```
+
+For example:
+
+```bash
+terraform import \
+  'module.datastore-audit_databricks-audit-uc2.azurerm_monitor_diagnostic_setting.databricks_audit' \
+  '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Databricks/workspaces/my-workspace|nexus-databricks'
+```
+
+### 4. Apply the Configuration
 
 ```bash
 terraform apply
