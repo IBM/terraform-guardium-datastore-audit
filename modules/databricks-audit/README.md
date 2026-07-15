@@ -66,11 +66,11 @@ terraform import \
   '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Databricks/workspaces/my-workspace|nexus-databricks'
 ```
 
-Or using the `databricks-audit-uc2` example:
+Or using the `databricks-audit-kafka` example:
 
 ```bash
 terraform import \
-  'module.datastore-audit_databricks-audit-uc2.azurerm_monitor_diagnostic_setting.databricks_audit' \
+  'module.datastore-audit_databricks-audit-kafka.azurerm_monitor_diagnostic_setting.databricks_audit' \
   '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Databricks/workspaces/my-workspace|nexus-databricks'
 ```
 

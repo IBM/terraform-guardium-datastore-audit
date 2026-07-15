@@ -7,7 +7,7 @@ provider "azurerm" {
   features {}
 }
 
-module "datastore-audit_databricks-audit-uc2" {
+module "datastore-audit_databricks-audit-kafka" {
   source = "../../modules/databricks-audit"
 
   # Azure Configuration

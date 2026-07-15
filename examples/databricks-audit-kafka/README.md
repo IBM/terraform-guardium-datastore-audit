@@ -1,6 +1,6 @@
-# Databricks Audit with IBM Guardium Data Protection (UC 2.0 - Unity Catalog)
+# Databricks Audit with IBM Guardium Data Protection (UC 2.0 - Kafka)
 
-This example demonstrates how to configure Azure Databricks Unity Catalog workspace audit logging with IBM Guardium Data Protection using the `databricks-audit` module in UC 2.0 mode.
+This example demonstrates how to configure Azure Databricks Unity Catalog workspace audit logging with IBM Guardium Data Protection using the `databricks-audit` module in UC 2.0 (Kafka) mode.
 
 ## Architecture
 
@@ -42,7 +42,7 @@ This Terraform configuration:
 1. Attaches an Azure Monitor Diagnostic Setting to an existing Databricks workspace to stream all standard audit log categories **plus the `unityCatalog` category** to Event Hub
 2. Registers a `Databricks Unity Catalog over Event Hub` Universal Connector profile in Guardium
 
-## Difference from UC 1.0 (`databricks-audit`)
+## Difference from UC 1.0 (`databricks-audit` / Logstash)
 
 This example sets `uc_version = "uc2"` which:
 
@@ -85,7 +85,7 @@ The Azure Monitor diagnostic setting already exists and must be imported into Te
 
 ```bash
 terraform import \
-  'module.datastore-audit_databricks-audit-uc2.azurerm_monitor_diagnostic_setting.databricks_audit' \
+  'module.datastore-audit_databricks-audit-kafka.azurerm_monitor_diagnostic_setting.databricks_audit' \
   '<databricks_workspace_resource_id>|<diagnostic_setting_name>'
 ```
 
@@ -93,7 +93,7 @@ For example:
 
 ```bash
 terraform import \
-  'module.datastore-audit_databricks-audit-uc2.azurerm_monitor_diagnostic_setting.databricks_audit' \
+  'module.datastore-audit_databricks-audit-kafka.azurerm_monitor_diagnostic_setting.databricks_audit' \
   '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Databricks/workspaces/my-workspace|nexus-databricks'
 ```
 
@@ -103,7 +103,7 @@ terraform import \
 terraform apply
 ```
 
-### 4. Verify the Configuration
+### 5. Verify the Configuration
 
 After successful application:
 
