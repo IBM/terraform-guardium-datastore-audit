@@ -1,57 +1,58 @@
 # AWS DynamoDB with Universal Connector - Terraform Variables
+# Copy this file to terraform.tfvars and fill in your values
 
 #----------------------------------------
 # General Configuration
 #----------------------------------------
-aws_region  = "us-east-1"
+aws_region    = "us-east-1"   # The AWS region where your DynamoDB tables are located
 aws_partition = "aws"
-name_prefix = "dynamodb-gdp"
+name_prefix   = "guardium-aws-my-dynamo"  # Format: guardium-aws-<sanitized-table-name>
 
 tags = {
-  Environment = "Demo"
-  Owner       = "Security"
-  Project     = "Guardium-Terraform"
+  Environment = "dev"
+  Owner       = "security"
+  Project     = "guardium-dynamodb"
 }
 
 #----------------------------------------
 # DynamoDB Configuration
 #----------------------------------------
 # Use "all" to monitor all tables, or provide a comma-separated list of table names
-dynamodb_tables = "all"
+dynamodb_tables = "my-table-1,my-table-2"
 
-# If you want to use existing CloudTrail or CloudWatch Log Group, uncomment and set these
-# existing_cloudtrail_name = "your-existing-cloudtrail"
-# existing_cloudwatch_log_group_name = "/aws/cloudtrail/your-existing-log-group"
+# Optional: reuse an existing CloudTrail instead of creating new resources.
+# Leave commented out to have the module create a new CloudTrail, S3 bucket, and IAM role.
+# existing_cloudtrail_name           = "my-existing-cloudtrail"
+# existing_cloudwatch_log_group_name = "/aws/cloudtrail/my-existing-log-group"
 
 #----------------------------------------
 # Universal Connector Configuration
 #----------------------------------------
 enable_universal_connector = true
-udc_aws_credential = "guardium-aws"  # Name of the AWS credential stored in Guardium Central Manager
+udc_aws_credential         = "aws-credential"  # AWS credential name stored in Guardium Central Manager
 
 # CSV Configuration
-csv_start_position = "end"
-csv_interval = "5"
-csv_event_filter = ""
-csv_description = "DynamoDB Universal Connector"
-csv_cluster_name = ""
+csv_start_position      = "beginning"
+csv_interval            = "300"
+csv_event_filter        = ""
+csv_description         = "DynamoDB my-table"
+csv_unmask              = false
+csv_deployed_collectors = ""      # Comma-separated list of Guardium collectors, e.g. "10.0.1.50"
+# csv_log_group_region  = ""      # Set only when reusing a cross-region CloudTrail, e.g. "us-east-1"
 
-# CSV Profile Directory Configuration
-#----------------------------------------
-# Optional: Custom endpoint URL for AWS CloudWatch (leave empty to use default AWS endpoint)
+# Optional: Custom endpoint URL for AWS CloudWatch (leave empty to use default)
 # endpoint = ""
 
-# Optional: Whether to use the AWS bundled CA certificates for CloudWatch connection (default: true)
+# Optional: Use AWS bundled CA certificates for CloudWatch connection (default: true)
 # use_aws_bundled_ca = true
-
 
 #----------------------------------------
 # Guardium Connection Details
 #----------------------------------------
-gdp_server             = "guardium.example.com"  # Replace with your Guardium server
-gdp_port               = 8443
-gdp_username           = "admin"                 # Replace with your Guardium username
-gdp_password           = "password"              # Replace with your Guardium password
-gdp_client_id          = "client4"               # Replace with your client ID
-gdp_client_secret      = "client-secret"         # Replace with your client secret
-gdp_mu_host            = ""                      # Comma separated list of Guardium Managed Units
+gdp_server        = "guardium.example.com"    # Hostname or IP of your Guardium Central Manager
+gdp_port          = 8443
+gdp_username      = "admin"                   # Guardium admin username
+gdp_password      = "changeme"                # Guardium admin password
+gdp_client_id     = "client4"                 # OAuth client ID
+gdp_client_secret = "your-client-secret"      # OAuth client secret
+gdp_mu_host       = ""                        # Guardium Managed Unit hostname or IP
