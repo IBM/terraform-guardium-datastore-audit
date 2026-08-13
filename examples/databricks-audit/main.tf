@@ -21,13 +21,13 @@ module "datastore-audit_databricks-audit" {
   uc_version = "uc1"
 
   # Event Hub Configuration
-  eventhub_namespace_name          = var.eventhub_namespace_name
-  eventhub_name                    = var.eventhub_name
+  eventhub_namespace_name                    = var.eventhub_namespace_name
+  eventhub_name                              = var.eventhub_name
   eventhub_authorization_rule_name           = var.eventhub_authorization_rule_name
   eventhub_namespace_authorization_rule_name = var.eventhub_namespace_authorization_rule_name
-  storage_account_name             = var.storage_account_name
-  consumer_group                   = var.consumer_group
-  diagnostic_setting_name          = var.diagnostic_setting_name
+  storage_account_name                       = var.storage_account_name
+  consumer_group                             = var.consumer_group
+  diagnostic_setting_name                    = var.diagnostic_setting_name
 
   # Guardium Configuration
   gdp_client_id     = var.gdp_client_id
