@@ -23,7 +23,7 @@ terraform {
 
     gdp-middleware-helper = {
       source  = "IBM/gdp-middleware-helper"
-      version = "1.3.0"
+      version = "1.3.9"
     }
 
     aws = {
