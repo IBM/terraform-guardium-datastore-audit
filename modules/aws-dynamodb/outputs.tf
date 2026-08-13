@@ -19,9 +19,9 @@ output "cloudwatch_log_group_arn" {
   # cross-region trails produce the correct ARN.
   value = (local.use_existing_cloudwatch_log_group && local.use_existing_cloudtrail) ? (
     "arn:aws:logs:${local.effective_log_group_region}:${module.common_aws-configuration.aws_account_id}:log-group:${var.existing_cloudwatch_log_group_name}"
-  ) : local.use_existing_cloudwatch_log_group ? (
+    ) : local.use_existing_cloudwatch_log_group ? (
     data.aws_cloudwatch_log_group.existing[0].arn
-  ) : (
+    ) : (
     aws_cloudwatch_log_group.dynamodb_monitoring[0].arn
   )
   description = "ARN of the CloudWatch Log Group"

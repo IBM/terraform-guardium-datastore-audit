@@ -30,8 +30,8 @@ locals {
   _s3_prefix = try(aws_s3_bucket.dynamodb_monitoring[0].bucket_prefix, "")
   ct_bucket = local.use_existing_cloudtrail ? [] : (
     local._s3_prefix == "" ?
-      ["${local._s3_arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] :
-      ["${local._s3_arn}/${local._s3_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
+    ["${local._s3_arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] :
+    ["${local._s3_arn}/${local._s3_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
   )
 
   # Format CloudWatch Logs Group ARN for the new CloudTrail resource only.
@@ -251,19 +251,19 @@ locals {
 
   # Generate the CSV content from the template
   udc_csv = templatefile("${path.module}/templates/dynamodbCloudwatch.tpl", {
-    udc_name              = local.udc_name_safe
-    credential_name       = var.udc_aws_credential
-    log_group_region      = local.effective_log_group_region
-    aws_log_group         = local.cloudwatch_log_group_name
-    aws_account_id        = module.common_aws-configuration.aws_account_id
-    start_position        = var.csv_start_position
-    interval              = var.csv_interval
-    event_filter          = var.csv_event_filter
-    description           = var.csv_description
-    endpoint              = var.endpoint
-    use_aws_bundled_ca    = var.use_aws_bundled_ca
-    unmask                = var.csv_unmask
-    deployed_collectors   = var.csv_deployed_collectors
+    udc_name            = local.udc_name_safe
+    credential_name     = var.udc_aws_credential
+    log_group_region    = local.effective_log_group_region
+    aws_log_group       = local.cloudwatch_log_group_name
+    aws_account_id      = module.common_aws-configuration.aws_account_id
+    start_position      = var.csv_start_position
+    interval            = var.csv_interval
+    event_filter        = var.csv_event_filter
+    description         = var.csv_description
+    endpoint            = var.endpoint
+    use_aws_bundled_ca  = var.use_aws_bundled_ca
+    unmask              = var.csv_unmask
+    deployed_collectors = var.csv_deployed_collectors
   })
 }
 
