@@ -23,15 +23,30 @@ locals {
   use_existing_cloudtrail           = var.existing_cloudtrail_name != ""
   use_existing_cloudwatch_log_group = var.existing_cloudwatch_log_group_name != ""
 
-  ct_bucket = !local.use_existing_cloudtrail && aws_s3_bucket.dynamodb_monitoring[0].bucket_prefix == "" ? ["${aws_s3_bucket.dynamodb_monitoring[0].arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] : !local.use_existing_cloudtrail ? ["${aws_s3_bucket.dynamodb_monitoring[0].arn}/${aws_s3_bucket.dynamodb_monitoring[0].bucket_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] : []
+  # ct_bucket is only referenced by aws_s3_bucket_policy and aws_cloudtrail, both of which
+  # are gated count = use_existing_cloudtrail ? 0 : 1.  Use try() so Terraform does not
+  # error when the bucket resource has count=0 and the index does not exist at plan time.
+  _s3_arn    = try(aws_s3_bucket.dynamodb_monitoring[0].arn, "")
+  _s3_prefix = try(aws_s3_bucket.dynamodb_monitoring[0].bucket_prefix, "")
+  ct_bucket = local.use_existing_cloudtrail ? [] : (
+    local._s3_prefix == "" ?
+    ["${local._s3_arn}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"] :
+    ["${local._s3_arn}/${local._s3_prefix}/AWSLogs/${module.common_aws-configuration.aws_account_id}/*"]
+  )
 
-  # Format CloudWatch Logs Group ARN for CloudTrail
-  formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "${data.aws_cloudwatch_log_group.existing[0].arn}:*" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
+  # Format CloudWatch Logs Group ARN for the new CloudTrail resource only.
+  # When reusing an existing CloudTrail the new trail is never created so this
+  # value is never evaluated — we do NOT query the existing log group via a data
+  # source because it may live in a different region than the table.
+  formatted_cloudwatch_logs_group_arn = local.use_existing_cloudwatch_log_group ? "" : "${aws_cloudwatch_log_group.dynamodb_monitoring[0].arn}:*"
 }
 
-# Data source for existing CloudWatch Log Group
+# Data source for existing CloudWatch Log Group — only used in the create-new path
+# to build the CloudWatch ARN needed by the new CloudTrail resource.
+# When existing_cloudtrail_name is set we skip this: the log group may live in
+# a different region and the new CloudTrail resource is never created anyway.
 data "aws_cloudwatch_log_group" "existing" {
-  count = local.use_existing_cloudwatch_log_group ? 1 : 0
+  count = (local.use_existing_cloudwatch_log_group && !local.use_existing_cloudtrail) ? 1 : 0
   name  = var.existing_cloudwatch_log_group_name
 }
 
@@ -224,24 +239,31 @@ resource "aws_cloudtrail" "dynamodb_monitoring" {
 }
 
 locals {
-  # Create a sanitized version of the UDC name for file paths
-  udc_name      = format("%s-%s-%s", var.aws_region, local.cloudwatch_log_group_name, module.common_aws-configuration.aws_account_id)
+  # The CloudWatch log group may live in a different region than the monitored table
+  # when an existing cross-region CloudTrail is reused. csv_log_group_region lets the
+  # caller override; it defaults to the table's region when not supplied.
+  effective_log_group_region = var.csv_log_group_region != "" ? var.csv_log_group_region : var.aws_region
+
+  # Build the UC profile name from the log-group region so the UC connector points
+  # at the correct CloudWatch endpoint.
+  udc_name      = format("%s-%s-%s", local.effective_log_group_region, local.cloudwatch_log_group_name, module.common_aws-configuration.aws_account_id)
   udc_name_safe = replace(local.udc_name, "/", "-")
 
   # Generate the CSV content from the template
   udc_csv = templatefile("${path.module}/templates/dynamodbCloudwatch.tpl", {
-    udc_name           = local.udc_name_safe
-    credential_name    = var.udc_aws_credential
-    aws_region         = var.aws_region
-    aws_log_group      = local.cloudwatch_log_group_name
-    aws_account_id     = module.common_aws-configuration.aws_account_id
-    start_position     = var.csv_start_position
-    interval           = var.csv_interval
-    event_filter       = var.csv_event_filter
-    description        = var.csv_description
-    cluster_name       = var.csv_cluster_name
-    endpoint           = var.endpoint
-    use_aws_bundled_ca = var.use_aws_bundled_ca
+    udc_name            = local.udc_name_safe
+    credential_name     = var.udc_aws_credential
+    log_group_region    = local.effective_log_group_region
+    aws_log_group       = local.cloudwatch_log_group_name
+    aws_account_id      = module.common_aws-configuration.aws_account_id
+    start_position      = var.csv_start_position
+    interval            = var.csv_interval
+    event_filter        = var.csv_event_filter
+    description         = var.csv_description
+    endpoint            = var.endpoint
+    use_aws_bundled_ca  = var.use_aws_bundled_ca
+    unmask              = var.csv_unmask
+    deployed_collectors = var.csv_deployed_collectors
   })
 }
 

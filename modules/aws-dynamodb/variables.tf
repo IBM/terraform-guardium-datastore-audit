@@ -117,6 +117,24 @@ variable "csv_cluster_name" {
   default     = ""
 }
 
+variable "csv_unmask" {
+  type        = bool
+  description = "Whether to unmask data in the UC profile"
+  default     = false
+}
+
+variable "csv_deployed_collectors" {
+  type        = string
+  description = "Comma-separated list of Guardium collector hostnames to deploy this profile to"
+  default     = ""
+}
+
+variable "csv_log_group_region" {
+  type        = string
+  description = "AWS region where the CloudWatch log group lives. Defaults to aws_region. Set this when reusing a trail whose log group is in a different region than the monitored table."
+  default     = ""
+}
+
 variable "dynamodb_tables" {
   type        = string
   description = "Comma separated list of DynamoDB tables to be monitored"

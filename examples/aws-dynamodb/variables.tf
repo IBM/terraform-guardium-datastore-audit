@@ -128,8 +128,20 @@ variable "csv_description" {
   default     = "DynamoDB Universal Connector"
 }
 
-variable "csv_cluster_name" {
-  description = "UDC Kafka Cluster name"
+variable "csv_unmask" {
+  description = "Whether to unmask data in the UC profile"
+  type        = bool
+  default     = false
+}
+
+variable "csv_deployed_collectors" {
+  description = "Comma-separated list of Guardium collector hostnames to deploy this profile to"
+  type        = string
+  default     = ""
+}
+
+variable "csv_log_group_region" {
+  description = "AWS region where the CloudWatch log group lives. Defaults to aws_region. Set when reusing a cross-region trail."
   type        = string
   default     = ""
 }
