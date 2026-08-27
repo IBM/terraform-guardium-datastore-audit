@@ -1,2 +1,2 @@
-profile_definition_name,name,description,credential_name,cluster_name,region,log_group,start_position,interval,event_filter,account_id,prefix,endpoint,use_aws_bundled_ca
-Dynamo over Cloudwatch_Logs,${udc_name},${description},${credential_name},${cluster_name},${aws_region},"${aws_log_group}",${start_position},${interval},${event_filter},${aws_account_id},false,${endpoint},${use_aws_bundled_ca}
+profile_definition_name,name,description,credential_name,region,log_group,prefix,start_position,interval,event_filter,account_id,unmask,endpoint,use_aws_bundled_ca,deployed_collectors
+Dynamo over Cloudwatch_Logs,${udc_name},${description},${credential_name},${log_group_region},"${aws_log_group}",false,${start_position},${interval},${event_filter},${aws_account_id},${unmask},${endpoint},${use_aws_bundled_ca},${deployed_collectors}

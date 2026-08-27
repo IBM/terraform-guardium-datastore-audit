@@ -43,9 +43,6 @@ module "datastore-audit_azure-cosmos-audit" {
   # Universal Connector Configuration
   enable_universal_connector = var.enable_universal_connector
   csv_start_position         = var.csv_start_position
-  csv_interval               = var.csv_interval
-  codec_pattern              = var.codec_pattern
-  csv_event_filter           = var.csv_event_filter
 
   # Event Hub Advanced Configuration
   config_mode     = var.config_mode

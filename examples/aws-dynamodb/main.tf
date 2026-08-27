@@ -38,9 +38,11 @@ module "datastore-audit_aws-dynamodb" {
   enable_universal_connector = var.enable_universal_connector
 
   # CSV Configuration
-  csv_start_position = var.csv_start_position
-  csv_interval       = var.csv_interval
-  csv_event_filter   = var.csv_event_filter
-  csv_description    = var.csv_description
-  csv_cluster_name   = var.csv_cluster_name
+  csv_start_position      = var.csv_start_position
+  csv_interval            = var.csv_interval
+  csv_event_filter        = var.csv_event_filter
+  csv_description         = var.csv_description
+  csv_unmask              = var.csv_unmask
+  csv_deployed_collectors = var.csv_deployed_collectors
+  csv_log_group_region    = var.csv_log_group_region
 }

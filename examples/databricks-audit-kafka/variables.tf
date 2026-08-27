@@ -1,5 +1,5 @@
 #
-# Copyright IBM Corp. 2025
+# Copyright IBM Corp. 2026
 # SPDX-License-Identifier: Apache-2.0
 #
 
@@ -15,24 +15,29 @@ variable "azure_region" {
 
 variable "resource_group_name" {
   type        = string
-  description = "Name of the Azure resource group containing the Cosmos DB account"
+  description = "Name of the Azure resource group containing the Databricks workspace and Event Hub"
 }
 
-variable "cosmos_account_name" {
+variable "databricks_workspace_name" {
   type        = string
-  description = "Name of the Azure Cosmos DB account to be monitored"
+  description = "Name of the Azure Databricks workspace to be monitored (Unity Catalog enabled)"
+}
+
+variable "databricks_workspace_resource_id" {
+  type        = string
+  description = "Full Azure resource ID of the Databricks workspace"
+}
+
+variable "azure_enrollment_id" {
+  type        = string
+  description = "Azure Enrollment ID"
+  default     = ""
 }
 
 variable "tags" {
   type        = map(string)
   description = "Map of tags to apply to resources"
   default     = {}
-}
-
-variable "azure_enrollment_id" {
-  type        = string
-  description = "Azure Enrollment ID (optional)"
-  default     = ""
 }
 
 //////
@@ -51,7 +56,13 @@ variable "eventhub_name" {
 
 variable "eventhub_authorization_rule_name" {
   type        = string
-  description = "Name of the Event Hub namespace authorization rule"
+  description = "Name of the hub-level authorization rule for the UC connection string"
+  default     = "RootManageSharedAccessKey"
+}
+
+variable "eventhub_namespace_authorization_rule_name" {
+  type        = string
+  description = "Name of the namespace-level authorization rule for the Azure Monitor diagnostic setting"
   default     = "RootManageSharedAccessKey"
 }
 
@@ -66,44 +77,10 @@ variable "consumer_group" {
   default     = "$Default"
 }
 
-//////
-// Diagnostic Settings variables
-//////
-
 variable "diagnostic_setting_name" {
   type        = string
-  description = "Name of the diagnostic setting"
-  default     = "cosmos-audit-to-eventhub"
-}
-
-variable "enable_data_plane_logs" {
-  type        = bool
-  description = "Enable DataPlaneRequests logs (CRUD operations)"
-  default     = true
-}
-
-variable "enable_query_runtime_logs" {
-  type        = bool
-  description = "Enable QueryRuntimeStatistics logs"
-  default     = true
-}
-
-variable "enable_control_plane_logs" {
-  type        = bool
-  description = "Enable ControlPlaneRequests logs (management operations)"
-  default     = true
-}
-
-variable "enable_partition_key_logs" {
-  type        = bool
-  description = "Enable PartitionKeyStatistics logs"
-  default     = false
-}
-
-variable "enable_partition_ru_logs" {
-  type        = bool
-  description = "Enable PartitionKeyRUConsumption logs"
-  default     = false
+  description = "Name of the Azure Monitor diagnostic setting"
+  default     = "databricks-uc2-audit-to-eventhub"
 }
 
 //////
@@ -165,6 +142,24 @@ variable "csv_start_position" {
   default     = "end"
 }
 
+variable "udc_name" {
+  type        = string
+  description = "Override name for the Universal Connector profile. If not provided, defaults to {databricks_workspace_name}-databricks-{subscription_id}."
+  default     = ""
+}
+
+variable "udc_description" {
+  type        = string
+  description = "Optional description for the Universal Connector profile"
+  default     = ""
+}
+
+variable "udc_credential" {
+  type        = string
+  description = "Name of the credential configured in Guardium CM for this Universal Connector"
+  default     = ""
+}
+
 //////
 // Event Hub Advanced Configuration
 //////
@@ -185,4 +180,44 @@ variable "decorate_events" {
   type        = bool
   description = "Whether to decorate events with Event Hub metadata"
   default     = true
+}
+
+//////
+// UC 2.0-specific variables
+//////
+
+variable "gdp_cluster_name" {
+  type        = string
+  description = "Guardium cluster/group name to assign the UC 2.0 profile to. Must already exist in Guardium CM. Leave empty to not assign to a cluster."
+  default     = ""
+}
+
+variable "mu_count" {
+  type        = number
+  description = "Number of Managed Units to deploy the UC 2.0 profile to"
+  default     = 2
+}
+
+variable "use_elb" {
+  type        = bool
+  description = "Whether to use ELB (UC 2.0)"
+  default     = false
+}
+
+variable "eventhub_partition_count" {
+  type        = number
+  description = "Number of Event Hub partitions (UC 2.0)"
+  default     = 4
+}
+
+variable "start_time" {
+  type        = number
+  description = "Start time as epoch in milliseconds (UC 2.0, 0 = disabled)"
+  default     = 0
+}
+
+variable "nodata_threshold_min" {
+  type        = number
+  description = "No data threshold in minutes (UC 2.0)"
+  default     = 60
 }

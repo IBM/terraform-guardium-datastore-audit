@@ -94,15 +94,6 @@ enable_universal_connector = true
 # Start position for UDC (beginning or end)
 csv_start_position = "end"
 
-# Polling interval for UDC in seconds
-csv_interval = "5"
-
-# UDC Event filters (optional)
-csv_event_filter = ""
-
-# Codec pattern for the Universal Connector (optional)
-codec_pattern = ""
-
 #------------------------------------------------------------------------------
 # Tags
 #------------------------------------------------------------------------------
