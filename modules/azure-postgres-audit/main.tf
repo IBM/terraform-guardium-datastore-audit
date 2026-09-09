@@ -163,7 +163,7 @@ locals {
 }
 
 module "common_azure-eventhub-registration" {
-  source = "IBM/common/guardium//modules/azure-eventhub-registration"
+  source  = "IBM/common/guardium//modules/azure-eventhub-registration"
   version = "= 1.6.1"
 
   # Profile Configuration

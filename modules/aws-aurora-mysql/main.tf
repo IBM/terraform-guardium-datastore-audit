@@ -15,12 +15,12 @@ locals {
 }
 
 module "common_aws-configuration" {
-  source = "IBM/common/guardium//modules/aws-configuration"
+  source  = "IBM/common/guardium//modules/aws-configuration"
   version = "= 1.6.1"
 }
 
 module "common_aurora-mysql-parameter-group" {
-  source = "IBM/common/guardium//modules/aurora-mysql-parameter-group"
+  source  = "IBM/common/guardium//modules/aurora-mysql-parameter-group"
   version = "= 1.6.1"
 
   aurora_mysql_cluster_identifier = var.aurora_mysql_cluster_identifier
@@ -56,7 +56,7 @@ locals {
 
 module "gdp_connect-datasource-to-uc" {
   source         = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  version         = "= 1.3.3"
+  version        = "= 1.3.3"
   count          = var.enable_universal_connector && var.log_export_type == "Cloudwatch" ? 1 : 0
   udc_name       = local.udc_name_safe
   udc_csv_parsed = local.aurora_mysql_csv
