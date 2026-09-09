@@ -6,7 +6,8 @@
 # AWS S3 Universal Connector Module (using CloudTrail)
 
 module "aws_configuration" {
-  source = "IBM/common/guardium//modules/aws-configuration"
+  source  = "IBM/common/guardium//modules/aws-configuration"
+  version = "= 1.6.1"
 }
 
 locals {
@@ -234,8 +235,9 @@ locals {
 
 # Universal Connector module
 module "universal_connector" {
-  source = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  count  = var.enable_universal_connector ? 1 : 0
+  source  = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
+  version = "= 1.3.3"
+  count   = var.enable_universal_connector ? 1 : 0
 
   udc_name       = local.udc_name_safe
   udc_csv_parsed = local.udc_csv

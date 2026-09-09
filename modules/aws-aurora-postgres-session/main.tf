@@ -8,7 +8,8 @@ locals {
 }
 
 module "aws_configuration" {
-  source = "IBM/common/guardium//modules/aws-configuration"
+  source  = "IBM/common/guardium//modules/aws-configuration"
+  version = "= 1.6.1"
 }
 
 data "aws_rds_cluster" "cluster_metadata" {
@@ -17,6 +18,7 @@ data "aws_rds_cluster" "cluster_metadata" {
 
 module "aurora-postgres-parameter-group" {
   source                             = "IBM/common/guardium//modules/aurora-postgres-parameter-group"
+  version                            = "= 1.6.1"
   pg_audit_log                       = var.pg_audit_log
   pg_audit_role                      = "" # Not used in session auditing
   force_failover                     = var.force_failover
@@ -26,8 +28,9 @@ module "aurora-postgres-parameter-group" {
 }
 
 module "aurora-postgres-sqs-registration" {
-  count  = var.log_export_type == "SQS" ? 1 : 0
-  source = "IBM/common/guardium//modules/aurora-postgres-sqs-registration"
+  count   = var.log_export_type == "SQS" ? 1 : 0
+  source  = "IBM/common/guardium//modules/aurora-postgres-sqs-registration"
+  version = "= 1.6.1"
 
   aws_account_id                     = module.aws_configuration.aws_account_id
   gdp_client_id                      = var.gdp_client_id
@@ -46,8 +49,9 @@ module "aurora-postgres-sqs-registration" {
 }
 
 module "aurora-postgres-cloudwatch-registration" {
-  count  = var.log_export_type == "Cloudwatch" ? 1 : 0
-  source = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
+  count   = var.log_export_type == "Cloudwatch" ? 1 : 0
+  source  = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
+  version = "= 1.6.1"
 
   aws_region                         = var.aws_region
   aws_account_id                     = module.aws_configuration.aws_account_id
