@@ -26,7 +26,7 @@ data "azurerm_storage_account" "audit" {
 # Call audit settings common module
 module "common_azure-sql-audit-settings" {
   source  = "IBM/common/guardium//modules/azure-sql-audit-settings"
-  version = "= 1.6.1"
+  version = "= 1.6.1-beta"
 
   sql_server_name      = var.sql_server_name
   sql_database_name    = var.sql_database_name
@@ -61,7 +61,7 @@ locals {
 
 module "common_azure-sql-jdbc-registration" {
   source  = "IBM/common/guardium//modules/azure-sql-jdbc-registration"
-  version = "= 1.6.1"
+  version = "= 1.6.1-beta"
 
   # Azure Configuration
   azure_region          = var.azure_region
