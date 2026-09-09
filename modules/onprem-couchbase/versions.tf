@@ -8,11 +8,11 @@ terraform {
   required_providers {
     guardium-data-protection = {
       source  = "IBM/guardium-data-protection"
-      version = ">= 1.0.0"
+      version = "= 1.5.2"
     }
     gdp-middleware-helper = {
       source  = "IBM/gdp-middleware-helper"
-      version = ">= 1.0.0"
+      version = "= 1.5.2"
     }
     null = {
       source  = "hashicorp/null"
