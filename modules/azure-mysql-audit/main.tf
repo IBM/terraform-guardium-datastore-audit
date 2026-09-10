@@ -134,7 +134,7 @@ locals {
 
 module "common_azure-eventhub-registration" {
   source  = "IBM/common/guardium//modules/azure-eventhub-registration"
-  version = "= 1.6.1-beta"
+  version = "= 1.6.2"
 
   # Profile Configuration
   profile_definition_name = "Azure MySQL over Event Hub"

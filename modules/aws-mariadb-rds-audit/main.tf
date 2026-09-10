@@ -12,12 +12,12 @@ locals {
 
 module "common_aws-configuration" {
   source  = "IBM/common/guardium//modules/aws-configuration"
-  version = "= 1.6.1-beta"
+  version = "= 1.6.2"
 }
 
 module "common_rds-mariadb-mysql-parameter-group" {
   source  = "IBM/common/guardium//modules/rds-mariadb-mysql-parameter-group"
-  version = "= 1.6.1-beta"
+  version = "= 1.6.2"
 
   db_engine               = "mariadb"
   rds_cluster_identifier  = var.mariadb_rds_cluster_identifier
@@ -36,7 +36,7 @@ module "common_rds-mariadb-mysql-parameter-group" {
 module "common_rds-mariadb-mysql-cloudwatch-registration" {
   count   = var.log_export_type == "Cloudwatch" ? 1 : 0
   source  = "IBM/common/guardium//modules/rds-mariadb-mysql-cloudwatch-registration"
-  version = "= 1.6.1-beta"
+  version = "= 1.6.2"
 
   db_engine                  = "mariadb"
   rds_cluster_identifier     = var.mariadb_rds_cluster_identifier

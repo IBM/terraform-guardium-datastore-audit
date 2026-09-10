@@ -61,7 +61,7 @@ resource "google_pubsub_topic_iam_member" "alloydb_audit_sink_publisher" {
 # Module to register AlloyDB with Guardium via Pub/Sub
 module "alloydb-pubsub-registration" {
   source  = "IBM/common/guardium//modules/alloydb-pubsub-registration"
-  version = "= 1.6.1-beta"
+  version = "= 1.6.2"
 
   # GCP Configuration
   gcp_project_id         = var.gcp_project_id
