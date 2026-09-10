@@ -12,7 +12,7 @@ locals {
 
 module "aws_configuration" {
   source  = "IBM/common/guardium//modules/aws-configuration"
-  version = "= 1.6.1"
+  version = "1.6.2"
 }
 
 locals {
@@ -21,7 +21,7 @@ locals {
 
 module "aurora-postgres-parameter-group" {
   source                             = "IBM/common/guardium//modules/aurora-postgres-parameter-group"
-  version                            = "= 1.6.1"
+  version                            = "1.6.2"
   pg_audit_log                       = "none"        # For object auditing, we don't use session logging
   pg_audit_role                      = "rds_pgaudit" # Use the dedicated audit role
   force_failover                     = var.force_failover
@@ -64,7 +64,7 @@ resource "postgresql_grant" "table_permissions" {
 module "aurora-postgres-sqs-registration" {
   count   = var.log_export_type == "SQS" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-sqs-registration"
-  version = "= 1.6.1"
+  version = "1.6.2"
 
   aws_account_id                     = local.aws_account_id
   gdp_client_id                      = var.gdp_client_id
@@ -85,7 +85,7 @@ module "aurora-postgres-sqs-registration" {
 module "aurora-postgres-cloudwatch-registration" {
   count   = var.log_export_type == "Cloudwatch" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
-  version = "= 1.6.1"
+  version = "1.6.2"
 
   aws_region                         = var.aws_region
   aws_account_id                     = local.aws_account_id

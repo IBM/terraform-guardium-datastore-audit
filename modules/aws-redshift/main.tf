@@ -10,7 +10,7 @@ data "aws_caller_identity" "current" {}
 
 module "common_aws-configuration" {
   source  = "IBM/common/guardium//modules/aws-configuration"
-  version = "= 1.6.1"
+  version = "1.6.2"
 }
 
 locals {
