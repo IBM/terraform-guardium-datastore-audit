@@ -166,7 +166,7 @@ resource "null_resource" "configure_logging" {
 # Universal Connector module - using local for testing
 module "gdp_connect-datasource-to-uc" {
   source  = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  version = "= 1.3.3"
+  version = "1.3.4"
   count   = var.enable_universal_connector ? 1 : 0 # Skip creation when disabled
 
   udc_name       = local.udc_name_safe
