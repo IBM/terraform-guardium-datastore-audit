@@ -7,7 +7,7 @@ locals {
 
 module "common_aws-configuration" {
   source  = "IBM/common/guardium//modules/aws-configuration"
-  version = "= 1.6.1"
+  version = "1.6.2"
 }
 
 data "aws_db_instance" "cluster_metadata" {
@@ -16,7 +16,7 @@ data "aws_db_instance" "cluster_metadata" {
 
 module "common_rds-postgres-parameter-group" {
   source                          = "IBM/common/guardium//modules/rds-postgres-parameter-group"
-  version                         = "= 1.6.1"
+  version                         = "1.6.2"
   pg_audit_log                    = "all, -misc"
   pg_audit_role                   = ""
   force_failover                  = var.force_failover
@@ -28,7 +28,7 @@ module "common_rds-postgres-parameter-group" {
 module "common_rds-postgres-sqs-registration" {
   count   = var.log_export_type == "SQS" ? 1 : 0
   source  = "IBM/common/guardium//modules/rds-postgres-sqs-registration"
-  version = "= 1.6.1"
+  version = "1.6.2"
 
   aws_account_id     = local.aws_account_id
   gdp_client_id      = var.gdp_client_id
@@ -44,7 +44,7 @@ module "common_rds-postgres-sqs-registration" {
 module "common_rds-postgres-cloudwatch-registration" {
   count   = var.log_export_type == "Cloudwatch" ? 1 : 0
   source  = "IBM/common/guardium//modules/rds-postgres-cloudwatch-registration"
-  version = "= 1.6.1"
+  version = "1.6.2"
 
   aws_region          = var.aws_region
   aws_account_id      = local.aws_account_id
