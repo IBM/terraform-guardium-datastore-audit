@@ -38,6 +38,9 @@ These examples use the **legacy Logstash-based Universal Connector on the Guardi
 |-----------|------------------|--------------|-----------------|
 | AWS OpenSearch | [amazon-opensearch-audit-kafka](examples/amazon-opensearch-audit-kafka) | OpenSearch Audit Logs | CloudWatch Logs |
 | Azure Databricks | [databricks-audit-kafka](examples/databricks-audit-kafka) | Diagnostic Settings | Azure Event Hub |
+| AWS Aurora PostgreSQL (Object) | [aws-aurora-postgres-object-kafka](examples/aws-aurora-postgres-object-kafka) | pgAudit (Object-Level) | CloudWatch Logs |
+| AWS Aurora PostgreSQL (Session) | [aws-aurora-postgres-session-kafka](examples/aws-aurora-postgres-session-kafka) | pgAudit (Session-Level) | CloudWatch Logs |
+| Snowflake | [snowflake-audit-kafka](examples/snowflake-audit-kafka) | QUERY_HISTORY / LOGIN_HISTORY | JDBC polling (Snowflake Over JDBC Connect 2.0) |
 
 ## Architecture
 
