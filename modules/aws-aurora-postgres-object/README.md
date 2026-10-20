@@ -1,6 +1,6 @@
 # AWS Aurora PostgreSQL Object-Level Audit Configuration
 
-This module configures object-level auditing for Aurora PostgreSQL clusters using the pgAudit extension. It allows you to monitor specific tables and operations by creating a dedicated audit role and granting it permissions on selected tables. It uses the legacy Logstash-based Universal Connector on Central Manager.
+This module configures object-level auditing for Aurora PostgreSQL clusters using the pgAudit extension. It allows you to monitor specific tables and operations by creating a dedicated audit role and granting it permissions on selected tables. The module supports both legacy Logstash-based (on Central Manager) and Kafka-based Universal Connector modes through the `uc_mode` variable.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 
@@ -96,7 +96,7 @@ module "aurora_postgresql_object_audit" {
 | skip_reboot | Skip automatic reboot (audit logging won't work until manual reboot) | bool | false |
 | db_port | The port of the Aurora PostgreSQL cluster | number | 5432 |
 | db_name | The database to connect to | string | "postgres" |
-| udc_name | Name for universal connector | string | "aurora-postgres-object" |
+| udc_name | Override name for the Kafka universal connector profile. Defaults to `{aws_region}-{aurora_postgres_cluster_identifier}-{aws_account_id}` | string | "" |
 | gdp_port | Port of Guardium Central Manager | string | "8443" |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | string | "" |
 | enable_universal_connector | Whether to enable the universal connector module | bool | true |
