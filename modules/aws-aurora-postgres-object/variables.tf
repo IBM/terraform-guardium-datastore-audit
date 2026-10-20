@@ -77,8 +77,8 @@ variable "ssl_mode" {
 //////
 variable "udc_name" {
   type        = string
-  description = "Name for universal connector. Is used for all aws objects"
-  default     = "aurora-postgres-object"
+  description = "Override name for the Kafka universal connector profile. Defaults to {aws_region}-{aurora_postgres_cluster_identifier}-{aws_account_id}"
+  default     = ""
 }
 
 variable "udc_aws_credential" {
@@ -130,37 +130,134 @@ variable "gdp_mu_host" {
 // Universal Connector Control
 //////
 
+variable "enable_audit_setup" {
+  type        = bool
+  description = "Whether to configure pgAudit on the cluster (parameter group, role, and table grants). Set to false to skip audit logging setup and only manage the Universal Connector."
+  default     = true
+}
+
 variable "enable_universal_connector" {
   type        = bool
   description = "Whether to enable the universal connector module. Set to false to completely disable the universal connector for a run."
   default     = true
 }
 
+variable "uc_mode" {
+  type        = string
+  description = "Universal Connector mode: 'cloudwatch', 'sqs', or 'kafka'"
+  default     = "cloudwatch"
+
+  validation {
+    condition     = contains(["cloudwatch", "sqs", "kafka"], var.uc_mode)
+    error_message = "uc_mode must be one of: 'cloudwatch', 'sqs', 'kafka'."
+  }
+}
+
+variable "udc_description" {
+  type        = string
+  description = "Description for the Universal Connector profile"
+  default     = ""
+}
+
 variable "csv_start_position" {
   type        = string
-  description = "Start position for UDC"
+  description = "Start position for UDC (used when uc_mode is 'cloudwatch' or 'sqs')"
   default     = "end"
 }
 
 variable "csv_interval" {
   type        = string
-  description = "Polling interval for UDC"
+  description = "Polling interval for UDC (used when uc_mode is 'cloudwatch' or 'sqs')"
   default     = "5"
 }
 
 variable "csv_event_filter" {
   type        = string
-  description = "UDC Event filters"
+  description = "UDC Event filters (used when uc_mode is 'cloudwatch' or 'sqs')"
   default     = ""
 }
 
 variable "log_export_type" {
-  description = "The type of log exporting to be configured. Options SQS, Cloudwatch"
-  default     = "SQS"
+  description = "The type of log exporting to be configured. Options SQS, Cloudwatch. Ignored when uc_mode is 'kafka'."
+  default     = "Cloudwatch"
 
   validation {
     condition     = var.log_export_type == "SQS" || var.log_export_type == "Cloudwatch"
     error_message = "log_export_type must be 'SQS' or 'Cloudwatch'"
+  }
+}
+
+//////
+// Kafka-specific UC variables
+//////
+
+variable "kafka_cluster_name" {
+  type        = string
+  description = "Kafka cluster name configured in Guardium (used when uc_mode is 'kafka')"
+  default     = "kafka"
+}
+
+variable "use_elb" {
+  type        = bool
+  description = "Whether to use ELB for Kafka-based UC"
+  default     = false
+}
+
+variable "event_delay" {
+  type        = number
+  description = "Event delay in minutes for Kafka-based UC"
+  default     = 15
+}
+
+variable "nodata_threshold_min" {
+  type        = number
+  description = "No data threshold in minutes for Kafka-based UC"
+  default     = 60
+}
+
+variable "unmask" {
+  type        = bool
+  description = "Whether to unmask sensitive data in audit logs"
+  default     = false
+}
+
+variable "filter_pattern" {
+  type        = string
+  description = "CloudWatch Logs filter pattern for filtering audit logs"
+  default     = "None"
+}
+
+variable "poll_interval_sec" {
+  type        = number
+  description = "Poll interval seconds component (0-59) for Kafka-based UC. Added to poll_interval (minutes)"
+  default     = 30
+
+  validation {
+    condition     = var.poll_interval_sec >= 0 && var.poll_interval_sec <= 59 && var.poll_interval_sec == floor(var.poll_interval_sec)
+    error_message = "poll_interval_sec must be a whole number between 0 and 59."
+  }
+}
+
+variable "poll_interval" {
+  type        = number
+  description = "Poll interval in minutes for Kafka-based UC"
+  default     = 0
+}
+
+variable "event_limit" {
+  type        = number
+  description = "Maximum number of events to retrieve per poll for Kafka-based UC"
+  default     = 1000
+}
+
+variable "timestamp_start" {
+  type        = string
+  description = "The date and time from which the connector starts polling, in UTC ISO 8601 with milliseconds, e.g. 2026-10-19T21:17:05.000Z. Leave empty to start from the current time"
+  default     = ""
+
+  validation {
+    condition     = can(regex("^([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z)?$", var.timestamp_start))
+    error_message = "timestamp_start must be empty or UTC ISO 8601 with milliseconds, e.g. 2026-10-19T21:17:05.000Z."
   }
 }
 
