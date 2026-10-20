@@ -122,7 +122,7 @@ terraform apply
 | gdp_client_id | Guardium OAuth client ID | `string` | n/a | yes |
 | gdp_client_secret | Guardium OAuth client secret | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
-| enable_audit_setup | Whether to configure pgAudit on the cluster (parameter group). Set to false to only manage the Universal Connector | `bool` | `false` | no |
+| enable_audit_setup | Whether to configure pgAudit on the cluster (parameter group). Set to false to only manage the Universal Connector | `bool` | `true` | no |
 | enable_universal_connector | Whether to enable the universal connector module | `bool` | `true` | no |
 | kafka_cluster_name | Kafka cluster name configured in Guardium | `string` | `"kafka"` | no |
 | use_elb | Whether to use ELB for Kafka-based UC | `bool` | `false` | no |

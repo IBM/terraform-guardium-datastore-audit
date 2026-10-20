@@ -116,12 +116,6 @@ variable "gdp_mu_host" {
 // Universal Connector Control
 //////
 
-variable "enable_audit_setup" {
-  type        = bool
-  description = "Whether to configure pgAudit on the cluster (parameter group, role, and table grants). Set to false to skip audit logging setup and only manage the Universal Connector."
-  default     = false
-}
-
 variable "enable_universal_connector" {
   type        = bool
   description = "Whether to enable the universal connector module. Set to false to completely disable the universal connector for a run."

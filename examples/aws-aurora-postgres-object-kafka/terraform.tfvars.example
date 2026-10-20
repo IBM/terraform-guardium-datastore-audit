@@ -63,9 +63,9 @@ gdp_mu_host = "mu1.guardium.example.com,mu2.guardium.example.com"
 # =====================================================================
 # UNIVERSAL CONNECTOR CONFIGURATION
 # =====================================================================
-# Whether to configure pgAudit on the cluster (parameter group, role, and table grants).
-# Set to true to enable audit logging setup (parameter group, pgaudit role, and table grants).
-enable_audit_setup = false
+# Whether to configure pgAudit on the cluster (parameter group, role, and table grants). Defaults to true.
+# Set to false to skip audit logging setup and only manage the Universal Connector.
+enable_audit_setup = true
 
 # Whether to enable the Universal Connector (set to false to disable)
 enable_universal_connector = true
