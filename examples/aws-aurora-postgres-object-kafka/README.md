@@ -93,34 +93,9 @@ aws rds describe-db-clusters --query "DBClusters[*].DBClusterIdentifier" --outpu
 terraform init
 ```
 
-### 3. Import the Existing Cluster Parameter Group
+### 3. Apply the Configuration
 
-**Option A: Automated Import (Recommended)**
-
-The module includes automated parameter group detection. When you run `terraform plan`, the module will:
-- Query your existing Aurora PostgreSQL cluster to discover the current cluster parameter group
-- Automatically handle the import if it exists
-- Prevent "parameter group already exists" errors
-
-**Option B: Manual Import**
-
-If you prefer to import manually or encounter issues with automated import:
-
-**Find your cluster's parameter group:**
-
-```bash
-aws rds describe-db-clusters \
-  --db-cluster-identifier <your-cluster-identifier> \
-  --query "DBClusters[0].DBClusterParameterGroup" \
-  --output text
-```
-
-**Import the parameter group:**
-```bash
-terraform import 'module.aurora_postgres_object_audit_kafka.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium' <parameter-group-name>
-```
-
-### 4. Apply the Configuration
+Run `terraform apply` to create the resources. Any existing custom parameter group will be detected and imported automatically via [`imports.tf`](./imports.tf):
 
 ```bash
 terraform apply
@@ -130,7 +105,7 @@ Review the planned changes and type `yes` to apply them.
 
 **Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
-### 5. Verify the Configuration
+### 4. Verify the Configuration
 
 After successful application:
 
@@ -232,13 +207,12 @@ For the standard polling-based approach, see the [aws-aurora-postgres-object](..
 
 ## Troubleshooting
 
-### Parameter Group Import Issues
+### Parameter Group Issues
 
-If you encounter errors during the import step:
-- Verify the parameter group name is correct
-- Ensure you have the necessary AWS permissions
+If you encounter errors related to parameter groups:
+- Ensure `terraform.tfvars` is configured with the correct `aurora_postgres_cluster_identifier`
+- Ensure your AWS credentials have permissions to read and modify RDS cluster parameter groups
 - Check that the parameter group is associated with your Aurora cluster
-- **Most importantly**: Ensure `terraform.tfvars` is configured BEFORE running import
 
 ### Connection Issues
 

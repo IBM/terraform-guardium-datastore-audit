@@ -64,9 +64,12 @@ data "gdp-middleware-helper_postgres_role_check" "aurora_pgaudit_exists" {
 }
 
 resource "postgresql_role" "aurora_pgaudit" {
-  count = var.enable_audit_setup && !try(data.gdp-middleware-helper_postgres_role_check.aurora_pgaudit_exists[0].exists, true) ? 1 : 0
+  count = var.enable_audit_setup && !try(data.gdp-middleware-helper_postgres_role_check.aurora_pgaudit_exists[0].exists, false) ? 1 : 0
   name  = local.pg_audit_user
   login = false
+
+  # Wait for the parameter group change and cluster reboot before touching the database
+  depends_on = [module.aurora-postgres-parameter-group]
 }
 
 # Grant permissions on tables based on the tables variable
@@ -81,7 +84,8 @@ resource "postgresql_grant" "table_permissions" {
   objects     = [each.value.table]
   privileges  = each.value.grants
 
-  depends_on = [postgresql_role.aurora_pgaudit]
+  # Also depend on the parameter group module so grants run after the reboot even when the role already exists
+  depends_on = [postgresql_role.aurora_pgaudit, module.aurora-postgres-parameter-group]
 }
 
 module "aurora-postgres-sqs-registration" {
