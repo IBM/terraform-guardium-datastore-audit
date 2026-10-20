@@ -1,0 +1,168 @@
+# AWS Aurora PostgreSQL with Session-Level Auditing (Kafka-based UC)
+
+This example demonstrates how to configure AWS Aurora PostgreSQL with Guardium Universal Connector using session-level auditing and a Kafka-based Universal Connector.
+
+## Architecture
+
+```text
+┌──────────────────────┐     ┌──────────────────────┐     ┌──────────────────────┐
+│                      │     │                      │     │                      │
+│  Aurora PostgreSQL   │────►│  CloudWatch Logs     │────►│  Guardium Kafka-     │
+│  Cluster             │     │  (pgAudit Logs)      │     │  based UC            │
+│                      │     │                      │     │                      │
+└──────────────────────┘     └──────────────────────┘     └──────────────────────┘
+                                                                   │
+                                                                   ▼
+                                                          ┌──────────────────────┐
+                                                          │                      │
+                                                          │  Guardium Data       │
+                                                          │  Protection          │
+                                                          │                      │
+                                                          └──────────────────────┘
+```
+
+## Data Flow
+
+1. Session-level pgAudit logging is enabled on the Aurora PostgreSQL cluster via a cluster parameter group.
+2. Audit logs are published to CloudWatch Logs.
+3. Guardium Kafka-based Universal Connector reads the CloudWatch audit log stream.
+4. Guardium processes and analyzes the Aurora PostgreSQL audit activity.
+
+## Overview
+
+Session-level auditing logs all statements of the classes configured in `pg_audit_log` for every session. This example:
+
+1. Configures the Aurora cluster parameter group with pgAudit session logging (`pg_audit_log`)
+2. Enables CloudWatch log export for the cluster
+3. Configures a Kafka-based Guardium Universal Connector by setting `uc_mode = "kafka"` in the module
+
+## Prerequisites
+
+1. **AWS Resources**:
+   - An existing Aurora PostgreSQL cluster with pgAudit extension available
+   - AWS credentials configured for Terraform
+
+2. **Guardium Data Protection**:
+   - A running Guardium Data Protection instance (version 12.2.1 or above)
+   - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
+      - OAuth client registered via `grdapi register_oauth_client`
+      - AWS credentials configured in Guardium Data Protection
+   - A Kafka cluster configured in Guardium
+   - One or more Guardium Managed Units available for UC deployment
+
+## Usage
+
+### 1. Create a terraform.tfvars File
+
+```bash
+cp terraform.tfvars.example terraform.tfvars
+```
+
+**CRITICAL**: Fill in ALL required values before proceeding:
+- **`aurora_postgres_cluster_identifier`** - CANNOT be empty
+- All Guardium connection details
+- **`kafka_cluster_name`** - Must match a Kafka cluster already configured in Guardium
+
+To find your cluster identifier:
+```bash
+aws rds describe-db-clusters --query "DBClusters[*].DBClusterIdentifier" --output text
+```
+
+### 2. Initialize Terraform
+
+```bash
+terraform init
+```
+
+### 3. Parameter Group Import
+
+`imports.tf` automatically imports the cluster's existing (non-default) parameter group during `terraform plan`/`apply`.
+
+To import manually instead:
+
+```bash
+aws rds describe-db-clusters \
+  --db-cluster-identifier <your-cluster-identifier> \
+  --query "DBClusters[0].DBClusterParameterGroup" \
+  --output text
+
+terraform import 'module.aurora_postgres_session_audit_kafka.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium' <parameter-group-name>
+```
+
+### 4. Apply the Configuration
+
+```bash
+terraform apply
+```
+
+**Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
+
+### 5. Verify the Configuration
+
+1. Log in to Guardium Data Protection.
+2. Navigate to **Universal Connector** → **Datasource Profile Management**.
+3. Verify that the Kafka-based Aurora PostgreSQL datasource profile has been created.
+4. Confirm the profile is deployed to the expected managed units.
+
+## Input Variables
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| aws_region | AWS region where the Aurora cluster is deployed | `string` | n/a | yes |
+| aurora_postgres_cluster_identifier | Aurora PostgreSQL cluster identifier to be monitored | `string` | n/a | yes |
+| force_failover | Force failover when applying parameter changes (requires Multi-AZ) | `bool` | `true` | no |
+| skip_reboot | Skip automatic reboot after parameter changes | `bool` | `true` | no |
+| pg_audit_log | PGAudit log configuration for session auditing | `string` | `"all, -misc"` | no |
+| udc_name | Name for universal connector | `string` | `"aurora-postgres-gdp-session-kafka"` | no |
+| udc_aws_credential | Name of AWS credential defined in Guardium | `string` | n/a | yes |
+| gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a | yes |
+| gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
+| gdp_username | Username of Guardium Web UI user | `string` | n/a | yes |
+| gdp_password | Password of Guardium Web UI user | `string` | n/a | yes |
+| gdp_client_id | Guardium OAuth client ID | `string` | n/a | yes |
+| gdp_client_secret | Guardium OAuth client secret | `string` | n/a | yes |
+| gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
+| enable_audit_setup | Whether to configure pgAudit on the cluster (parameter group). Set to false to only manage the Universal Connector | `bool` | `false` | no |
+| enable_universal_connector | Whether to enable the universal connector module | `bool` | `true` | no |
+| kafka_cluster_name | Kafka cluster name configured in Guardium | `string` | `"kafka"` | no |
+| use_elb | Whether to use ELB for Kafka-based UC | `bool` | `false` | no |
+| event_delay | Event delay in minutes for Kafka-based UC | `number` | `15` | no |
+| nodata_threshold_min | No data threshold in minutes for Kafka-based UC | `number` | `60` | no |
+| unmask | Whether to unmask sensitive data in audit logs | `bool` | `false` | no |
+| filter_pattern | CloudWatch Logs filter pattern for filtering audit logs | `string` | `"None"` | no |
+| poll_interval | Poll interval in minutes for Kafka-based UC | `number` | `1` | no |
+| event_limit | Maximum number of events to retrieve per poll for Kafka-based UC | `number` | `1000` | no |
+| start_time | Start time as epoch in milliseconds for Kafka-based UC (0 = disabled) | `number` | `0` | no |
+| tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| reboot_required | Whether manual reboot is required to enable audit logging |
+
+## Kafka vs CloudWatch/SQS UC
+
+This example uses a Kafka-based Universal Connector (`uc_mode = "kafka"`) instead of the default CloudWatch or SQS polling connectors. Use this variant when:
+
+- You already have a Kafka cluster configured in your Guardium environment
+- You prefer Kafka-based event streaming over polling-based log collection
+- You require the Kafka connector's configurable event delay and filtering options
+
+For the standard polling-based approach, see the [aws-aurora-postgres-session](../aws-aurora-postgres-session) example.
+
+## Troubleshooting
+
+### Parameter Group Import Issues
+
+- Verify the parameter group name is correct
+- Ensure you have the necessary AWS permissions
+- Ensure `terraform.tfvars` is configured BEFORE running import
+
+### Kafka UC Issues
+
+If the Kafka-based UC is not receiving events:
+- Confirm `kafka_cluster_name` matches the cluster name configured in Guardium
+- Verify the Kafka cluster is running and reachable from the Guardium Managed Units
+- Check `event_delay` and `poll_interval` are appropriate for your environment
+- Confirm the database was rebooted so pgAudit logging is active

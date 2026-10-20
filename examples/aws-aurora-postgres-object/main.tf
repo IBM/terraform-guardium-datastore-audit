@@ -66,6 +66,9 @@ module "aurora_postgres_object_audit" {
   gdp_client_secret = var.gdp_client_secret
   gdp_mu_host       = var.gdp_mu_host
 
+  # Audit Setup Control
+  enable_audit_setup = var.enable_audit_setup
+
   # Universal Connector Configuration
   udc_aws_credential         = var.udc_aws_credential
   enable_universal_connector = var.enable_universal_connector
