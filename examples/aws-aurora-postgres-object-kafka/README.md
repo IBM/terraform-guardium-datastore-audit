@@ -76,11 +76,11 @@ Copy `terraform.tfvars.example` to `terraform.tfvars` and update the values to m
 cp terraform.tfvars.example terraform.tfvars
 ```
 
-**CRITICAL**: You MUST complete this step and fill in ALL required values before proceeding:
-- **`aurora_postgres_cluster_identifier`** - CANNOT be empty! Set this to your actual cluster name
-- **`db_host`**, **`db_username`**, **`db_password`** - Database connection details
-- All Guardium connection details must be filled in
-- **`kafka_cluster_name`** - Must match a Kafka cluster already configured in Guardium
+Fill in all required values before continuing:
+- `aurora_postgres_cluster_identifier` - the name of your Aurora cluster (must not be empty)
+- `db_host`, `db_username`, `db_password` - database connection details
+- The Guardium connection details
+- `kafka_cluster_name` - must match a Kafka cluster already configured in Guardium
 
 To find your cluster identifier:
 ```bash
@@ -160,6 +160,7 @@ Valid grant options are:
 | gdp_client_id | Guardium OAuth client ID | `string` | n/a | yes |
 | gdp_client_secret | Guardium OAuth client secret | `string` | n/a | yes |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
+| enable_audit_setup | Whether to configure pgAudit on the cluster (parameter group, role, and table grants). Set to false to only manage the Universal Connector | `bool` | `true` | no |
 | enable_universal_connector | Whether to enable the universal connector module | `bool` | `true` | no |
 | tables | List of tables to monitor with object-level auditing | `list(object)` | `[]` | no |
 | kafka_cluster_name | Kafka cluster name configured in Guardium | `string` | `"kafka"` | no |

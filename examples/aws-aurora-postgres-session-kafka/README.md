@@ -58,10 +58,10 @@ Session-level auditing logs all statements of the classes configured in `pg_audi
 cp terraform.tfvars.example terraform.tfvars
 ```
 
-**CRITICAL**: Fill in ALL required values before proceeding:
-- **`aurora_postgres_cluster_identifier`** - CANNOT be empty
-- All Guardium connection details
-- **`kafka_cluster_name`** - Must match a Kafka cluster already configured in Guardium
+Fill in all required values before continuing:
+- `aurora_postgres_cluster_identifier` - the name of your Aurora cluster (must not be empty)
+- The Guardium connection details
+- `kafka_cluster_name` - must match a Kafka cluster already configured in Guardium
 
 To find your cluster identifier:
 ```bash
@@ -74,22 +74,9 @@ aws rds describe-db-clusters --query "DBClusters[*].DBClusterIdentifier" --outpu
 terraform init
 ```
 
-### 3. Parameter Group Import
+### 3. Apply the Configuration
 
-`imports.tf` automatically imports the cluster's existing (non-default) parameter group during `terraform plan`/`apply`.
-
-To import manually instead:
-
-```bash
-aws rds describe-db-clusters \
-  --db-cluster-identifier <your-cluster-identifier> \
-  --query "DBClusters[0].DBClusterParameterGroup" \
-  --output text
-
-terraform import 'module.aurora_postgres_session_audit_kafka.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium' <parameter-group-name>
-```
-
-### 4. Apply the Configuration
+Run `terraform apply` to create the resources. Any existing custom parameter group will be detected and imported automatically via [`imports.tf`](./imports.tf):
 
 ```bash
 terraform apply
@@ -97,7 +84,7 @@ terraform apply
 
 **Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
 
-### 5. Verify the Configuration
+### 4. Verify the Configuration
 
 1. Log in to Guardium Data Protection.
 2. Navigate to **Universal Connector** → **Datasource Profile Management**.
@@ -157,7 +144,7 @@ For the standard polling-based approach, see the [aws-aurora-postgres-session](.
 
 - Verify the parameter group name is correct
 - Ensure you have the necessary AWS permissions
-- Ensure `terraform.tfvars` is configured BEFORE running import
+- Ensure `terraform.tfvars` is configured before running `terraform plan` or `terraform apply`
 
 ### Kafka UC Issues
 
