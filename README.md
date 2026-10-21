@@ -37,7 +37,7 @@ These examples use the **legacy Logstash-based Universal Connector on the Guardi
 | Datastore | Terraform Module | Audit Method | Log Destination |
 |-----------|------------------|--------------|-----------------|
 | AWS OpenSearch | [amazon-opensearch-audit-kafka](examples/amazon-opensearch-audit-kafka) | OpenSearch Audit Logs | CloudWatch Logs |
-| Azure Databricks (UC 2.0, Unity Catalog) | [databricks-audit-kafka](examples/databricks-audit-kafka) | Diagnostic Settings | Azure Event Hub |
+| Azure Databricks | [databricks-audit-kafka](examples/databricks-audit-kafka) | Diagnostic Settings | Azure Event Hub |
 
 ## Architecture
 
