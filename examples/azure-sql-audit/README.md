@@ -1,6 +1,6 @@
 # Azure SQL Database with IBM Guardium Data Protection
 
-This example demonstrates how to configure Azure SQL Database with IBM Guardium Data Protection using JDBC-based audit log collection for comprehensive monitoring.
+This example demonstrates how to configure Azure SQL Database with IBM Guardium Data Protection (legacy Logstash on Central Manager) using JDBC-based audit log collection for comprehensive monitoring.
 
 ## Architecture
 

@@ -1,6 +1,6 @@
 # AWS Aurora MySQL Audit Module
 
-This module configures Guardium Data Protection to monitor an existing AWS Aurora MySQL cluster via CloudWatch logs.
+This module configures Guardium Data Protection (legacy Logstash on Central Manager) to monitor an existing AWS Aurora MySQL cluster via CloudWatch logs.
 
 ## Overview
 

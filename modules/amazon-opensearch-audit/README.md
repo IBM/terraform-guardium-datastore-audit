@@ -1,6 +1,6 @@
 # AWS OpenSearch Audit Configuration
 
-This module configures audit logging for AWS OpenSearch domains with IBM Guardium Data Protection. It enables OpenSearch audit logging via the native `aws_opensearch_domain` resource and configures log collection via CloudWatch. The module supports both Logstash-based and Kafka-based Universal Connector modes through the `uc_mode` variable.
+This module configures audit logging for AWS OpenSearch domains with IBM Guardium Data Protection. It enables OpenSearch audit logging via the native `aws_opensearch_domain` resource and configures log collection via CloudWatch. The module supports both legacy Logstash-based (on Central Manager) and Kafka-based Universal Connector modes through the `uc_mode` variable.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

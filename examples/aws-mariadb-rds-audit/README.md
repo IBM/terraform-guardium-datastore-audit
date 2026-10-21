@@ -1,6 +1,6 @@
 # AWS MariaDB RDS with IBM Guardium Data Protection
 
-This example demonstrates how to configure AWS MariaDB RDS with IBM Guardium Data Protection using audit logging for comprehensive monitoring.
+This example demonstrates how to configure AWS MariaDB RDS with IBM Guardium Data Protection (legacy Logstash on Central Manager) using audit logging for comprehensive monitoring.
 
 ## Architecture
 

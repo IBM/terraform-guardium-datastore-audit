@@ -1,6 +1,6 @@
 # AWS Neptune Audit Configuration
 
-This module configures audit logging for AWS Neptune clusters with IBM Guardium Data Protection. It enables Neptune audit logging through cluster parameter groups and configures log collection via CloudWatch.
+This module configures audit logging for AWS Neptune clusters with IBM Guardium Data Protection (legacy Logstash on Central Manager). It enables Neptune audit logging through cluster parameter groups and configures log collection via CloudWatch.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

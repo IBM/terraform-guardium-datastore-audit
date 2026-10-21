@@ -1,6 +1,6 @@
 # Databricks Audit with IBM Guardium Data Protection (UC 1.0)
 
-This example demonstrates how to configure Azure Databricks standard workspace audit logging with IBM Guardium Data Protection using the `databricks-audit` module in UC 1.0 mode.
+This example demonstrates how to configure Azure Databricks standard workspace audit logging with IBM Guardium Data Protection (legacy Logstash on Central Manager) using the `databricks-audit` module in UC 1.0 mode.
 
 ## Architecture
 

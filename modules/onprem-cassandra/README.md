@@ -1,6 +1,6 @@
 # Apache Cassandra Audit Module
 
-This Terraform module automates the configuration of Apache Cassandra audit log forwarding to Guardium Data Protection using Filebeat. This module configures Filebeat only; you must enable Cassandra audit logging separately before running Terraform.
+This Terraform module automates the configuration of Apache Cassandra audit log forwarding to Guardium Data Protection (legacy Logstash on Central Manager) using Filebeat. This module configures Filebeat only; you must enable Cassandra audit logging separately before running Terraform.
 
 ## What this module does
 

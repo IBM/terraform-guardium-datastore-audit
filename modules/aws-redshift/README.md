@@ -1,6 +1,6 @@
 # AWS Redshift Universal Connector Module
 
-This module configures AWS Redshift to send audit logs to Guardium Data Protection using the Universal Connector.
+This module configures AWS Redshift to send audit logs to Guardium Data Protection (legacy Logstash on Central Manager) using the Universal Connector.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

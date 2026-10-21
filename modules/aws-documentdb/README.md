@@ -1,6 +1,6 @@
 # AWS DocumentDB Audit Configuration Module
 
-This Terraform module enables comprehensive monitoring and auditing of AWS DocumentDB clusters using IBM Guardium Data Protection. It automates the configuration of DocumentDB audit logging and sets up a Universal Data Connector to stream audit logs to Guardium for analysis.
+This Terraform module enables comprehensive monitoring and auditing of AWS DocumentDB clusters using IBM Guardium Data Protection (legacy Logstash on Central Manager). It automates the configuration of DocumentDB audit logging and sets up a Universal Data Connector to stream audit logs to Guardium for analysis.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

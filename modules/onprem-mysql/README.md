@@ -1,6 +1,6 @@
 # On-Premises MySQL Configuration
 
-This module configures syslog-based audit logging for on-premises MySQL instances on Linux with IBM Guardium Data Protection. It automates the installation and configuration of MySQL audit plugin and enables MySQL to send audit logs via syslog protocol directly to Guardium for monitoring and analysis.
+This module configures syslog-based audit logging for on-premises MySQL instances on Linux with IBM Guardium Data Protection (legacy Logstash on Central Manager). It automates the installation and configuration of MySQL audit plugin and enables MySQL to send audit logs via syslog protocol directly to Guardium for monitoring and analysis.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

@@ -1,6 +1,6 @@
 # Couchbase Capella Audit Configuration Module
 
-This module enables audit logging on an **existing** Couchbase Capella cluster and integrates it with IBM Guardium Data Protection via Universal Connector.
+This module enables audit logging on an **existing** Couchbase Capella cluster and integrates it with IBM Guardium Data Protection (legacy Logstash on Central Manager) via Universal Connector.
 
 ## Overview
 

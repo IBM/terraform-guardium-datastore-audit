@@ -1,6 +1,6 @@
 # On-Premises MySQL Example
 
-This example demonstrates how to configure on-premises MySQL audit logging on Linux with IBM Guardium Data Protection using syslog protocol.
+This example demonstrates how to configure on-premises MySQL audit logging on Linux with IBM Guardium Data Protection (legacy Logstash on Central Manager) using syslog protocol.
 
 ## Overview
 

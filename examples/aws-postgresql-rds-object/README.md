@@ -1,6 +1,6 @@
 # AWS RDS PostgreSQL with Object-Level Auditing
 
-This example demonstrates how to configure AWS RDS PostgreSQL with Guardium Universal Connector using object-level auditing.
+This example demonstrates how to configure AWS RDS PostgreSQL with Guardium Universal Connector (legacy Logstash on Central Manager) using object-level auditing.
 
 ## Overview
 

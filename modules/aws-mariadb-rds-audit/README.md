@@ -1,6 +1,6 @@
 # AWS MariaDB RDS Audit Configuration
 
-This module configures audit logging for MariaDB RDS instances with IBM Guardium Data Protection. It enables the MariaDB Audit Plugin through an option group and configures log collection via CloudWatch.
+This module configures audit logging for MariaDB RDS instances with IBM Guardium Data Protection (legacy Logstash on Central Manager). It enables the MariaDB Audit Plugin through an option group and configures log collection via CloudWatch.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

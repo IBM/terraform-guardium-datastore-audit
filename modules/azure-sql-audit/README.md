@@ -1,6 +1,6 @@
 # Azure SQL Database Audit Configuration
 
-This module configures audit logging for Azure SQL Database with IBM Guardium Data Protection. It enables server-level auditing to stream audit logs to Azure Storage Account and configures log collection via JDBC.
+This module configures audit logging for Azure SQL Database with IBM Guardium Data Protection (legacy Logstash on Central Manager). It enables server-level auditing to stream audit logs to Azure Storage Account and configures log collection via JDBC.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

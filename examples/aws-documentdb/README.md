@@ -1,6 +1,6 @@
 # AWS DocumentDB with Universal Connector Example
 
-This example demonstrates how to configure AWS DocumentDB with IBM Guardium Data Protection using the Universal Connector for comprehensive audit logging and monitoring.
+This example demonstrates how to configure AWS DocumentDB with IBM Guardium Data Protection (legacy Logstash on Central Manager) using the Universal Connector for comprehensive audit logging and monitoring.
 
 ## Overview
 

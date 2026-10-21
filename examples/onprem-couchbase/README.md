@@ -1,6 +1,6 @@
 # On-Premises Couchbase Example
 
-This example demonstrates how to configure on-premises Couchbase audit logging with IBM Guardium Data Protection using Filebeat.
+This example demonstrates how to configure on-premises Couchbase audit logging with IBM Guardium Data Protection (legacy Logstash on Central Manager) using Filebeat.
 
 ## Overview
 

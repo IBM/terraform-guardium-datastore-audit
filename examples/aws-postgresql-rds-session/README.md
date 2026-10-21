@@ -1,6 +1,6 @@
 # AWS RDS PostgreSQL with Session-Level Auditing
 
-This example demonstrates how to configure AWS RDS PostgreSQL with Guardium Universal Connector using session-level auditing.
+This example demonstrates how to configure AWS RDS PostgreSQL with Guardium Universal Connector (legacy Logstash on Central Manager) using session-level auditing.
 
 ## Overview
 

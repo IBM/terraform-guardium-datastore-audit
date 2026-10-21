@@ -1,6 +1,6 @@
 # AWS DynamoDB Monitoring with Guardium Data Protection
 
-This module enables monitoring of existing AWS DynamoDB tables with IBM Guardium Data Protection. It sets up the necessary AWS infrastructure and integrates with Guardium to provide comprehensive database activity monitoring and security for your DynamoDB tables.
+This module enables monitoring of existing AWS DynamoDB tables with IBM Guardium Data Protection (legacy Logstash on Central Manager). It sets up the necessary AWS infrastructure and integrates with Guardium to provide comprehensive database activity monitoring and security for your DynamoDB tables.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

@@ -1,6 +1,6 @@
 # AWS Aurora PostgreSQL Session-Level Audit Configuration
 
-This module configures session-level auditing for Aurora PostgreSQL clusters using the pgAudit extension. It enables comprehensive logging of SQL statements executed against your database, providing a detailed audit trail for security and compliance purposes.
+This module configures session-level auditing for Aurora PostgreSQL clusters using the pgAudit extension. It enables comprehensive logging of SQL statements executed against your database, providing a detailed audit trail for security and compliance purposes. It uses the legacy Logstash-based Universal Connector on Central Manager.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

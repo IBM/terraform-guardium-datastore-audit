@@ -1,6 +1,6 @@
 # AWS S3 Audit Example (via CloudTrail)
 
-This example demonstrates how to configure AWS S3 audit logging with Guardium Data Protection using CloudTrail and the Universal Connector.
+This example demonstrates how to configure AWS S3 audit logging with Guardium Data Protection (legacy Logstash on Central Manager) using CloudTrail and the Universal Connector.
 
 ## Overview
 
