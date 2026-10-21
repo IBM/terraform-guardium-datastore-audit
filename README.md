@@ -39,6 +39,62 @@ These examples use the **legacy Logstash-based Universal Connector on the Guardi
 | AWS OpenSearch | [amazon-opensearch-audit-kafka](examples/amazon-opensearch-audit-kafka) | OpenSearch Audit Logs | CloudWatch Logs |
 | Azure Databricks (UC 2.0, Unity Catalog) | [databricks-audit-kafka](examples/databricks-audit-kafka) | Diagnostic Settings | Azure Event Hub |
 
+## Architecture
+
+```mermaid
+flowchart LR
+    DS["Datastore<br/>(AWS, Azure, GCP, on-prem)"] -->|Audit logs| AGG["Log Aggregation<br/>CloudWatch / S3 / Event Hub / Storage Account"]
+    AGG -->|Log streaming| UC["Guardium Universal Connector<br/>(Logstash on Central Manager or Kafka)"]
+    UC -->|Processed audit data| GDP["Guardium Data Protection"]
+```
+
+### Architecture Flow
+
+1. **Datastore Configuration**: The module configures each datastore to enable audit logging:
+
+   **AWS Datastores:**
+   - **DynamoDB**: Enables CloudTrail data events to capture API calls
+   - **DocumentDB**: Enables audit and profiler logs via parameter groups
+   - **MariaDB RDS**: Enables MariaDB Audit Plugin via option groups
+   - **MySQL RDS**: Enables MariaDB Audit Plugin via option groups (compatible with MySQL)
+   - **Neptune**: Enables audit logs via parameter groups
+   - **PostgreSQL RDS**: Configures pgAudit extension for object or session-level auditing
+   - **Aurora PostgreSQL**: Configures pgAudit extension for object or session-level auditing with cluster parameter groups
+   - **Redshift**: Enables connection and user activity logging to CloudWatch or S3
+
+   **Azure Datastores:**
+   - **Cosmos DB**: Enables diagnostic settings to capture data plane, query runtime, and control plane logs
+   - **MySQL Flexible Server**: Enables diagnostic settings to stream audit logs to Azure Event Hub
+   - **PostgreSQL Flexible Server**: Enables diagnostic settings to stream pgAudit logs to Azure Event Hub
+   - **SQL Database**: Enables server-level and database-level auditing to Azure Storage Account
+
+   **Cloud-Native Datastores:**
+   - **Couchbase Capella**: Enables audit logging via Capella API for cloud-native deployments
+
+2. **Log Aggregation**: Audit logs are collected in cloud platforms:
+
+   **AWS:**
+   - CloudWatch Log Groups store structured logs
+   - S3 buckets provide long-term storage for CloudTrail logs
+   - IAM roles and policies ensure secure access
+
+   **Azure:**
+   - Event Hub receives real-time diagnostic logs
+   - Storage accounts provide checkpointing for Event Hub consumers
+   - Azure RBAC ensures secure access
+
+3. **Universal Connector**: The module deploys and configures Guardium Universal Connector:
+   - Establishes connection to CloudWatch Logs, S3, or Azure Event Hub
+   - Uses AWS or Azure credentials configured in Guardium
+   - Applies parsing rules specific to each datastore type
+   - Streams processed data to Guardium Data Protection
+
+4. **Guardium Integration**: Audit data flows into Guardium for:
+   - Real-time security monitoring
+   - Compliance reporting (PCI-DSS, HIPAA, GDPR, etc.)
+   - Threat detection and alerting
+   - Forensic analysis and investigation
+
 ## Prerequisites
 
 Before using these examples, ensure you have:
