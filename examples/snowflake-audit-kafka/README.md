@@ -125,7 +125,6 @@ After successful application:
 
 | Name | Description |
 |------|-------------|
-| profile_csv | Universal Connector profile CSV |
 | udc_name | Name of the Universal Connector |
 | snowflake_host | Snowflake account hostname used in the JDBC URL |
 | warehouse | Snowflake warehouse used by the Guardium user |

@@ -23,6 +23,48 @@ Before using this module, you need to:
 | snowflake | ~> 2.0 |
 | guardium-data-protection | = 1.5.2 |
 
+## Features
+
+- **Automated Snowflake Audit Setup**: Optionally provisions a dedicated role and user with least-privilege grants (`IMPORTED PRIVILEGES` on `SNOWFLAKE` database, `USAGE` on warehouse, and `MONITOR EXECUTION` on account).
+- **Near-Real-Time Log Ingestion**: Uses `SNOWFLAKE.INFORMATION_SCHEMA` table functions (`QUERY_HISTORY` and `LOGIN_HISTORY`) over JDBC.
+- **Kafka-Based Universal Connector**: Registers and configures the **Snowflake Over JDBC Connect 2.0** profile in Guardium Data Protection.
+- **Automated Verification**: Runs connection test query to ensure proper end-to-end communication during profile registration.
+
+## Usage
+
+```hcl
+module "snowflake_audit" {
+  source = "IBM/datastore-audit/guardium//modules/snowflake-audit"
+
+  # Snowflake Configuration
+  snowflake_host     = "abc12345.us-east-1.aws.snowflakecomputing.com"
+  warehouse          = "COMPUTE_WH"
+  database           = "SNOWFLAKE"
+  schema             = "PUBLIC"
+
+  # Audit Setup (Role & User Creation)
+  enable_audit_setup = true
+  role_name          = "GUARDIUM_UC_ROLE"
+  user_name          = "GUARDIUM_UC_USER"
+  user_password      = var.snowflake_user_password
+
+  # Guardium Credentials & Connection
+  udc_credential     = "snowflake-credential"
+  gdp_server         = var.gdp_server
+  gdp_port           = "8443"
+  gdp_username       = var.gdp_username
+  gdp_password       = var.gdp_password
+  gdp_client_id      = var.gdp_client_id
+  gdp_client_secret  = var.gdp_client_secret
+  gdp_mu_host        = var.gdp_mu_host
+
+  # Universal Connector Configuration
+  enable_universal_connector = true
+  jdbc_driver_library        = "snowflake-jdbc-3.13.30.jar"
+  kafka_cluster_name         = "kafka"
+}
+```
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -64,7 +106,6 @@ Before using this module, you need to:
 
 | Name | Description |
 |------|-------------|
-| profile_csv | Universal Connector profile CSV |
 | udc_name | Name of the Universal Connector |
 | snowflake_host | Snowflake account hostname used in the JDBC URL |
 | warehouse | Snowflake warehouse used by the Guardium user |

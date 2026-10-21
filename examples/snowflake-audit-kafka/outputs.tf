@@ -3,11 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-output "profile_csv" {
-  description = "Universal Connector profile CSV"
-  value       = module.snowflake_audit_kafka.profile_csv
-}
-
 output "udc_name" {
   description = "Name of the Universal Connector"
   value       = module.snowflake_audit_kafka.udc_name
