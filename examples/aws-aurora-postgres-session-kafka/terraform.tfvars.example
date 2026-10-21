@@ -1,0 +1,96 @@
+# =====================================================================
+# AWS CONFIGURATION - CRITICAL
+# =====================================================================
+# REQUIRED: Your AWS region - MUST match where your Aurora PostgreSQL cluster is deployed
+aws_region = "us-east-1"  # CHANGE THIS to your actual AWS region (e.g., "us-west-2")
+
+# The identifier of your Aurora PostgreSQL cluster (found in RDS console)
+aurora_postgres_cluster_identifier = ""
+
+# Whether to force a failover when applying parameter changes (requires Multi-AZ)
+force_failover = false
+
+# Skip automatic reboot after parameter changes (default: true)
+skip_reboot = true
+
+# pgAudit log configuration for session-level auditing
+# Default logs all statement types except miscellaneous commands
+pg_audit_log = "all, -misc"
+
+# =====================================================================
+# GUARDIUM CONFIGURATION - CRITICAL
+# =====================================================================
+# OPTIONAL: Override the name of the Universal Connector profile.
+# If unset or empty, defaults to <aws_region>-<aurora_postgres_cluster_identifier>-<aws_account_id>
+# udc_name = "aurora-postgres-session-kafka-connector"
+
+# REQUIRED: Name of the AWS credential defined in Guardium
+# This must match a credential you've already created in Guardium
+udc_aws_credential = "aws-guardium-credential"
+
+# REQUIRED: Guardium server hostname/IP and connection details
+gdp_server = "guardium.example.com"
+gdp_port = "8443"
+gdp_username = "admin"                 # Replace with your Guardium username
+gdp_password = "password"              # Replace with your Guardium password
+
+# REQUIRED: OAuth client credentials for Guardium API access
+# These are obtained by running the "grdapi register_oauth_client" command
+gdp_client_id = "client4"              # Replace with your client ID
+gdp_client_secret = "client-secret"    # Replace with your client secret
+
+# Comma-separated list of Guardium Managed Units to deploy the profile to
+gdp_mu_host = "mu1.guardium.example.com,mu2.guardium.example.com"
+
+# =====================================================================
+# UNIVERSAL CONNECTOR CONFIGURATION
+# =====================================================================
+# Whether to configure pgAudit on the cluster (parameter group). Defaults to true.
+# Set to false to skip audit logging setup and only manage the Universal Connector.
+enable_audit_setup = true
+
+# Whether to enable the Universal Connector (set to false to disable)
+enable_universal_connector = true
+
+# =====================================================================
+# KAFKA-SPECIFIC CONFIGURATION
+# =====================================================================
+# Kafka cluster name configured in Guardium
+kafka_cluster_name = "kafka"
+
+# Whether to use ELB for Kafka-based UC
+use_elb = false
+
+# Event delay in minutes for Kafka-based UC
+event_delay = 15
+
+# No data threshold in minutes for Kafka-based UC
+nodata_threshold_min = 60
+
+# Whether to unmask sensitive data in audit logs
+unmask = false
+
+# CloudWatch Logs filter pattern for filtering audit logs
+filter_pattern = "None"
+
+# Poll interval seconds component (0-59) for Kafka-based UC. Added to poll_interval (minutes)
+poll_interval_sec = 30
+
+# Poll interval in minutes for Kafka-based UC
+poll_interval = 0
+
+# Maximum number of events to retrieve per poll for Kafka-based UC
+event_limit = 1000
+
+# Initial polling time for Kafka-based UC, in UTC ISO 8601 with milliseconds (e.g. "2026-10-19T21:17:05.000Z").
+# Empty = use the current time (UTC), recorded at first apply
+timestamp_start = ""
+
+# =====================================================================
+# TAGS
+# =====================================================================
+tags = {
+  Environment = "production"
+  Project     = "data-security"
+  ManagedBy   = "terraform"
+}

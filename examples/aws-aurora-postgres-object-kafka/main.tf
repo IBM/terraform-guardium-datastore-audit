@@ -1,0 +1,90 @@
+#
+# Copyright IBM Corp. 2025
+# SPDX-License-Identifier: Apache-2.0
+#
+
+/**
+ * # AWS Aurora PostgreSQL with Universal Connector - Object Auditing (Kafka)
+ *
+ * This example demonstrates how to configure AWS Aurora PostgreSQL with Guardium Universal Connector
+ * using object-level auditing and a Kafka-based Universal Connector.
+ *
+ * ## Usage
+ *
+ * Object-level auditing allows you to monitor specific tables with granular permissions.
+ * Configure the `tables` variable to specify which tables to monitor and what permissions to audit.
+ * This variant uses a Kafka-based UC instead of CloudWatch/SQS polling.
+ */
+
+# Configure AWS provider
+provider "aws" {
+  region = var.aws_region
+}
+
+# Configure PostgreSQL provider
+provider "postgresql" {
+  host            = var.db_host
+  port            = var.db_port
+  username        = var.db_username
+  password        = var.db_password
+  database        = var.db_name
+  sslmode         = var.ssl_mode
+  connect_timeout = 15
+}
+
+# Configure Guardium Data Protection provider
+provider "guardium-data-protection" {
+  host = var.gdp_server
+  port = var.gdp_port
+}
+
+module "aurora_postgres_object_audit_kafka" {
+  source = "../../modules/aws-aurora-postgres-object"
+
+  # AWS Configuration
+  aws_region                         = var.aws_region
+  aurora_postgres_cluster_identifier = var.aurora_postgres_cluster_identifier
+  tags                               = var.tags
+
+  # Database Connection Configuration
+  db_host     = var.db_host
+  db_port     = var.db_port
+  db_username = var.db_username
+  db_password = var.db_password
+  db_name     = var.db_name
+
+  # Audit Configuration
+  force_failover = var.force_failover
+  skip_reboot    = var.skip_reboot
+  tables         = var.tables
+
+  # Guardium Data Protection Configuration
+  gdp_server        = var.gdp_server
+  gdp_port          = var.gdp_port
+  gdp_username      = var.gdp_username
+  gdp_password      = var.gdp_password
+  gdp_client_id     = var.gdp_client_id
+  gdp_client_secret = var.gdp_client_secret
+  gdp_mu_host       = var.gdp_mu_host
+
+  # Audit Setup Control
+  enable_audit_setup = var.enable_audit_setup
+
+  # Universal Connector Configuration
+  udc_name                   = var.udc_name
+  udc_aws_credential         = var.udc_aws_credential
+  enable_universal_connector = var.enable_universal_connector
+  uc_mode                    = "kafka"
+
+  # Kafka-specific Configuration
+  kafka_cluster_name   = var.kafka_cluster_name
+  use_elb              = var.use_elb
+  event_delay          = var.event_delay
+  nodata_threshold_min = var.nodata_threshold_min
+  unmask               = var.unmask
+  filter_pattern       = var.filter_pattern
+  poll_interval_sec    = var.poll_interval_sec
+  poll_interval        = var.poll_interval
+  event_limit          = var.event_limit
+  timestamp_start      = var.timestamp_start
+}

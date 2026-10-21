@@ -3,11 +3,46 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+# Records the time of the first apply so the default initial polling time stays stable across plans
+resource "terraform_data" "default_timestamp_start" {
+  input = formatdate("YYYY-MM-DD'T'hh:mm:ss'.000Z'", timestamp())
+
+  lifecycle {
+    ignore_changes = [input]
+  }
+}
+
 locals {
-  udc_name       = format("%s%s-%s", var.aws_region, var.aurora_postgres_cluster_identifier, local.aws_account_id)
+  # If user provides timestamp_start, use it exactly. Otherwise use the time of the first apply.
+  timestamp_start = var.timestamp_start != "" ? var.timestamp_start : terraform_data.default_timestamp_start.output
+
+  # If user provides udc_name, use it exactly. Otherwise auto-generate from region, cluster and account.
+  udc_name       = var.udc_name != "" ? var.udc_name : format("%s-%s-%s", var.aws_region, var.aurora_postgres_cluster_identifier, local.aws_account_id)
   aws_region     = var.aws_region
   aws_account_id = module.aws_configuration.aws_account_id
   log_group      = format("/aws/rds/cluster/%s/postgresql", var.aurora_postgres_cluster_identifier)
+
+  default_description = var.udc_description != "" ? var.udc_description : "GDP AWS Aurora PostgreSQL ${var.uc_mode} connector for ${var.aurora_postgres_cluster_identifier}"
+
+  aurora_postgres_kafka_csv = templatefile("${path.module}/templates/auroraPostgresKafka.tpl", {
+    udc_name              = local.udc_name
+    description           = local.default_description
+    credential_name       = var.udc_aws_credential
+    cluster_name          = var.kafka_cluster_name
+    use_elb               = var.use_elb
+    aws_region            = var.aws_region
+    aws_log_group         = local.log_group
+    aws_account_id        = local.aws_account_id
+    database_cluster_name = var.aurora_postgres_cluster_identifier
+    event_delay           = var.event_delay
+    nodata_threshold_min  = var.nodata_threshold_min
+    unmask                = var.unmask
+    filter_pattern        = var.filter_pattern
+    poll_interval_sec     = var.poll_interval_sec
+    poll_interval         = var.poll_interval
+    event_limit           = var.event_limit
+    timestamp_start       = local.timestamp_start
+  })
 }
 
 module "aws_configuration" {
@@ -20,6 +55,7 @@ locals {
 }
 
 module "aurora-postgres-parameter-group" {
+  count                              = var.enable_audit_setup ? 1 : 0
   source                             = "IBM/common/guardium//modules/aurora-postgres-parameter-group"
   version                            = "= 1.6.1"
   pg_audit_log                       = "none"        # For object auditing, we don't use session logging
@@ -31,6 +67,7 @@ module "aurora-postgres-parameter-group" {
 }
 
 data "gdp-middleware-helper_postgres_role_check" "aurora_pgaudit_exists" {
+  count     = var.enable_audit_setup ? 1 : 0
   db_name   = var.db_name
   host      = var.db_host
   port      = var.db_port
@@ -41,15 +78,18 @@ data "gdp-middleware-helper_postgres_role_check" "aurora_pgaudit_exists" {
 }
 
 resource "postgresql_role" "aurora_pgaudit" {
-  count = data.gdp-middleware-helper_postgres_role_check.aurora_pgaudit_exists.exists ? 0 : 1
+  count = var.enable_audit_setup && !try(data.gdp-middleware-helper_postgres_role_check.aurora_pgaudit_exists[0].exists, false) ? 1 : 0
   name  = local.pg_audit_user
   login = false
+
+  # Wait for the parameter group change and cluster reboot before touching the database
+  depends_on = [module.aurora-postgres-parameter-group]
 }
 
 # Grant permissions on tables based on the tables variable
 # This resource creates grants for the pgaudit role on specified tables
 resource "postgresql_grant" "table_permissions" {
-  for_each = { for idx, table in var.tables : "${table.schema}.${table.table}" => table }
+  for_each = var.enable_audit_setup ? { for idx, table in var.tables : "${table.schema}.${table.table}" => table } : {}
 
   database    = var.db_name
   role        = local.pg_audit_user
@@ -58,11 +98,12 @@ resource "postgresql_grant" "table_permissions" {
   objects     = [each.value.table]
   privileges  = each.value.grants
 
-  depends_on = [postgresql_role.aurora_pgaudit]
+  # Also depend on the parameter group module so grants run after the reboot even when the role already exists
+  depends_on = [postgresql_role.aurora_pgaudit, module.aurora-postgres-parameter-group]
 }
 
 module "aurora-postgres-sqs-registration" {
-  count   = var.log_export_type == "SQS" ? 1 : 0
+  count   = var.uc_mode != "kafka" && var.log_export_type == "SQS" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-sqs-registration"
   version = "= 1.6.1"
 
@@ -83,7 +124,7 @@ module "aurora-postgres-sqs-registration" {
 }
 
 module "aurora-postgres-cloudwatch-registration" {
-  count   = var.log_export_type == "Cloudwatch" ? 1 : 0
+  count   = var.uc_mode != "kafka" && var.log_export_type == "Cloudwatch" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
   version = "= 1.6.1"
 
@@ -105,4 +146,20 @@ module "aurora-postgres-cloudwatch-registration" {
   cloudwatch_endpoint                = var.cloudwatch_endpoint
   codec_pattern                      = var.codec_pattern
   use_aws_bundled_ca                 = var.use_aws_bundled_ca
+}
+
+module "aurora-postgres-kafka-registration" {
+  count            = var.uc_mode == "kafka" && var.enable_universal_connector ? 1 : 0
+  source           = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
+  version          = "= 1.3.3"
+  udc_name         = local.udc_name
+  udc_csv_parsed   = local.aurora_postgres_kafka_csv
+  client_id        = var.gdp_client_id
+  client_secret    = var.gdp_client_secret
+  gdp_server       = var.gdp_server
+  gdp_port         = var.gdp_port
+  gdp_username     = var.gdp_username
+  gdp_password     = var.gdp_password
+  gdp_mu_host      = var.gdp_mu_host
+  test_connections = true
 }
