@@ -3,14 +3,34 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+output "profile_csv" {
+  description = "Universal Connector profile CSV"
+  value       = local.snowflake_kafka_csv
+}
+
 output "udc_name" {
-  description = "Name of the Universal Connector profile"
+  description = "Name of the Universal Connector"
   value       = local.udc_name
 }
 
-output "profile_csv" {
-  description = "Universal Connector profile CSV (Snowflake Over JDBC Connect 2.0)"
-  value       = local.snowflake_kafka_csv
+output "snowflake_host" {
+  description = "Snowflake account hostname used in the JDBC URL"
+  value       = var.snowflake_host
+}
+
+output "warehouse" {
+  description = "Snowflake warehouse used by the Guardium user"
+  value       = var.warehouse
+}
+
+output "database" {
+  description = "Snowflake database in the JDBC URL"
+  value       = var.database
+}
+
+output "schema" {
+  description = "Snowflake schema in the JDBC URL"
+  value       = var.schema
 }
 
 output "connection_url" {
