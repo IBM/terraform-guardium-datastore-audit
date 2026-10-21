@@ -1,6 +1,6 @@
 # Couchbase Capella Audit Configuration Example
 
-This example demonstrates how to enable audit logging on an **existing** Couchbase Capella cluster and integrate it with IBM Guardium Data Protection.
+This example demonstrates how to enable audit logging on an **existing** Couchbase Capella cluster and integrate it with IBM Guardium Data Protection (legacy Logstash on Central Manager).
 
 ## What This Example Does
 

@@ -1,6 +1,6 @@
 # AWS Redshift with Universal Connector Example
 
-This example demonstrates how to configure AWS Redshift to send audit logs to Guardium Data Protection using the Universal Connector.
+This example demonstrates how to configure AWS Redshift to send audit logs to Guardium Data Protection (legacy Logstash on Central Manager) using the Universal Connector.
 
 ## Features
 

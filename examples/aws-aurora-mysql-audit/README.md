@@ -1,6 +1,6 @@
 # AWS Aurora MySQL Audit Example
 
-This example demonstrates how to configure Guardium Data Protection to monitor an existing AWS Aurora MySQL cluster via CloudWatch logs.
+This example demonstrates how to configure Guardium Data Protection (legacy Logstash on Central Manager) to monitor an existing AWS Aurora MySQL cluster via CloudWatch logs.
 
 ## Overview
 

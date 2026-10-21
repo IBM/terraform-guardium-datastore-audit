@@ -1,6 +1,6 @@
 # AWS Aurora PostgreSQL Object-Level Audit Configuration
 
-This module configures object-level auditing for Aurora PostgreSQL clusters using the pgAudit extension. It allows you to monitor specific tables and operations by creating a dedicated audit role and granting it permissions on selected tables.
+This module configures object-level auditing for Aurora PostgreSQL clusters using the pgAudit extension. It allows you to monitor specific tables and operations by creating a dedicated audit role and granting it permissions on selected tables. It uses the legacy Logstash-based Universal Connector on Central Manager.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

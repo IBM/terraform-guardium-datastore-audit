@@ -1,6 +1,6 @@
 # On-Premises Couchbase Module
 
-This Terraform module configures audit logging for on-premises Couchbase databases and integrates them with IBM Guardium Data Protection using Filebeat.
+This Terraform module configures audit logging for on-premises Couchbase databases and integrates them with IBM Guardium Data Protection (legacy Logstash on Central Manager) using Filebeat.
 
 ## Overview
 

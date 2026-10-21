@@ -1,6 +1,6 @@
 # GCP AlloyDB Audit Module
 
-This module configures audit transport resources for AlloyDB PostgreSQL logs and registers the datasource with Guardium.
+This module configures audit transport resources for AlloyDB PostgreSQL logs and registers the datasource with Guardium (legacy Logstash on Central Manager).
 
 ## What this module does
 

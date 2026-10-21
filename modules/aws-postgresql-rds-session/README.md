@@ -1,6 +1,6 @@
 # AWS PostgreSQL RDS Session-Level Audit Configuration
 
-This module configures session-level auditing for PostgreSQL RDS instances using the pgAudit extension. It enables comprehensive monitoring of all database activity by capturing SQL statements at the session level.
+This module configures session-level auditing for PostgreSQL RDS instances using the pgAudit extension. It enables comprehensive monitoring of all database activity by capturing SQL statements at the session level. It uses the legacy Logstash-based Universal Connector on Central Manager.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

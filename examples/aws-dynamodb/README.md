@@ -1,6 +1,6 @@
 # AWS DynamoDB with Universal Connector
 
-This example demonstrates how to configure audit logging for AWS DynamoDB using Guardium Data Protection's Universal Connector. It sets up the necessary AWS resources (CloudTrail, CloudWatch Logs, S3 bucket) to capture DynamoDB activity and configures a Universal Connector in Guardium to ingest and analyze this data.
+This example demonstrates how to configure audit logging for AWS DynamoDB using Guardium Data Protection's Universal Connector (legacy Logstash on Central Manager). It sets up the necessary AWS resources (CloudTrail, CloudWatch Logs, S3 bucket) to capture DynamoDB activity and configures a Universal Connector in Guardium to ingest and analyze this data.
 
 ## Architecture
 

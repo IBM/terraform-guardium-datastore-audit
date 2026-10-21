@@ -1,6 +1,6 @@
 # Azure MySQL Audit Configuration
 
-This module configures audit logging for Azure MySQL Flexible Server with IBM Guardium Data Protection. It enables diagnostic settings to stream audit logs to Azure Event Hub and configures Guardium Universal Connector for log collection.
+This module configures audit logging for Azure MySQL Flexible Server with IBM Guardium Data Protection (legacy Logstash on Central Manager). It enables diagnostic settings to stream audit logs to Azure Event Hub and configures Guardium Universal Connector for log collection.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

@@ -1,6 +1,6 @@
 # Azure Cosmos DB with IBM Guardium Data Protection
 
-This example demonstrates how to configure Azure Cosmos DB with IBM Guardium Data Protection using diagnostic settings and Event Hub for comprehensive monitoring.
+This example demonstrates how to configure Azure Cosmos DB with IBM Guardium Data Protection (legacy Logstash on Central Manager) using diagnostic settings and Event Hub for comprehensive monitoring.
 
 ## Architecture
 

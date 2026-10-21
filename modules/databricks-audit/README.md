@@ -2,7 +2,7 @@
 
 This module configures audit logging for Azure Databricks with IBM Guardium Data Protection. It enables Databricks audit log streaming to Azure Event Hub via Azure Monitor Diagnostic Settings and registers the Universal Connector profile in Guardium.
 
-The module supports both standard workspace auditing (UC 1.0) and Unity Catalog auditing (UC 2.0) through the `uc_version` variable.
+The module supports both standard workspace auditing (UC 1.0, legacy Logstash on Central Manager) and Unity Catalog auditing (UC 2.0) through the `uc_version` variable.
 
 ## Prerequisites
 

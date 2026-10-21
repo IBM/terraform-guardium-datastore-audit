@@ -1,6 +1,6 @@
 # PostgreSQL RDS Table Grants Example
 
-This example demonstrates how to configure table-specific grants for the PostgreSQL RDS audit configuration.
+This example demonstrates how to configure table-specific grants for the PostgreSQL RDS audit configuration, which uses the legacy Logstash-based Universal Connector on Central Manager.
 
 ## Usage
 

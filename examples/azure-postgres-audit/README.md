@@ -1,6 +1,6 @@
 # Azure PostgreSQL with IBM Guardium Data Protection
 
-This example demonstrates how to configure Azure PostgreSQL Flexible Server with IBM Guardium Data Protection using diagnostic settings and Event Hub for comprehensive monitoring.
+This example demonstrates how to configure Azure PostgreSQL Flexible Server with IBM Guardium Data Protection (legacy Logstash on Central Manager) using diagnostic settings and Event Hub for comprehensive monitoring.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

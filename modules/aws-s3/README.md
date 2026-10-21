@@ -1,6 +1,6 @@
 # AWS S3 Universal Connector Module (via CloudTrail)
 
-This module configures AWS CloudTrail to capture S3 events and send them to Guardium Data Protection using the Universal Connector via CloudWatch Logs.
+This module configures AWS CloudTrail to capture S3 events and send them to Guardium Data Protection (legacy Logstash on Central Manager) using the Universal Connector via CloudWatch Logs.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 

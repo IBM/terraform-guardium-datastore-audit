@@ -1,6 +1,6 @@
 # GCP AlloyDB Audit Example
 
-This example configures audit transport resources for AlloyDB PostgreSQL logs and registers the datasource with Guardium.
+This example configures audit transport resources for AlloyDB PostgreSQL logs and registers the datasource with Guardium (legacy Logstash on Central Manager).
 
 ## What this example does
 

@@ -1,6 +1,6 @@
 # On-Premises Apache Cassandra Example
 
-This example demonstrates how to configure on-premises Apache Cassandra audit log forwarding with IBM Guardium Data Protection using Filebeat. This example configures Filebeat only; you must enable Cassandra audit logging separately before running Terraform.
+This example demonstrates how to configure on-premises Apache Cassandra audit log forwarding with IBM Guardium Data Protection (legacy Logstash on Central Manager) using Filebeat. This example configures Filebeat only; you must enable Cassandra audit logging separately before running Terraform.
 
 
 ## What this example does
