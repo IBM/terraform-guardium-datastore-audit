@@ -2,7 +2,7 @@
 
 Terraform modules that configure audit logging on cloud and on-premises datastores and integrate them with IBM Guardium Data Protection (GDP) through a Universal Connector (UC).
 
-## Legacy: Logstash on Central Manager
+## Legacy Logstash on Central Manager
 
 These examples use the **legacy Logstash-based Universal Connector on the Guardium Central Manager**.
 
