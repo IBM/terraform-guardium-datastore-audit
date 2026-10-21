@@ -6,38 +6,38 @@ Terraform modules that configure audit logging on cloud and on-premises datastor
 
 These examples use the **legacy Logstash-based Universal Connector on the Guardium Central Manager**.
 
-| Platform | Datastore | Example | Audit Method |
-|----------|-----------|---------|--------------|
-| AWS | DynamoDB | [aws-dynamodb](examples/aws-dynamodb) | CloudTrail Data Events |
-| AWS | DocumentDB | [aws-documentdb](examples/aws-documentdb) | DocumentDB Audit Logs |
-| AWS | MariaDB RDS | [aws-mariadb-rds-audit](examples/aws-mariadb-rds-audit) | MariaDB Audit Plugin |
-| AWS | MySQL RDS | [aws-mysql-rds-audit](examples/aws-mysql-rds-audit) | MariaDB Audit Plugin |
-| AWS | Aurora MySQL | [aws-aurora-mysql-audit](examples/aws-aurora-mysql-audit) | MariaDB Audit Plugin |
-| AWS | Neptune | [aws-neptune-audit](examples/aws-neptune-audit) | Neptune Audit Logs |
-| AWS | OpenSearch | [amazon-opensearch-audit](examples/amazon-opensearch-audit) | OpenSearch Audit Logs |
-| AWS | PostgreSQL RDS (Object) | [aws-postgresql-rds-object](examples/aws-postgresql-rds-object), [aws-postgresql-rds-object-tables](examples/aws-postgresql-rds-object-tables) | pgAudit (Object-Level) |
-| AWS | PostgreSQL RDS (Session) | [aws-postgresql-rds-session](examples/aws-postgresql-rds-session) | pgAudit (Session-Level) |
-| AWS | Aurora PostgreSQL (Object) | [aws-aurora-postgres-object](examples/aws-aurora-postgres-object) | pgAudit (Object-Level) |
-| AWS | Aurora PostgreSQL (Session) | [aws-aurora-postgres-session](examples/aws-aurora-postgres-session) | pgAudit (Session-Level) |
-| AWS | Redshift | [aws-redshift-with-uc](examples/aws-redshift-with-uc) | Connection & User Activity Logs |
-| AWS | S3 | [aws-s3-audit](examples/aws-s3-audit) | CloudTrail |
-| Azure | Cosmos DB | [azure-cosmos-audit](examples/azure-cosmos-audit) | Diagnostic Settings |
-| Azure | MySQL Flexible Server | [azure-mysql-audit](examples/azure-mysql-audit) | Diagnostic Settings |
-| Azure | PostgreSQL Flexible Server | [azure-postgres-audit](examples/azure-postgres-audit) | Diagnostic Settings + pgAudit |
-| Azure | SQL Database | [azure-sql-audit](examples/azure-sql-audit) | Server & Database Auditing |
-| Azure | Databricks (UC 1.0) | [databricks-audit](examples/databricks-audit) | Diagnostic Settings |
-| GCP | AlloyDB | [gcp-alloydb-audit](examples/gcp-alloydb-audit) | AlloyDB PostgreSQL Logs |
-| On-prem | MySQL | [onprem-mysql](examples/onprem-mysql) | MySQL Audit Plugin |
-| On-prem | Cassandra | [onprem-cassandra](examples/onprem-cassandra) | Cassandra audit logs |
-| On-prem | Couchbase | [onprem-couchbase](examples/onprem-couchbase) | Couchbase audit logs |
-| Cloud | Couchbase Capella | [couchbase-capella](examples/couchbase-capella) | Capella Audit Logs |
+| Datastore | Terraform Module | Audit Method | Log Destination |
+|-----------|------------------|--------------|-----------------|
+| AWS DynamoDB | [aws-dynamodb](examples/aws-dynamodb) | CloudTrail Data Events | CloudWatch Logs |
+| AWS DocumentDB | [aws-documentdb](examples/aws-documentdb) | DocumentDB Audit Logs | CloudWatch Logs |
+| AWS MariaDB RDS | [aws-mariadb-rds-audit](examples/aws-mariadb-rds-audit) | MariaDB Audit Plugin | CloudWatch Logs |
+| AWS MySQL RDS | [aws-mysql-rds-audit](examples/aws-mysql-rds-audit) | MariaDB Audit Plugin | CloudWatch Logs |
+| AWS Aurora MySQL | [aws-aurora-mysql-audit](examples/aws-aurora-mysql-audit) | MariaDB Audit Plugin | CloudWatch Logs |
+| AWS Neptune | [aws-neptune-audit](examples/aws-neptune-audit) | Neptune Audit Logs | CloudWatch Logs |
+| AWS OpenSearch | [amazon-opensearch-audit](examples/amazon-opensearch-audit) | OpenSearch Audit Logs | CloudWatch Logs |
+| AWS PostgreSQL RDS (Object) | [aws-postgresql-rds-object](examples/aws-postgresql-rds-object), [aws-postgresql-rds-object-tables](examples/aws-postgresql-rds-object-tables) | pgAudit (Object-Level) | CloudWatch Logs / SQS |
+| AWS PostgreSQL RDS (Session) | [aws-postgresql-rds-session](examples/aws-postgresql-rds-session) | pgAudit (Session-Level) | CloudWatch Logs / SQS |
+| AWS Aurora PostgreSQL (Object) | [aws-aurora-postgres-object](examples/aws-aurora-postgres-object) | pgAudit (Object-Level) | CloudWatch Logs / SQS |
+| AWS Aurora PostgreSQL (Session) | [aws-aurora-postgres-session](examples/aws-aurora-postgres-session) | pgAudit (Session-Level) | CloudWatch Logs / SQS |
+| AWS Redshift | [aws-redshift-with-uc](examples/aws-redshift-with-uc) | Connection & User Activity Logs | CloudWatch Logs / S3 |
+| AWS S3 | [aws-s3-audit](examples/aws-s3-audit) | CloudTrail | CloudWatch Logs |
+| Azure Cosmos DB | [azure-cosmos-audit](examples/azure-cosmos-audit) | Diagnostic Settings | Azure Event Hub |
+| Azure MySQL Flexible Server | [azure-mysql-audit](examples/azure-mysql-audit) | Diagnostic Settings | Azure Event Hub |
+| Azure PostgreSQL Flexible Server | [azure-postgres-audit](examples/azure-postgres-audit) | Diagnostic Settings + pgAudit | Azure Event Hub |
+| Azure SQL Database | [azure-sql-audit](examples/azure-sql-audit) | Server & Database Auditing | Azure Storage Account (JDBC) |
+| Azure Databricks (UC 1.0) | [databricks-audit](examples/databricks-audit) | Diagnostic Settings | Azure Event Hub |
+| GCP AlloyDB | [gcp-alloydb-audit](examples/gcp-alloydb-audit) | AlloyDB PostgreSQL Logs | Audit transport resources |
+| On-prem MySQL | [onprem-mysql](examples/onprem-mysql) | MySQL Audit Plugin | Syslog |
+| On-prem Cassandra | [onprem-cassandra](examples/onprem-cassandra) | Cassandra Audit Logs | Filebeat |
+| On-prem Couchbase | [onprem-couchbase](examples/onprem-couchbase) | Couchbase Audit Logs | Filebeat |
+| Couchbase Capella | [couchbase-capella](examples/couchbase-capella) | Capella Audit Logs | REST API |
 
 ## Kafka-Based Universal Connector
 
-| Platform | Datastore | Example |
-|----------|-----------|---------|
-| AWS | OpenSearch | [amazon-opensearch-audit-kafka](examples/amazon-opensearch-audit-kafka) |
-| Azure | Databricks | [databricks-audit-kafka](examples/databricks-audit-kafka) |
+| Datastore | Terraform Module | Audit Method | Log Destination |
+|-----------|------------------|--------------|-----------------|
+| AWS OpenSearch | [amazon-opensearch-audit-kafka](examples/amazon-opensearch-audit-kafka) | OpenSearch Audit Logs | CloudWatch Logs |
+| Azure Databricks (UC 2.0, Unity Catalog) | [databricks-audit-kafka](examples/databricks-audit-kafka) | Diagnostic Settings | Azure Event Hub |
 
 ## Prerequisites
 
@@ -77,6 +77,18 @@ Before using these examples, ensure you have:
 All modules that register datastores with Guardium Universal Connector use API-based upload for Universal Connector profile deployment, which provides secure and reliable integration with Guardium Data Protection.
 
 See the README and `terraform.tfvars.example` in each example directory for variables and usage.
+
+## Key Features
+
+- **Automated Configuration**: Automatically configures audit logging for AWS and Azure datastores and Couchbase Capella
+- **Universal Connector Integration**: Seamlessly integrates with Guardium Universal Connector
+- **Multiple Datastore Support**: Supports DynamoDB, DocumentDB, MariaDB RDS, MySQL RDS, Aurora MySQL, Neptune, OpenSearch, PostgreSQL RDS, RedShift, Aurora PostgreSQL, Azure Cosmos, Azure MySQL, and Azure PostgreSQL
+- **Flexible Audit Levels**: Choose between object-level and session-level auditing for PostgreSQL and Aurora PostgreSQL
+- **CloudWatch Integration**: Leverages CloudWatch Logs for centralized log management
+- **Aurora Cluster Support**: Native support for Aurora MySQL and Aurora PostgreSQL clusters with automatic parameter group management
+- **Cloud-Native Support**: Includes support for Couchbase Capella cloud-native database platform and Azure Cosmos DB
+- **Compliance Ready**: Supports compliance requirements (PCI-DSS, HIPAA, GDPR, SOC 2)
+- **Terraform Native**: Fully declarative infrastructure as code approach
 
 ## Security Considerations
 
