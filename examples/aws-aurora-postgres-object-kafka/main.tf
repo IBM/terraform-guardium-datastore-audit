@@ -71,6 +71,7 @@ module "aurora_postgres_object_audit_kafka" {
   enable_audit_setup = var.enable_audit_setup
 
   # Universal Connector Configuration
+  udc_name                   = var.udc_name
   udc_aws_credential         = var.udc_aws_credential
   enable_universal_connector = var.enable_universal_connector
   uc_mode                    = "kafka"
@@ -82,7 +83,8 @@ module "aurora_postgres_object_audit_kafka" {
   nodata_threshold_min = var.nodata_threshold_min
   unmask               = var.unmask
   filter_pattern       = var.filter_pattern
+  poll_interval_sec    = var.poll_interval_sec
   poll_interval        = var.poll_interval
   event_limit          = var.event_limit
-  start_time           = var.start_time
+  timestamp_start      = var.timestamp_start
 }

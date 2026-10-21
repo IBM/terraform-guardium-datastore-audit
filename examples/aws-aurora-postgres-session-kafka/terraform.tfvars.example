@@ -20,8 +20,9 @@ pg_audit_log = "all, -misc"
 # =====================================================================
 # GUARDIUM CONFIGURATION - CRITICAL
 # =====================================================================
-# Name for the Universal Connector (used for AWS resource naming)
-udc_name = "aurora-postgres-session-kafka-connector"
+# OPTIONAL: Override the name of the Universal Connector profile.
+# If unset or empty, defaults to <aws_region>-<aurora_postgres_cluster_identifier>-<aws_account_id>
+# udc_name = "aurora-postgres-session-kafka-connector"
 
 # REQUIRED: Name of the AWS credential defined in Guardium
 # This must match a credential you've already created in Guardium
@@ -72,14 +73,18 @@ unmask = false
 # CloudWatch Logs filter pattern for filtering audit logs
 filter_pattern = "None"
 
+# Poll interval seconds component (0-59) for Kafka-based UC. Added to poll_interval (minutes)
+poll_interval_sec = 30
+
 # Poll interval in minutes for Kafka-based UC
-poll_interval = 1
+poll_interval = 0
 
 # Maximum number of events to retrieve per poll for Kafka-based UC
 event_limit = 1000
 
-# Start time as epoch in milliseconds for Kafka-based UC (0 = disabled)
-start_time = 0
+# Initial polling time for Kafka-based UC, in UTC ISO 8601 with milliseconds (e.g. "2026-10-19T21:17:05.000Z").
+# Empty = use the current time (UTC), recorded at first apply
+timestamp_start = ""
 
 # =====================================================================
 # TAGS

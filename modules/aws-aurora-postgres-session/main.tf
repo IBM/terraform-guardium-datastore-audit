@@ -3,8 +3,21 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+# Records the time of the first apply so the default initial polling time stays stable across plans
+resource "terraform_data" "default_timestamp_start" {
+  input = formatdate("YYYY-MM-DD'T'hh:mm:ss'.000Z'", timestamp())
+
+  lifecycle {
+    ignore_changes = [input]
+  }
+}
+
 locals {
-  udc_name       = format("%s-%s-%s", var.aws_region, var.aurora_postgres_cluster_identifier, local.aws_account_id)
+  # If user provides timestamp_start, use it exactly. Otherwise use the time of the first apply.
+  timestamp_start = var.timestamp_start != "" ? var.timestamp_start : terraform_data.default_timestamp_start.output
+
+  # If user provides udc_name, use it exactly. Otherwise auto-generate from region, cluster and account.
+  udc_name       = var.udc_name != "" ? var.udc_name : format("%s-%s-%s", var.aws_region, var.aurora_postgres_cluster_identifier, local.aws_account_id)
   aws_account_id = module.aws_configuration.aws_account_id
   log_group      = format("/aws/rds/cluster/%s/postgresql", var.aurora_postgres_cluster_identifier)
 
@@ -24,9 +37,10 @@ locals {
     nodata_threshold_min  = var.nodata_threshold_min
     unmask                = var.unmask
     filter_pattern        = var.filter_pattern
+    poll_interval_sec     = var.poll_interval_sec
     poll_interval         = var.poll_interval
     event_limit           = var.event_limit
-    start_time            = var.start_time
+    timestamp_start       = local.timestamp_start
   })
 }
 

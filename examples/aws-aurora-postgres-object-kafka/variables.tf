@@ -67,8 +67,8 @@ variable "ssl_mode" {
 //////
 variable "udc_name" {
   type        = string
-  description = "Name for universal connector. Is used for all aws objects"
-  default     = "aurora-postgres-gdp-object-kafka"
+  description = "Override name for the universal connector profile. Defaults to {aws_region}-{aurora_postgres_cluster_identifier}-{aws_account_id}"
+  default     = ""
 }
 
 variable "udc_aws_credential" {
@@ -199,10 +199,21 @@ variable "filter_pattern" {
   default     = "None"
 }
 
+variable "poll_interval_sec" {
+  type        = number
+  description = "Poll interval seconds component (0-59) for Kafka-based UC. Added to poll_interval (minutes)"
+  default     = 30
+
+  validation {
+    condition     = var.poll_interval_sec >= 0 && var.poll_interval_sec <= 59 && var.poll_interval_sec == floor(var.poll_interval_sec)
+    error_message = "poll_interval_sec must be a whole number between 0 and 59."
+  }
+}
+
 variable "poll_interval" {
   type        = number
   description = "Poll interval in minutes for Kafka-based UC"
-  default     = 1
+  default     = 0
 }
 
 variable "event_limit" {
@@ -211,8 +222,13 @@ variable "event_limit" {
   default     = 1000
 }
 
-variable "start_time" {
-  type        = number
-  description = "Start time as epoch in milliseconds for Kafka-based UC (0 = disabled)"
-  default     = 0
+variable "timestamp_start" {
+  type        = string
+  description = "Initial polling time for Kafka-based UC, in UTC ISO 8601 with milliseconds, e.g. 2026-10-19T21:17:05.000Z. Leave empty to use the current time (UTC), recorded at first apply"
+  default     = ""
+
+  validation {
+    condition     = can(regex("^([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z)?$", var.timestamp_start))
+    error_message = "timestamp_start must be empty or UTC ISO 8601 with milliseconds, e.g. 2026-10-19T21:17:05.000Z."
+  }
 }

@@ -82,6 +82,11 @@ Fill in all required values before continuing:
 - The Guardium connection details
 - `kafka_cluster_name` - must match a Kafka cluster already configured in Guardium
 
+Optional settings:
+- `udc_name` - overrides the Universal Connector profile name. If unset or empty, it defaults to `{aws_region}-{aurora_postgres_cluster_identifier}-{aws_account_id}`
+- `timestamp_start` - initial polling time in UTC ISO 8601 with milliseconds (for example `2026-10-19T21:17:05.000Z`). If empty, the current time (UTC) is used. It is recorded at the first apply and does not change on later applies; set the variable to choose a different start time
+- `poll_interval_sec` and `poll_interval` - polling interval, in seconds and minutes. The defaults are 30 seconds and 0 minutes, and the two values are added together
+
 To find your cluster identifier:
 ```bash
 aws rds describe-db-clusters --query "DBClusters[*].DBClusterIdentifier" --output text
@@ -151,7 +156,7 @@ Valid grant options are:
 | db_password | The master password for the Aurora PostgreSQL cluster | `string` | n/a | yes |
 | db_name | The database to connect to | `string` | `"postgres"` | no |
 | ssl_mode | SSL mode for PostgreSQL connection | `string` | `"require"` | no |
-| udc_name | Name for universal connector | `string` | `"aurora-postgres-gdp-object-kafka"` | no |
+| udc_name | Override name for the universal connector profile. Defaults to `{aws_region}-{aurora_postgres_cluster_identifier}-{aws_account_id}` | `string` | `""` | no |
 | udc_aws_credential | Name of AWS credential defined in Guardium | `string` | n/a | yes |
 | gdp_server | Hostname/IP address of Guardium Central Manager | `string` | n/a | yes |
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
@@ -169,9 +174,10 @@ Valid grant options are:
 | nodata_threshold_min | No data threshold in minutes for Kafka-based UC | `number` | `60` | no |
 | unmask | Whether to unmask sensitive data in audit logs | `bool` | `false` | no |
 | filter_pattern | CloudWatch Logs filter pattern for filtering audit logs | `string` | `"None"` | no |
-| poll_interval | Poll interval in minutes for Kafka-based UC | `number` | `1` | no |
+| poll_interval_sec | Poll interval seconds component (0-59), added to `poll_interval` | `number` | `30` | no |
+| poll_interval | Poll interval in minutes for Kafka-based UC | `number` | `0` | no |
 | event_limit | Maximum number of events to retrieve per poll for Kafka-based UC | `number` | `1000` | no |
-| start_time | Start time as epoch in milliseconds for Kafka-based UC (0 = disabled) | `number` | `0` | no |
+| timestamp_start | Initial polling time for Kafka-based UC, UTC ISO 8601 with milliseconds (e.g. `2026-10-19T21:17:05.000Z`). Empty = use the current time (UTC), recorded at first apply | `string` | `""` | no |
 | tags | Map of tags to apply to resources | `map(string)` | `{}` | no |
 
 ## Outputs
