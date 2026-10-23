@@ -10,7 +10,7 @@ This module imports any Universal Connector profile CSV file into IBM Guardium D
 
 Before using this module, you need to:
 
-1. **Valid profile CSV**: A Guardium Universal Connector profile CSV file that is ready to import. All UC input types are supported (CloudWatch, SQS, Kafka, JDBC, Filebeat, etc.).
+1. **Valid profile CSV**: A Guardium Universal Connector profile CSV file that is ready to import. All UC input types are supported (CloudWatch, SQS, Kafka, JDBC, Filebeat, etc.). To get a template, go to **Manage > Universal Connector > Datasource Profile Management** in the Guardium UI, choose **Actions**, then **Download Profile Template**, and fill it in with your profile details.
 2. **Guardium Data Protection**: A running GDP instance (version 12.2.1 or above).
 3. **Guardium OAuth Client**: Register an OAuth client via `grdapi register_oauth_client` to obtain `gdp_client_id` and `gdp_client_secret`.
 4. **Guardium Credentials**: A Web UI user with permissions to import profiles and install connectors.

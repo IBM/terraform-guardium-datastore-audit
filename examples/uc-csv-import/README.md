@@ -20,9 +20,10 @@ Complete these steps in Guardium before running `terraform apply`:
 
 ## Usage
 
-1. Copy `terraform.tfvars.example` to `terraform.tfvars` and fill in your values.
-2. Set `csv_file_paths` to a list of one or more UC profile CSV file paths.
-3. Run:
+1. **Get a CSV template.** In the Guardium UI, go to **Manage > Universal Connector > Datasource Profile Management**, choose **Actions**, then **Download Profile Template**. Fill in the downloaded template with your profile details (the `name` column of each row becomes the connector name).
+2. Copy `terraform.tfvars.example` to `terraform.tfvars` and fill in your values.
+3. Set `csv_file_paths` to a list of one or more UC profile CSV file paths.
+4. Run:
 
 ```bash
 terraform init
