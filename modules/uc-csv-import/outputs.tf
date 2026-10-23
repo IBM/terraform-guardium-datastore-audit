@@ -9,8 +9,8 @@ output "profile_names" {
 }
 
 output "deployed_profiles" {
-  description = "Set of profile names that were deployed on the collector(s)"
-  value       = setsubtract(local.profile_names, local.failed_profile_names)
+  description = "Set of profile names that were deployed on the collector(s) (empty when enable_universal_connector is false)"
+  value       = var.enable_universal_connector ? setsubtract(local.profile_names, local.failed_profile_names) : toset([])
 }
 
 output "skipped_profiles" {

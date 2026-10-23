@@ -38,7 +38,7 @@ Use this module when you already have a UC profile CSV and want to register and 
 
 | Datastore | Terraform Module | Audit Method | Log Destination |
 |-----------|------------------|--------------|-----------------|
-| Any (bring your own CSV) | [uc-csv-import](examples/uc-csv-import) | User-supplied CSV profile | Any |
+| UC CSV Import | [uc-csv-import](examples/uc-csv-import) | CSV file containing UC profiles | Any |
 
 ## Kafka-Based Universal Connector
 
@@ -46,6 +46,7 @@ Use this module when you already have a UC profile CSV and want to register and 
 |-----------|------------------|--------------|-----------------|
 | AWS OpenSearch | [amazon-opensearch-audit-kafka](examples/amazon-opensearch-audit-kafka) | OpenSearch Audit Logs | CloudWatch Logs |
 | Azure Databricks | [databricks-audit-kafka](examples/databricks-audit-kafka) | Diagnostic Settings | Azure Event Hub |
+| Snowflake | [snowflake-audit-kafka](examples/snowflake-audit-kafka) | Query History & Login History | Snowflake (JDBC) |
 
 ## Architecture
 

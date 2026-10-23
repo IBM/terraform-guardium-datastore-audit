@@ -20,7 +20,7 @@ Before using this module, you need to:
 | Name | Version |
 |------|---------|
 | terraform | >= 1.0.0 |
-| guardium-data-protection | = 1.5.2 |
+| guardium-data-protection | = 1.5.3 |
 
 ## How it works
 
@@ -33,16 +33,18 @@ local.profile_names  =  set of connector names found in the file
       │
       ├─ local_file.csv_temp          write CSV to .terraform/ for multipart upload
       ├─ authentication               OAuth login → access token
-      ├─ import_profiles              POST /restAPI/importProfilesFromFile  (all profiles at once)
-      └─ install_connector [for_each] POST /restAPI/bulkInstall  (one call per profile name)
+      ├─ import_profiles              POST /restAPI/importProfilesFromFile  (all profiles at once,
+      │                               connection tests run here when test_connections = true)
+      └─ install_connector [for_each] POST /restAPI/bulkInstall  (one call per profile name,
+                                      skipped for profiles whose connection test failed)
 ```
 
 ## Features
 
 - **Zero-config name extraction**: `csvdecode()` reads the `name` column from the CSV at plan time — no `udc_name` variable needed.
 - **Multi-profile support**: A CSV containing multiple profiles imports and deploys all of them in a single `terraform apply`.
+- **Partial deployment on failed connection tests**: If a profile's connection test fails on import (for example, bad credentials), it is reported as a warning and skipped, and every other profile is still deployed. `skipped_profiles` lists what was not deployed.
 - **Datastore-Agnostic**: Works with any valid UC profile CSV regardless of input type.
-- **Escape Hatch**: Set `enable_universal_connector = false` to skip all GDP operations without removing the file reference (useful for dry-runs or staged rollouts).
 
 ## Usage
 
@@ -80,7 +82,7 @@ module "uc_csv_import" {
 | gdp_client_secret | Client secret from `grdapi register_oauth_client` | `string` | n/a | yes |
 | gdp_mu_host | Comma-separated list of Guardium Managed Units to deploy profile | `string` | `""` | no |
 | enable_universal_connector | Whether to enable profile import and deployment | `bool` | `true` | no |
-| test_connections | Test connections for Kafka-based UC profiles after import | `bool` | `true` | no |
+| test_connections | Test connections after import for profiles that support it (Kafka Connect-based, UC 2.0); other profiles are ignored. A failed test does not fail the apply: the profile is skipped (not deployed) and the others are still deployed | `bool` | `true` | no |
 
 ## Outputs
 
@@ -117,5 +119,5 @@ See the [`examples/uc-csv-import`](../../examples/uc-csv-import) directory for a
 
 ## License
 
-Copyright IBM Corp. 2025
+Copyright IBM Corp. 2026
 SPDX-License-Identifier: Apache-2.0

@@ -72,6 +72,6 @@ variable "enable_universal_connector" {
 
 variable "test_connections" {
   type        = bool
-  description = "Test JDBC connections after import. Guardium only runs the test for UC 2.0 JDBC Connect profiles (e.g. Snowflake Over JDBC Connect 2.0) — it is a safe no-op for all Logstash and Kafka-input profiles. Defaults to true so JDBC Connect profiles are always validated on import."
+  description = "Test connections after import. Guardium only tests profiles that support it (Kafka Connect-based, UC 2.0, e.g. Snowflake Over JDBC Connect 2.0); other profiles are ignored. A profile whose test fails is not deployed, and the other profiles are still deployed. Defaults to true."
   default     = true
 }

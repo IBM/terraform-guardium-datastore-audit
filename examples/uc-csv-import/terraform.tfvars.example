@@ -21,6 +21,8 @@ gdp_mu_host = "guardium-mu.example.com"
 # Set to false to skip import and deployment.
 enable_universal_connector = true
 
-# Tests JDBC connections after import. Safe no-op for Logstash/Kafka-input profiles;
-# Guardium only runs the test for UC 2.0 JDBC Connect profiles (e.g. Snowflake).
+# Test connections after import. Guardium only tests profiles that support it
+# (Kafka Connect-based, UC 2.0, e.g. Snowflake over JDBC Connect); other profiles are ignored.
+# A profile whose test fails is not deployed; the other profiles are still deployed.
+# Set to false to deploy without testing.
 test_connections = true
