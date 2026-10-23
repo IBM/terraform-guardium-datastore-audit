@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-# The profile lists are comma-separated strings so that the CLI prints them on a single line,
+# The lists are comma-separated strings so that the CLI prints them on a single line,
 # e.g. "a, b", instead of one element per line.
 output "profile_names" {
   description = "All Universal Connector profile names extracted from the CSV files, including any that were not deployed (see skipped_profiles), as a comma-separated string"
@@ -21,6 +21,6 @@ output "skipped_profiles" {
 }
 
 output "csv_file_paths" {
-  description = "List of CSV file paths that were imported"
-  value       = module.uc_csv_import.csv_file_paths
+  description = "CSV file paths that were imported, in the order given, as a comma-separated string"
+  value       = join(", ", module.uc_csv_import.csv_file_paths)
 }

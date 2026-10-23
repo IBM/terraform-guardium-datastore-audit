@@ -61,7 +61,7 @@ After `apply`, the `deployed_profiles` output shows every connector that was dep
 | profile_names | Comma-separated string of all connector names extracted from the CSV files, including any that were not deployed |
 | deployed_profiles | Comma-separated string of connector names that were deployed on the collector(s) |
 | skipped_profiles | Comma-separated string of connector names that were NOT deployed because their connection test failed on import (empty if none) |
-| csv_file_paths | List of CSV file paths that were imported |
+| csv_file_paths | Comma-separated string of the CSV file paths that were imported, in the order given |
 
 ## Additional Resources
 
