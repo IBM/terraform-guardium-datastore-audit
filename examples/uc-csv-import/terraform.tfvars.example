@@ -1,0 +1,26 @@
+###############################################################################
+# UC CSV Import - Example Terraform Variables
+###############################################################################
+
+# Paths to UC profile CSV files. Add more entries for multiple files.
+csv_file_paths = [
+  "/path/to/my-connector-profile.csv",
+]
+
+# Guardium Central Manager
+gdp_server        = "guardium.example.com"
+gdp_port          = "8443"
+gdp_username      = "admin"
+gdp_password      = "your-password-here"
+gdp_client_id     = "client1"
+gdp_client_secret = "your-client-secret-here"
+
+# Comma-separated Managed Units to deploy to. Leave "" for Central Manager only.
+gdp_mu_host = "guardium-mu.example.com"
+
+# Set to false to skip import and deployment.
+enable_universal_connector = true
+
+# Tests JDBC connections after import. Safe no-op for Logstash/Kafka-input profiles;
+# Guardium only runs the test for UC 2.0 JDBC Connect profiles (e.g. Snowflake).
+test_connections = true
