@@ -56,7 +56,7 @@ locals {
 
 module "gdp_connect-datasource-to-uc" {
   source         = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  version        = "= 1.3.3"
+  version        = "1.3.4"
   count          = var.enable_universal_connector && var.log_export_type == "Cloudwatch" ? 1 : 0
   udc_name       = local.udc_name_safe
   udc_csv_parsed = local.aurora_mysql_csv
