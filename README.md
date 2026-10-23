@@ -32,9 +32,9 @@ These examples use the **legacy Logstash-based Universal Connector on the Guardi
 | On-prem Couchbase | [onprem-couchbase](examples/onprem-couchbase) | Couchbase Audit Logs | Filebeat |
 | Couchbase Capella | [couchbase-capella](examples/couchbase-capella) | Capella Audit Logs | REST API |
 
-## Generic Import
+## CSV Import
 
-Use this module when you already have a UC profile CSV and want to register and deploy it without configuring any underlying datastore.
+Use this module when you already have a UC profile CSV and want to register and deploy it without configuring any audit logging in datastore.
 
 | Datastore | Terraform Module | Audit Method | Log Destination |
 |-----------|------------------|--------------|-----------------|
