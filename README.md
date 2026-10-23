@@ -32,12 +32,21 @@ These examples use the **legacy Logstash-based Universal Connector on the Guardi
 | On-prem Couchbase | [onprem-couchbase](examples/onprem-couchbase) | Couchbase Audit Logs | Filebeat |
 | Couchbase Capella | [couchbase-capella](examples/couchbase-capella) | Capella Audit Logs | REST API |
 
+## CSV Import
+
+Use this module when you already have a UC profile CSV and want to register and deploy it without configuring any audit logging in datastore.
+
+| Datastore | Terraform Module | Audit Method | Log Destination |
+|-----------|------------------|--------------|-----------------|
+| UC CSV Import | [uc-csv-import](examples/uc-csv-import) | CSV file containing UC profiles | Any |
+
 ## Kafka-Based Universal Connector
 
 | Datastore | Terraform Module | Audit Method | Log Destination |
 |-----------|------------------|--------------|-----------------|
 | AWS OpenSearch | [amazon-opensearch-audit-kafka](examples/amazon-opensearch-audit-kafka) | OpenSearch Audit Logs | CloudWatch Logs |
 | Azure Databricks | [databricks-audit-kafka](examples/databricks-audit-kafka) | Diagnostic Settings | Azure Event Hub |
+| Snowflake | [snowflake-audit-kafka](examples/snowflake-audit-kafka) | Query History & Login History | Snowflake (JDBC) |
 
 ## Architecture
 
