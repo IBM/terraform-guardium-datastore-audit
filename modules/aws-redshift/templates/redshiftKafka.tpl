@@ -1,0 +1,2 @@
+profile_definition_name,name,description,credential_name,cluster_name,use_elb,region,log_group,filter_pattern,account_id,database_cluster_name,event_delay,nodata_threshold_min,poll_interval_sec,poll_interval,event_limit,timestamp_start,unmask
+AWS Redshift Over Cloudwatch Connect 2.0,${udc_name},"${description}",${credential_name},${cluster_name},${use_elb},${aws_region},"${aws_log_group}","${filter_pattern}",${aws_account_id},${database_cluster_name},${event_delay},${nodata_threshold_min},"${poll_interval_sec}",${poll_interval},${event_limit},"${timestamp_start}",${unmask}
