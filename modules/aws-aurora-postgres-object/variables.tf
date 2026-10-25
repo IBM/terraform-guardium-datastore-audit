@@ -34,7 +34,7 @@ variable "force_failover" {
 variable "skip_reboot" {
   description = "Skip automatic reboot (audit logging won't work until manual reboot)"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "db_host" {
