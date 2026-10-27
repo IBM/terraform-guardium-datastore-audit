@@ -37,7 +37,9 @@ These examples use the **legacy Logstash-based Universal Connector on the Guardi
 | Datastore | Terraform Module | Audit Method | Log Destination |
 |-----------|------------------|--------------|-----------------|
 | AWS OpenSearch | [amazon-opensearch-audit-kafka](examples/amazon-opensearch-audit-kafka) | OpenSearch Audit Logs | CloudWatch Logs |
+| AWS Redshift | [aws-redshift-audit-kafka](examples/aws-redshift-audit-kafka) | Connection & User Activity Logs | CloudWatch Logs |
 | Azure Databricks | [databricks-audit-kafka](examples/databricks-audit-kafka) | Diagnostic Settings | Azure Event Hub |
+| Snowflake | [snowflake-audit-kafka](examples/snowflake-audit-kafka) | JDBC Query & Login History | Snowflake Information Schema |
 
 ## Architecture
 
