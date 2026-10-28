@@ -108,7 +108,7 @@ module "aurora-postgres-cloudwatch-registration" {
 module "aurora-postgres-kafka-registration" {
   count            = var.uc_mode == "kafka" && var.enable_universal_connector ? 1 : 0
   source           = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  version          = "= 1.3.3"
+  version          = "= 1.3.4"
   udc_name         = local.udc_name
   udc_csv_parsed   = local.aurora_postgres_kafka_csv
   client_id        = var.gdp_client_id
