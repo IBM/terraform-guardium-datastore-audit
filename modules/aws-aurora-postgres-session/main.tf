@@ -64,6 +64,7 @@ module "aurora-postgres-sqs-registration" {
   source  = "IBM/common/guardium//modules/aurora-postgres-sqs-registration"
   version = "= 1.6.4"
 
+  udc_name                           = local.udc_name
   aws_account_id                     = module.aws_configuration.aws_account_id
   gdp_client_id                      = var.gdp_client_id
   gdp_client_secret                  = var.gdp_client_secret
@@ -85,6 +86,7 @@ module "aurora-postgres-cloudwatch-registration" {
   source  = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
   version = "= 1.6.4"
 
+  udc_name                           = local.udc_name
   aws_region                         = var.aws_region
   aws_account_id                     = module.aws_configuration.aws_account_id
   gdp_client_id                      = var.gdp_client_id
