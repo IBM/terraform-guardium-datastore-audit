@@ -1,49 +1,129 @@
-# AWS Redshift Universal Connector Module Example Configuration
+# AWS Redshift Universal Connector Module - Example Terraform Variables
 
-# General Configuration
+##############################
+# AWS & General Configuration
+##############################
+# AWS region where Redshift cluster is deployed
+aws_region = "us-east-1"
+
+# Prefix for resource names
 name_prefix = "guardium"
-aws_region  = "us-east-1"
-tags = {
-  Purpose = "guardium-redshift-uc"
-  Owner   = "your-email@example.com"
-}
 
-# Redshift Configuration
+# Identifier of the Redshift cluster
 redshift_cluster_identifier = "my-redshift-cluster"
 
-# Input Configuration
-input_type = "cloudwatch"  # Options: "cloudwatch" or "s3" - determines which logging method to use
+# Tags to apply to all resources
+tags = {
+  Purpose     = "guardium-redshift-uc"
+  Owner       = "security-team@example.com"
+  Environment = "production"
+}
 
-# CloudWatch Configuration (if input_type = "cloudwatch")
-existing_cloudwatch_log_group_name = ""  # Leave empty to create a new one, or specify an existing log group name
+# Universal Connector mode: "logstash" or "kafka"
+uc_mode = "kafka"
 
-# S3 Configuration (if input_type = "s3")
-existing_s3_bucket_name = ""  # Leave empty to create a new one, or specify an existing bucket name
-s3_prefix = ""  # Leave empty to use default prefix, or specify a custom prefix
+# Optional Log Group Configuration:
+# Option 1: Base prefix (module automatically appends /connectionlog and /useractivitylog)
+# existing_cloudwatch_log_group_name = "/aws/redshift/cluster/my-redshift-cluster"
+#
+# Option 2: Comma-separated list in existing_cloudwatch_log_group_name
+# existing_cloudwatch_log_group_name = "/aws/redshift/cluster/my-redshift-cluster/connectionlog,/aws/redshift/cluster/my-redshift-cluster/useractivitylog"
+#
+# Option 3: Explicit list of log groups (overrides existing_cloudwatch_log_group_name)
+# cloudwatch_log_groups = [
+#   "/aws/redshift/cluster/my-redshift-cluster/connectionlog",
+#   "/aws/redshift/cluster/my-redshift-cluster/useractivitylog"
+# ]
 
-# Parameter Group Configuration
-create_parameter_group = true
-existing_parameter_group_name = ""  # Leave empty to create a new one
-enable_logging = true  # Enable logging
+# Set enable_audit_setup = false to skip all AWS-side audit setup (parameter group + CloudWatch logging)
+# and only manage the Universal Connector — mirrors enable_audit_setup = false in the Snowflake example.
+enable_audit_setup = true
 
+##############################
 # Guardium Data Protection Configuration
-gdp_server             = "guardium.example.com"
-gdp_port               = 8443
-gdp_username           = "guardium_admin"
-gdp_password           = "your-password"
-gdp_client_id          = "your-client-id"
-gdp_client_secret      = "your-client-secret"
-gdp_ssh_username       = "ec2-user"
-gdp_ssh_privatekeypath = "~/.ssh/id_rsa"
-gdp_mu_host            = "default"
+##############################
+# Guardium Central Manager hostname or IP address
+gdp_server = "guardium.example.com"
 
+# Guardium Central Manager port (default: 8443)
+gdp_port = 8443
+
+# Guardium Web UI credentials
+gdp_username = "guardium_admin"
+gdp_password = "your-guardium-password"
+
+# Guardium OAuth client credentials (from `grdapi register_oauth_client`)
+gdp_client_id     = "your-client-id"
+gdp_client_secret = "your-client-secret"
+
+# Comma-separated list of Guardium Managed Units (e.g. "mu1.example.com,mu2.example.com")
+gdp_mu_host = "managed-unit-1"
+
+##############################
 # Universal Connector Configuration
+##############################
+# Whether to enable the Universal Connector
 enable_universal_connector = true
-udc_aws_credential        = "aws-credential-name"
-csv_start_position        = "beginning"
-csv_interval              = "60"
-csv_event_filter          = "*"
-csv_description           = "Redshift Universal Connector"
-csv_cluster_name          = "default"
 
+# Name of the AWS credential configured in Guardium Credential Management
+udc_aws_credential = "my-aws-credential"
 
+# Optional: Override the Universal Connector profile name
+# udc_name = "aws-redshift-profile"
+
+# Optional: Custom description for the Universal Connector profile
+# udc_description = "GDP AWS Redshift Kafka connector for my-redshift-cluster"
+
+##############################
+# Kafka-specific Configuration (uc_mode = "kafka")
+##############################
+# Kafka cluster name configured in Guardium
+kafka_cluster_name = "kafka"
+
+# Whether to use ELB for the Kafka-based Universal Connector
+use_elb = false
+
+# CloudWatch Logs filter pattern to include or exclude log events
+filter_pattern = "None"
+
+# Redshift cluster name in AWS console (defaults to redshift_cluster_identifier)
+# database_cluster_name = "my-redshift-cluster"
+
+# Number of minutes to delay log ingestion to allow CloudWatch to flush log events
+event_delay = 15
+
+# Number of minutes without incoming events before a no-traffic alert is raised
+nodata_threshold_min = 60
+
+# How frequently (in seconds) the connector polls CloudWatch for new log events (0-59)
+poll_interval_sec = "30"
+
+# How frequently (in minutes) the connector polls CloudWatch for new log events
+poll_interval = 0
+
+# Maximum number of log events fetched per CloudWatch API call
+event_limit = 1000
+
+# Initial polling time (ISO 8601). Leave empty to start from current time
+# timestamp_start = "2026-01-01T00:00:00Z"
+
+# When true, sensitive values (such as SQL query text) are unmasked in traffic data
+unmask = false
+
+##############################
+# Logstash-specific Configuration (uc_mode = "logstash")
+##############################
+# Input type: "cloudwatch" or "s3"
+# input_type = "cloudwatch"
+
+# Start position for Logstash UDC: "beginning" or "end"
+# csv_start_position = "beginning"
+
+# Polling interval in seconds
+# csv_interval = "60"
+
+# Optional: Event filter pattern
+# csv_event_filter = ""
+
+# Whether to use AWS bundled CA certificates
+# use_aws_bundled_ca = true
