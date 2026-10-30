@@ -16,12 +16,12 @@ locals {
 
 module "common_aws-configuration" {
   source  = "IBM/common/guardium//modules/aws-configuration"
-  version = "= 1.6.4"
+  version = "= 1.6.5"
 }
 
 module "common_aurora-mysql-parameter-group" {
   source  = "IBM/common/guardium//modules/aurora-mysql-parameter-group"
-  version = "= 1.6.4"
+  version = "= 1.6.5"
 
   aurora_mysql_cluster_identifier = var.aurora_mysql_cluster_identifier
   audit_events                    = var.audit_events
