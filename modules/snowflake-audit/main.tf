@@ -132,7 +132,7 @@ resource "snowflake_grant_privileges_to_account_role" "warehouse" {
 module "snowflake-kafka-registration" {
   count            = var.enable_universal_connector ? 1 : 0
   source           = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  version          = "= 1.3.3"
+  version          = "1.3.5"
   udc_name         = local.udc_name
   udc_csv_parsed   = local.snowflake_kafka_csv
   client_id        = var.gdp_client_id
