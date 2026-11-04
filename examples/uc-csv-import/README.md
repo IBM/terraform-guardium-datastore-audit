@@ -51,7 +51,7 @@ After `apply`, the `deployed_profiles` output shows every connector that was dep
 | gdp_password | Guardium Web UI password | yes |
 | gdp_client_id | OAuth client ID from `grdapi register_oauth_client` | yes |
 | gdp_client_secret | OAuth client secret from `grdapi register_oauth_client` | yes |
-| gdp_mu_host | Comma-separated Managed Unit hostnames to deploy the profile to | no |
+| gdp_mu_host | Comma-separated Managed Unit hostnames to deploy profiles to. Used only for profiles whose `deployed_collectors` CSV column is empty or missing | no |
 | enable_universal_connector | Set to `false` to skip import and deployment | no |
 | test_connections | Test connections after import for profiles that support it (Kafka Connect-based, UC 2.0); other profiles are ignored (default: `true`). A failed test does not fail the apply: the profile is skipped and the others are still deployed | no |
 

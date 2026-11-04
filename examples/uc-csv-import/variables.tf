@@ -51,7 +51,7 @@ variable "gdp_password" {
 
 variable "gdp_mu_host" {
   type        = string
-  description = "Comma separated list of Guardium Managed Units to deploy profile"
+  description = "Comma separated list of Guardium Managed Units to deploy profiles to. Used as a fallback for profiles whose deployed_collectors CSV column is empty or missing."
   default     = ""
 }
 

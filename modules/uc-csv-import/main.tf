@@ -19,15 +19,28 @@ locals {
     }
   }
 
-  # Parse every CSV and collect the "name" column across all files into one
-  # flat set.  Each name drives a single install_connector call.
+  # Parse every CSV and collect the "name" and optional "deployed_collectors"
+  # columns from every row.
   # All UC profile CSVs share the same header layout:
   #   profile_definition_name, name, description, ...
-  profile_names = toset(flatten([
+  profile_rows = flatten([
     for f in local.csv_files : [
-      for row in csvdecode(f.content) : row["name"]
+      for row in csvdecode(f.content) : {
+        name       = row["name"]
+        collectors = trimspace(lookup(row, "deployed_collectors", ""))
+      }
     ]
-  ]))
+  ])
+
+  # Flat set of profile names.  Each name drives a single install_connector call.
+  profile_names = toset([for r in local.profile_rows : r.name])
+
+  # name -> collectors from the "deployed_collectors" column (empty string when the
+  # column is missing or blank).  If a name appears more than once, the first wins.
+  profile_collectors = {
+    for name in local.profile_names :
+    name => [for r in local.profile_rows : r.collectors if r.name == name][0]
+  }
 }
 
 # Write each CSV to the workspace .terraform directory so the provider can
@@ -60,16 +73,18 @@ resource "guardium-data-protection_import_profiles" "import_profiles" {
   test_connections = var.test_connections
 }
 
-# Deploy every imported profile onto the specified Managed Units.
+# Deploy every imported profile onto its Managed Units.
 # One install_connector call per unique profile name across all uploaded files.
+# The hosts come from the profile's "deployed_collectors" CSV column; if that is empty,
+# var.gdp_mu_host is used instead.
 # Profiles whose connection test failed on import are skipped (with a warning) so that
 # the remaining profiles are still deployed.
 resource "guardium-data-protection_install_connector" "install_connector" {
-  for_each = var.enable_universal_connector ? local.profile_names : toset([])
+  for_each = var.enable_universal_connector ? local.profile_collectors : {}
 
   depends_on    = [guardium-data-protection_import_profiles.import_profiles]
   access_token  = data.guardium-data-protection_authentication.access_token[0].access_token
   udc_name      = each.key
-  gdp_mu_host   = var.gdp_mu_host
+  gdp_mu_host   = each.value != "" ? each.value : var.gdp_mu_host
   skip_profiles = flatten([for r in guardium-data-protection_import_profiles.import_profiles : r.failed_connection_test_profiles])
 }
