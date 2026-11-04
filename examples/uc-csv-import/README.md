@@ -6,6 +6,9 @@ This example imports one or more Universal Connector profile CSV files into IBM 
 
 Complete these steps in Guardium before running `terraform apply`:
 
+- Complete the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
+  - OAuth client registered via `grdapi register_oauth_client` (see step 1 below)
+
 1. **Register an OAuth client** on the Central Manager:
    ```
    grdapi register_oauth_client client_id=client1 grant_types=password
