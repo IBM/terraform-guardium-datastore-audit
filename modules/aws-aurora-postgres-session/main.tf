@@ -34,7 +34,7 @@ locals {
 
 module "aws_configuration" {
   source  = "IBM/common/guardium//modules/aws-configuration"
-  version = "= 1.6.4"
+  version = "= 1.6.6"
 }
 
 data "aws_rds_cluster" "cluster_metadata" {
@@ -50,7 +50,7 @@ moved {
 module "aurora-postgres-parameter-group" {
   count                              = var.enable_audit_setup ? 1 : 0
   source                             = "IBM/common/guardium//modules/aurora-postgres-parameter-group"
-  version                            = "= 1.6.4"
+  version                            = "= 1.6.6"
   pg_audit_log                       = var.pg_audit_log
   pg_audit_role                      = "" # Not used in session auditing
   force_failover                     = var.force_failover
@@ -62,7 +62,7 @@ module "aurora-postgres-parameter-group" {
 module "aurora-postgres-sqs-registration" {
   count   = var.uc_mode != "kafka" && var.log_export_type == "SQS" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-sqs-registration"
-  version = "= 1.6.4"
+  version = "= 1.6.6"
 
   udc_name                           = local.udc_name
   aws_account_id                     = module.aws_configuration.aws_account_id
@@ -84,7 +84,7 @@ module "aurora-postgres-sqs-registration" {
 module "aurora-postgres-cloudwatch-registration" {
   count   = var.uc_mode != "kafka" && var.log_export_type == "Cloudwatch" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
-  version = "= 1.6.4"
+  version = "= 1.6.6"
 
   udc_name                           = local.udc_name
   aws_region                         = var.aws_region
@@ -110,7 +110,7 @@ module "aurora-postgres-cloudwatch-registration" {
 module "aurora-postgres-kafka-registration" {
   count            = var.uc_mode == "kafka" && var.enable_universal_connector ? 1 : 0
   source           = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  version          = "= 1.3.4"
+  version          = "= 1.3.5"
   udc_name         = local.udc_name
   udc_csv_parsed   = local.aurora_postgres_kafka_csv
   client_id        = var.gdp_client_id

@@ -1,0 +1,135 @@
+###############################################################################
+# Snowflake Audit Kafka Configuration - Example Terraform Variables
+###############################################################################
+
+#------------------------------------------------------------------------------
+# Snowflake Configuration
+#------------------------------------------------------------------------------
+
+# Hostname used in the JDBC URL (no scheme, no port - the port must stay 443)
+snowflake_host = "<id>.<region>.<provider>.snowflakecomputing.com"
+
+# Warehouse the Guardium user runs the audit queries on
+warehouse = "COMPUTE_WH"
+
+# Database in the JDBC URL
+database = "SNOWFLAKE"
+
+# Schema in the JDBC URL
+schema = "PUBLIC"
+
+#------------------------------------------------------------------------------
+# Audit Setup Configuration (role, user and grants for Guardium)
+#------------------------------------------------------------------------------
+
+# Audit logging is enabled by default in Snowflake. Set to false to skip creating
+# the role/user and only manage the Universal Connector.
+enable_audit_setup = true
+
+# Provider authentication - only used when enable_audit_setup = true (runs as ACCOUNTADMIN)
+# For the account identifier <org>-<account> (e.g. MYORG-MYACCOUNT), set each part separately:
+
+# Snowflake organization name (the part before the dash)
+snowflake_organization_name = "MYORG"
+
+# Snowflake account name (the part after the dash, do not repeat the org)
+snowflake_account_name = "MYACCOUNT"
+
+# Snowflake admin user able to create roles/users and grant imported privileges on SNOWFLAKE
+snowflake_admin_user = "admin_user"
+
+# Password of the Snowflake admin user
+snowflake_admin_password = "your-password-here"
+
+# Name of the Snowflake role created for Guardium
+role_name = "GUARDIUM_UC_ROLE"
+
+# Name of the Snowflake JDBC user created for Guardium
+user_name = "GUARDIUM_UC_USER"
+
+# Password of the Snowflake JDBC user (must match the Guardium credential below)
+user_password = "ChangeMe-Str0ngPassword!"
+
+#------------------------------------------------------------------------------
+# Guardium Configuration
+#------------------------------------------------------------------------------
+
+# Hostname/IP address of Guardium Central Manager
+gdp_server = "guardium.example.com"
+
+# Port of Guardium Central Manager
+gdp_port = "8443"
+
+# Username of Guardium Web UI user
+gdp_username = "admin"
+
+# Password of Guardium Web UI user
+gdp_password = "your-password-here"
+
+# Client ID used when running grdapi register_oauth_client
+gdp_client_id = "client1"
+
+# Client secret from output of grdapi register_oauth_client
+gdp_client_secret = "your-client-secret-here"
+
+# Comma separated list of Guardium Managed Units to deploy profile
+gdp_mu_host = "guardium-mu.example.com"
+
+#------------------------------------------------------------------------------
+# Universal Connector Configuration
+#------------------------------------------------------------------------------
+
+# Whether to enable the universal connector module
+enable_universal_connector = true
+
+# Snowflake credential (user/password) already defined in Guardium Credential Management
+udc_credential = "snowflake-credential"
+
+# Optional: Override the auto-generated UC profile name (default: snowflake-<account label>)
+# udc_name = "snowflake-prod"
+
+# Optional custom description for the Universal Connector
+# udc_description = "GDP Snowflake Kafka connector"
+
+#------------------------------------------------------------------------------
+# Kafka-specific Configuration
+#------------------------------------------------------------------------------
+
+# Kafka cluster name configured in Guardium
+kafka_cluster_name = "kafka"
+
+# Number of Managed Units used by ELB
+mu_count = 2
+
+# Whether to use ELB for Kafka-based UC
+use_elb = false
+
+# JDBC driver jar uploaded to Guardium (UC tested using version 3.13.30 and 3.16.0)
+jdbc_driver_library = "snowflake-jdbc-3.13.30.jar"
+
+# Initial polling time as epoch in milliseconds (0 = start from the beginning of available history)
+timestamp_initial_ms = 0
+
+# Optional: Delay interval in ms (default: 0, audit data is read in near real time)
+# delay_interval = 0
+
+# No data threshold in minutes for Kafka-based UC
+nodata_threshold_min = 60
+
+# Poll interval in milliseconds
+poll_interval = 10000
+
+# Maximum number of records returned per poll
+max_poll_records = 1000
+
+# JDBC fetch size
+fetch_size = 500
+
+# Partition lookback in hours
+partition_lookback_hours = 6
+
+# Poll timeout in milliseconds
+poll_timeout_ms = 500
+
+# Timeout in milliseconds for the connection test query
+timeout_ms_query = 600000
