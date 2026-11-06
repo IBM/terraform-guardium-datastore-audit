@@ -1,6 +1,6 @@
 # AWS Aurora PostgreSQL Session-Level Audit Configuration
 
-This module configures session-level auditing for Aurora PostgreSQL clusters using the pgAudit extension. It enables comprehensive logging of SQL statements executed against your database, providing a detailed audit trail for security and compliance purposes.
+This module configures session-level auditing for Aurora PostgreSQL clusters using the pgAudit extension. It enables comprehensive logging of SQL statements executed against your database, providing a detailed audit trail for security and compliance purposes. The module supports both legacy Logstash-based (on Central Manager) and Kafka-based Universal Connector modes through the `uc_mode` variable.
 
 **Supported Versions:** This module requires IBM Guardium Data Protection (GDP) version **12.2.1 and above**.
 
@@ -69,7 +69,7 @@ module "aurora_postgresql_session_audit" {
 | aws_region | AWS region where the Aurora cluster is located | string | "us-east-1" |
 | force_failover | Whether to force failover during parameter group update | bool | false |
 | skip_reboot | Skip automatic reboot (audit logging won't work until manual reboot) | bool | false |
-| udc_name | Name for universal connector | string | "aurora-postgres-session" |
+| udc_name | Override name for the Kafka universal connector profile. Defaults to `{aws_region}-{aurora_postgres_cluster_identifier}-{aws_account_id}` | string | "" |
 | gdp_port | Port of Guardium Central Manager | string | "8443" |
 | gdp_mu_host | Comma separated list of Guardium Managed Units to deploy profile | string | "" |
 | enable_universal_connector | Whether to enable the universal connector module | bool | true |

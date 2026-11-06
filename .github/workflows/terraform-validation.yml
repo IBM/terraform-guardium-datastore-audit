@@ -64,7 +64,9 @@ jobs:
           # Skip examples with import blocks (not supported in validation without apply)
           SKIP_EXAMPLES=(
             "examples/aws-aurora-postgres-object/"
+            "examples/aws-aurora-postgres-object-kafka/"
             "examples/aws-aurora-postgres-session/"
+            "examples/aws-aurora-postgres-session-kafka/"
             "examples/aws-documentdb/"
             "examples/aws-mariadb-rds-audit/"
             "examples/aws-mysql-rds-audit/"
