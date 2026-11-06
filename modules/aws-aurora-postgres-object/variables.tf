@@ -37,6 +37,12 @@ variable "skip_reboot" {
   default     = true
 }
 
+variable "cloudwatch_logs_exports" {
+  type        = list(string)
+  description = "List of log types to export to CloudWatch Logs (valid for Aurora PostgreSQL: postgresql, instance, iam-db-auth-error)"
+  default     = ["postgresql"]
+}
+
 variable "db_host" {
   type        = string
   description = "The hostname of the Aurora PostgreSQL cluster endpoint"
