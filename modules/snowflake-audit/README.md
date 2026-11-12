@@ -75,7 +75,7 @@ module "snowflake_audit" {
 | schema | Snowflake schema in the JDBC connection URL | `string` | `"PUBLIC"` | no |
 | enable_audit_setup | Whether to create the Snowflake role, user, and grants for Guardium | `bool` | `true` | no |
 | role_name | Name of the Snowflake role created for Guardium | `string` | `"GUARDIUM_UC_ROLE"` | no |
-| user_name | Snowflake user granted the Guardium role. Only used when `enable_audit_setup = true`, in which case Terraform creates it | `string` | `"GUARDIUM_UC_USER"` | no |
+| user_name | Snowflake user created by Terraform and granted the Guardium role (only when `enable_audit_setup = true`) | `string` | `"GUARDIUM_UC_USER"` | no |
 | user_password | Password for the Snowflake user above | `string` | `""` | no (yes if `enable_audit_setup = true`) |
 | gdp_server | Hostname or IP address of Guardium Central Manager | `string` | n/a | yes |
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |

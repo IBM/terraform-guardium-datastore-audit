@@ -45,8 +45,7 @@ snowflake_admin_password = "your-password-here"
 # Name of the Snowflake role created for Guardium
 role_name = "GUARDIUM_UC_ROLE"
 
-# Snowflake user granted the Guardium role above (GUARDIUM_UC_ROLE).
-# Only used when enable_audit_setup = true, in which case Terraform creates it.
+# Snowflake user created by Terraform and granted the Guardium role (only when enable_audit_setup = true).
 user_name = "GUARDIUM_UC_USER"
 
 # Password for the Snowflake user above

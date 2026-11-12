@@ -48,7 +48,7 @@ variable "role_name" {
 
 variable "user_name" {
   type        = string
-  description = "Snowflake user granted the Guardium role. Only used when enable_audit_setup is true, in which case Terraform creates it"
+  description = "Snowflake user created by Terraform and granted the Guardium role (only when enable_audit_setup = true)"
   default     = "GUARDIUM_UC_USER"
 }
 
