@@ -34,7 +34,7 @@ output "connection_url" {
 }
 
 output "role_name" {
-  description = "Snowflake role used by Guardium (null when enable_audit_setup is false)"
+  description = "Snowflake audit role used by Guardium (null when enable_audit_setup is false)"
   value       = module.snowflake_audit_kafka.role_name
 }
 

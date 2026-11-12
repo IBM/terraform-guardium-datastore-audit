@@ -42,10 +42,10 @@ snowflake_admin_user = "admin_user"
 # Password of the existing Snowflake admin user (use the same one in the Guardium credential)
 snowflake_admin_password = "your-password-here"
 
-# Name of the Snowflake role created for Guardium
+# Name of the Snowflake audit role created for Guardium
 role_name = "GUARDIUM_UC_ROLE"
 
-# Snowflake user created by Terraform and granted the Guardium role (only when enable_audit_setup = true).
+# Snowflake user created by Terraform and granted the Snowflake audit role above (only when enable_audit_setup = true).
 user_name = "GUARDIUM_UC_USER"
 
 # Password for the Snowflake user above

@@ -42,13 +42,13 @@ variable "enable_audit_setup" {
 
 variable "role_name" {
   type        = string
-  description = "Name of the Snowflake role created for Guardium"
+  description = "Name of the Snowflake audit role created for Guardium"
   default     = "GUARDIUM_UC_ROLE"
 }
 
 variable "user_name" {
   type        = string
-  description = "Snowflake user created by Terraform and granted the Guardium role (only when enable_audit_setup = true)"
+  description = "Snowflake user created by Terraform and granted the Snowflake audit role (only when enable_audit_setup = true)"
   default     = "GUARDIUM_UC_USER"
 }
 
