@@ -40,7 +40,7 @@ Before using this example, ensure you have:
 2. **Guardium Data Protection** (12.2.2 or later):
    - A running Guardium Data Protection instance with a Kafka cluster attached to Central Manager
    - The Snowflake JDBC driver jar (3.13.30 or 3.16.0) uploaded to Guardium; set `jdbc_driver_library` to its file name
-   - A credential (Snowflake user + password) created in Guardium Credential Management; set `udc_credential`. It must match the Snowflake user (`user_name`/`user_password` when `enable_audit_setup = true`, otherwise your existing user)
+   - A credential (Snowflake user + password) created in Guardium Credential Management with the Snowflake admin user (`snowflake_admin_user`/`snowflake_admin_password`); set `udc_credential`. Terraform does not create it
    - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
      - OAuth client registered via `grdapi register_oauth_client`
 
@@ -87,15 +87,15 @@ After successful application:
 | snowflake_host | Snowflake account hostname for the JDBC URL (no scheme, no port; port remains 443) | `string` | n/a | yes |
 | snowflake_organization_name | Snowflake organization name, the part before the dash in `<org>-<account>` | `string` | `""` | no (yes if `enable_audit_setup = true`) |
 | snowflake_account_name | Snowflake account name, the part after the dash in `<org>-<account>` | `string` | `""` | no (yes if `enable_audit_setup = true`) |
-| snowflake_admin_user | Snowflake admin user able to create roles/users and grant permissions | `string` | `""` | no (yes if `enable_audit_setup = true`) |
-| snowflake_admin_password | Password of the Snowflake admin user | `string` | `""` | no (yes if `enable_audit_setup = true`) |
-| warehouse | Snowflake warehouse used by the Guardium JDBC user to run audit queries | `string` | `"COMPUTE_WH"` | no |
+| snowflake_admin_user | Existing Snowflake admin user (ACCOUNTADMIN) used by Terraform to create the role, user and grants. Also use it to create the Guardium credential named by `udc_credential` | `string` | `""` | no (yes if `enable_audit_setup = true`) |
+| snowflake_admin_password | Password of the existing Snowflake admin user. Use the same one in the Guardium credential | `string` | `""` | no (yes if `enable_audit_setup = true`) |
+| warehouse | Snowflake warehouse used by Guardium to run audit queries | `string` | `"COMPUTE_WH"` | no |
 | database | Snowflake database in the JDBC connection URL | `string` | `"SNOWFLAKE"` | no |
 | schema | Snowflake schema in the JDBC connection URL | `string` | `"PUBLIC"` | no |
 | enable_audit_setup | Whether to create the Snowflake role, user, and grants for Guardium | `bool` | `true` | no |
 | role_name | Name of the Snowflake role created for Guardium | `string` | `"GUARDIUM_UC_ROLE"` | no |
-| user_name | Name of the Snowflake user created for Guardium (JDBC user) | `string` | `"GUARDIUM_UC_USER"` | no |
-| user_password | Password of the Snowflake user created for Guardium | `string` | `""` | no (yes if `enable_audit_setup = true`) |
+| user_name | Snowflake user granted the Guardium role. Only used when `enable_audit_setup = true`, in which case Terraform creates it | `string` | `"GUARDIUM_UC_USER"` | no |
+| user_password | Password for the Snowflake user above | `string` | `""` | no (yes if `enable_audit_setup = true`) |
 | gdp_server | Hostname or IP address of Guardium Central Manager | `string` | n/a | yes |
 | gdp_port | Port of Guardium Central Manager | `string` | `"8443"` | no |
 | gdp_username | Username of Guardium Web UI user | `string` | n/a | yes |
@@ -106,7 +106,7 @@ After successful application:
 | enable_universal_connector | Whether to enable the universal connector module | `bool` | `true` | no |
 | udc_name | Name of the Universal Connector profile (defaults to `snowflake-<account>`) | `string` | `""` | no |
 | udc_description | Description for the Universal Connector profile | `string` | `""` | no |
-| udc_credential | Name of the credential configured in Guardium Credential Management | `string` | n/a | yes |
+| udc_credential | Name of the credential (Snowflake user + password) in Guardium Credential Management. Create it with `snowflake_admin_user` and `snowflake_admin_password`; Terraform does not create it | `string` | n/a | yes |
 | kafka_cluster_name | Kafka cluster name configured in Guardium | `string` | `"kafka"` | no |
 | mu_count | Number of Managed Units used by ELB | `number` | `2` | no |
 | use_elb | Whether to use ELB for the Kafka-based Universal Connector | `bool` | `false` | no |

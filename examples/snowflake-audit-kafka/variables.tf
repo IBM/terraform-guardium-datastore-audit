@@ -26,20 +26,20 @@ variable "snowflake_account_name" {
 
 variable "snowflake_admin_user" {
   type        = string
-  description = "Snowflake admin user able to create roles/users and grant imported privileges on SNOWFLAKE (used when enable_audit_setup is true)"
+  description = "Existing Snowflake admin user (ACCOUNTADMIN) used by Terraform to create the role, user and grants (used when enable_audit_setup is true). Also use it to create the Guardium credential named by udc_credential (Terraform does not create it)"
   default     = ""
 }
 
 variable "snowflake_admin_password" {
   type        = string
-  description = "Password of the Snowflake admin user (used when enable_audit_setup is true)"
+  description = "Password of the existing Snowflake admin user (used when enable_audit_setup is true). Use the same one in the Guardium credential"
   sensitive   = true
   default     = ""
 }
 
 variable "warehouse" {
   type        = string
-  description = "Snowflake warehouse used by the Guardium JDBC user"
+  description = "Snowflake warehouse used by Guardium to run the audit queries"
   default     = "COMPUTE_WH"
 }
 
@@ -73,13 +73,13 @@ variable "role_name" {
 
 variable "user_name" {
   type        = string
-  description = "Name of the Snowflake JDBC user for Guardium"
+  description = "Snowflake user granted the Guardium role. Only used when enable_audit_setup is true, in which case Terraform creates it"
   default     = "GUARDIUM_UC_USER"
 }
 
 variable "user_password" {
   type        = string
-  description = "Password of the Snowflake JDBC user for Guardium (required when enable_audit_setup is true)"
+  description = "Password for the Snowflake user above (required when enable_audit_setup is true)"
   sensitive   = true
   default     = ""
 }
@@ -151,7 +151,7 @@ variable "udc_description" {
 
 variable "udc_credential" {
   type        = string
-  description = "Name of the Snowflake credential defined in Guardium Credential Management"
+  description = "Name of the credential (Snowflake user + password) in Guardium Credential Management. Create it with snowflake_admin_user and snowflake_admin_password; Terraform does not create it"
 }
 
 variable "kafka_cluster_name" {

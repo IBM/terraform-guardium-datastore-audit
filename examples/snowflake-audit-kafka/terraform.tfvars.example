@@ -35,19 +35,21 @@ snowflake_organization_name = "MYORG"
 # Snowflake account name (the part after the dash, do not repeat the org)
 snowflake_account_name = "MYACCOUNT"
 
-# Snowflake admin user able to create roles/users and grant imported privileges on SNOWFLAKE
+# Existing Snowflake admin user (ACCOUNTADMIN) used by Terraform to create the role, user and grants.
+# Also use it to create the Guardium credential named by udc_credential (Terraform does not create it).
 snowflake_admin_user = "admin_user"
 
-# Password of the Snowflake admin user
+# Password of the existing Snowflake admin user (use the same one in the Guardium credential)
 snowflake_admin_password = "your-password-here"
 
 # Name of the Snowflake role created for Guardium
 role_name = "GUARDIUM_UC_ROLE"
 
-# Name of the Snowflake JDBC user created for Guardium
+# Snowflake user granted the Guardium role above (GUARDIUM_UC_ROLE).
+# Only used when enable_audit_setup = true, in which case Terraform creates it.
 user_name = "GUARDIUM_UC_USER"
 
-# Password of the Snowflake JDBC user (must match the Guardium credential below)
+# Password for the Snowflake user above
 user_password = "ChangeMe-Str0ngPassword!"
 
 #------------------------------------------------------------------------------

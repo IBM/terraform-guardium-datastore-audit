@@ -14,7 +14,7 @@ variable "snowflake_host" {
 
 variable "warehouse" {
   type        = string
-  description = "Snowflake warehouse used by the Guardium JDBC user to run the audit queries"
+  description = "Snowflake warehouse used by Guardium to run the audit queries"
   default     = "COMPUTE_WH"
 }
 
@@ -31,12 +31,12 @@ variable "schema" {
 }
 
 //////
-// Audit setup (role, user and grants for the Guardium JDBC user)
+// Audit setup (role, user and grants for Guardium)
 //////
 
 variable "enable_audit_setup" {
   type        = bool
-  description = "Whether to create the Snowflake role, user and grants required to read SNOWFLAKE.ACCOUNT_USAGE. Set to false to skip and only manage the Universal Connector (Snowflake audit logging itself is enabled by default)."
+  description = "Whether to create the Snowflake role, user and grants required to read SNOWFLAKE.INFORMATION_SCHEMA. Set to false to skip and only manage the Universal Connector (Snowflake audit logging itself is enabled by default)."
   default     = true
 }
 
@@ -48,13 +48,13 @@ variable "role_name" {
 
 variable "user_name" {
   type        = string
-  description = "Name of the Snowflake user created for Guardium (the JDBC user)"
+  description = "Snowflake user granted the Guardium role. Only used when enable_audit_setup is true, in which case Terraform creates it"
   default     = "GUARDIUM_UC_USER"
 }
 
 variable "user_password" {
   type        = string
-  description = "Password of the Snowflake user created for Guardium. Required when enable_audit_setup is true. Use the same value in the Guardium credential referenced by udc_credential."
+  description = "Password for the Snowflake user above. Required when enable_audit_setup is true"
   sensitive   = true
   default     = ""
 
@@ -131,7 +131,7 @@ variable "udc_description" {
 
 variable "udc_credential" {
   type        = string
-  description = "Name of the credential (Snowflake JDBC user/password) configured in Guardium Credential Management"
+  description = "Name of the credential (Snowflake user + password) in Guardium Credential Management. Terraform does not create it"
 }
 
 //////
