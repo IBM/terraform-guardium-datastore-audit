@@ -23,6 +23,7 @@ tags = {
 # (module automatically appends /connectionlog and /useractivitylog).
 # Leave empty to use the default /aws/redshift/cluster/<redshift_cluster_identifier>.
 # Terraform does not create or manage these log groups; they must already exist.
+# The plan fails early if either log group is not found in aws_region.
 # existing_cloudwatch_log_group_name = "/aws/redshift/cluster/my-redshift-cluster"
 
 ##############################

@@ -35,10 +35,10 @@ This Terraform configuration:
 
 ### Log groups
 
-Terraform does not create, import or manage the CloudWatch log groups. The groups must already exist, which is the case once Redshift exports logs to CloudWatch. Only their names are sent to the Universal Connector profile.
+Terraform does not create, import or manage the CloudWatch log groups. The groups must already exist, which is the case once Redshift exports logs to CloudWatch. Their names are sent to the Universal Connector profile, and `terraform plan` fails early if either group is not found in `aws_region`.
 
 - **Default (`existing_cloudwatch_log_group_name` empty):** the names are `/aws/redshift/cluster/<cluster-id>/connectionlog` and `/aws/redshift/cluster/<cluster-id>/useractivitylog`.
-- **Custom location:** set `existing_cloudwatch_log_group_name` to the base path (without `/connectionlog` or `/useractivitylog`), for example `/aws/redshift/cluster/my-cluster`. The module appends both suffixes. It also checks that the connection log group exists.
+- **Custom location:** set `existing_cloudwatch_log_group_name` to the base path (without `/connectionlog` or `/useractivitylog`), for example `/aws/redshift/cluster/my-cluster`. The module appends both suffixes.
 
 ## Prerequisites
 
@@ -47,7 +47,7 @@ Before using this example, ensure you have:
 1. **AWS**:
    - An existing AWS Redshift cluster
    - Redshift audit logging already enabled and exporting `connectionlog` and `useractivitylog` to CloudWatch
-   - AWS credentials with permission to read the CloudWatch log groups (`logs:DescribeLogGroups`), used by Terraform when a custom base path is set
+   - AWS credentials with permission to read the CloudWatch log groups (`logs:DescribeLogGroups`), used by Terraform to check that both log groups exist
 
 2. **Guardium Data Protection** (12.2.2 or later):
    - A running Guardium Data Protection instance with a Kafka cluster attached to Central Manager
@@ -147,8 +147,3 @@ After successful application:
 - [Guardium Universal Connector Guide](https://www.ibm.com/docs/en/guardium/12.2?topic=connectors-universal-connector)
 - [Kafka-based Redshift CloudWatch Connector Documentation](https://github.com/IBM/universal-connectors/blob/main/docs/KafkaBasedUCs/RedshiftCloudwatchKafkaConnect.md)
 - [AWS Redshift Database Audit Logging](https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html)
-
-## License
-
-Copyright IBM Corp. 2026
-SPDX-License-Identifier: Apache-2.0

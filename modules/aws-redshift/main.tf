@@ -56,9 +56,9 @@ locals {
   use_existing_cloudwatch_log_group = var.existing_cloudwatch_log_group_name != "" || length(var.cloudwatch_log_groups) > 0
   use_existing_s3_bucket            = var.existing_s3_bucket_name != ""
 
-  # Terraform only creates the CloudWatch log groups when it also sets up audit logging.
-  # Otherwise (enable_audit_setup = false) the names are only computed and sent to the CSV.
-  manage_cloudwatch_log_groups = (var.uc_mode == "kafka" || var.input_type == "cloudwatch") && !local.use_existing_cloudwatch_log_group && local.audit_setup_enabled
+  # Terraform only creates the CloudWatch log groups when audit setup is enabled.
+  # Otherwise (enable_audit_setup = false) the names are only computed, sent to the CSV and checked to exist.
+  manage_cloudwatch_log_groups = (var.uc_mode == "kafka" || var.input_type == "cloudwatch") && !local.use_existing_cloudwatch_log_group && var.enable_audit_setup
 
   # Create a sanitized version of the UDC name for file paths
   default_udc_name = format("%s-%s-%s", var.aws_region, var.redshift_cluster_identifier, local.aws_account_id)
@@ -127,10 +127,14 @@ locals {
   udc_csv = var.uc_mode == "kafka" ? local.redshift_kafka_csv : (var.input_type == "cloudwatch" ? local.redshift_cloudwatch_csv : local.redshift_s3_csv)
 }
 
-# Data source for existing CloudWatch Log Group (legacy support)
+# Verify that the CloudWatch Log Groups exist when Terraform does not create them.
+# Fails the plan early (instead of at the Guardium connection test) if either group is missing.
 data "aws_cloudwatch_log_group" "existing" {
-  count = local.use_existing_cloudwatch_log_group && (var.uc_mode == "kafka" || var.input_type == "cloudwatch") ? 1 : 0
-  name  = local.resolved_log_group_connectionlog
+  for_each = (var.uc_mode == "kafka" || var.input_type == "cloudwatch") && !local.manage_cloudwatch_log_groups ? {
+    connectionlog   = local.resolved_log_group_connectionlog
+    useractivitylog = local.resolved_log_group_useractivitylog
+  } : {}
+  name = each.value
 }
 
 # Data source for existing S3 bucket
