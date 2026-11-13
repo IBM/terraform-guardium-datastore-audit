@@ -34,15 +34,9 @@ variable "tags" {
 }
 
 variable "existing_cloudwatch_log_group_name" {
-  description = "Name of an existing CloudWatch Log Group base name (or comma-separated list of log groups) to use (if empty, new ones will be created)"
+  description = "Base path of the CloudWatch Log Groups that Redshift exports to (e.g. /aws/redshift/cluster/<cluster-id>); /connectionlog and /useractivitylog are appended. If empty, defaults to /aws/redshift/cluster/<redshift_cluster_identifier>. Terraform never creates or manages these log groups."
   type        = string
   default     = ""
-}
-
-variable "cloudwatch_log_groups" {
-  description = "Optional list of explicit CloudWatch log group names to monitor. If provided, overrides existing_cloudwatch_log_group_name and default generated names."
-  type        = list(string)
-  default     = []
 }
 
 //////

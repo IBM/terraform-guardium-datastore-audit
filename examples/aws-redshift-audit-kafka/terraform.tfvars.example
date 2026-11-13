@@ -19,18 +19,11 @@ tags = {
   Environment = "production"
 }
 
-# Optional Log Group Configuration:
-# Option 1: Base prefix (module automatically appends /connectionlog and /useractivitylog)
+# Optional: Base path of the CloudWatch Log Groups that Redshift exports to
+# (module automatically appends /connectionlog and /useractivitylog).
+# Leave empty to use the default /aws/redshift/cluster/<redshift_cluster_identifier>.
+# Terraform does not create or manage these log groups; they must already exist.
 # existing_cloudwatch_log_group_name = "/aws/redshift/cluster/my-redshift-cluster"
-#
-# Option 2: Comma-separated list in existing_cloudwatch_log_group_name
-# existing_cloudwatch_log_group_name = "/aws/redshift/cluster/my-redshift-cluster/connectionlog,/aws/redshift/cluster/my-redshift-cluster/useractivitylog"
-#
-# Option 3: Explicit list of log groups (overrides existing_cloudwatch_log_group_name)
-# cloudwatch_log_groups = [
-#   "/aws/redshift/cluster/my-redshift-cluster/connectionlog",
-#   "/aws/redshift/cluster/my-redshift-cluster/useractivitylog"
-# ]
 
 ##############################
 # Guardium Data Protection Configuration

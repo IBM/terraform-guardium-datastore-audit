@@ -37,12 +37,28 @@ locals {
     ) : "${local.cloudwatch_log_group_connectionlog},${local.cloudwatch_log_group_useractivitylog}"
   )
 
+  # Single source of truth for the resolved log group names. The data source, outputs and
+  # CloudWatch CSV all use these so they stay consistent with local.log_groups.
+  log_group_list = [for g in split(",", local.log_groups) : trimspace(g) if trimspace(g) != ""]
+  resolved_log_group_connectionlog = try(
+    [for g in local.log_group_list : g if endswith(g, "connectionlog")][0],
+    try(local.log_group_list[0], local.cloudwatch_log_group_connectionlog)
+  )
+  resolved_log_group_useractivitylog = try(
+    [for g in local.log_group_list : g if endswith(g, "useractivitylog")][0],
+    try(local.log_group_list[1], local.cloudwatch_log_group_useractivitylog)
+  )
+
   s3_bucket_name = var.existing_s3_bucket_name != "" ? var.existing_s3_bucket_name : "${local.sanitized_name_prefix}-redshift-logs"
   s3_prefix      = var.s3_prefix != "" ? var.s3_prefix : "AWSLogs/${local.aws_account_id}/redshift/${var.aws_region}/"
 
   # Determine if we're using existing resources
   use_existing_cloudwatch_log_group = var.existing_cloudwatch_log_group_name != "" || length(var.cloudwatch_log_groups) > 0
   use_existing_s3_bucket            = var.existing_s3_bucket_name != ""
+
+  # Terraform only creates the CloudWatch log groups when it also sets up audit logging.
+  # Otherwise (enable_audit_setup = false) the names are only computed and sent to the CSV.
+  manage_cloudwatch_log_groups = (var.uc_mode == "kafka" || var.input_type == "cloudwatch") && !local.use_existing_cloudwatch_log_group && local.audit_setup_enabled
 
   # Create a sanitized version of the UDC name for file paths
   default_udc_name = format("%s-%s-%s", var.aws_region, var.redshift_cluster_identifier, local.aws_account_id)
@@ -56,8 +72,8 @@ locals {
     udc_name                      = local.udc_name_safe
     credential_name               = var.udc_aws_credential
     aws_region                    = var.aws_region
-    aws_log_group_connectionlog   = local.cloudwatch_log_group_connectionlog
-    aws_log_group_useractivitylog = local.cloudwatch_log_group_useractivitylog
+    aws_log_group_connectionlog   = local.resolved_log_group_connectionlog
+    aws_log_group_useractivitylog = local.resolved_log_group_useractivitylog
     aws_account_id                = local.aws_account_id
     prefix                        = "false"
     start_position                = var.csv_start_position
@@ -114,7 +130,7 @@ locals {
 # Data source for existing CloudWatch Log Group (legacy support)
 data "aws_cloudwatch_log_group" "existing" {
   count = local.use_existing_cloudwatch_log_group && (var.uc_mode == "kafka" || var.input_type == "cloudwatch") ? 1 : 0
-  name  = var.existing_cloudwatch_log_group_name != "" ? var.existing_cloudwatch_log_group_name : try(var.cloudwatch_log_groups[0], "")
+  name  = local.resolved_log_group_connectionlog
 }
 
 # Data source for existing S3 bucket
@@ -132,15 +148,16 @@ resource "aws_s3_bucket" "redshift_logs" {
 }
 
 # Create CloudWatch Log Groups if needed (one for connectionlog, one for useractivitylog)
+# Only created when Terraform also sets up audit logging (enable_audit_setup = true).
 # Note: If these already exist (created by Redshift), import them or set existing_cloudwatch_log_group_name / cloudwatch_log_groups
 resource "aws_cloudwatch_log_group" "redshift_connectionlog" {
-  count = (var.uc_mode == "kafka" || var.input_type == "cloudwatch") && !local.use_existing_cloudwatch_log_group ? 1 : 0
+  count = local.manage_cloudwatch_log_groups ? 1 : 0
   name  = local.cloudwatch_log_group_connectionlog
   tags  = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "redshift_useractivitylog" {
-  count = (var.uc_mode == "kafka" || var.input_type == "cloudwatch") && !local.use_existing_cloudwatch_log_group ? 1 : 0
+  count = local.manage_cloudwatch_log_groups ? 1 : 0
   name  = local.cloudwatch_log_group_useractivitylog
   tags  = var.tags
 }

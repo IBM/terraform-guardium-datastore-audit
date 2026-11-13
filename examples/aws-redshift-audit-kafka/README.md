@@ -1,6 +1,6 @@
 # AWS Redshift Audit with IBM Guardium Data Protection (Kafka, Connect 2.0)
 
-This example demonstrates how to configure AWS Redshift audit logging with IBM Guardium Data Protection using the [`aws-redshift`](../../modules/aws-redshift) module and the Kafka-based `AWS Redshift Over Cloudwatch Connect 2.0` Universal Connector profile.
+This example registers the Kafka-based `AWS Redshift Over Cloudwatch Connect 2.0` Universal Connector profile in IBM Guardium Data Protection for an AWS Redshift cluster, using the [`aws-redshift`](../../modules/aws-redshift) module. It imports the profile CSV only and does not configure audit logging on the Redshift cluster.
 
 ## Architecture
 
@@ -28,10 +28,17 @@ This example demonstrates how to configure AWS Redshift audit logging with IBM G
 
 This Terraform configuration:
 
-1. Creates or references CloudWatch log groups for Redshift connection and user activity logs
+1. Computes the CloudWatch log group names for Redshift connection and user activity logs
 2. Registers the `AWS Redshift Over Cloudwatch Connect 2.0` Kafka-based Universal Connector profile in Guardium Data Protection
 
 > **Note:** Audit setup (parameter group + CloudWatch log exports) is **not** managed by this example. Ensure your Redshift cluster already has `enable_user_activity_logging` enabled and is exporting logs to CloudWatch before applying.
+
+### Log groups
+
+Terraform does not create, import or manage the CloudWatch log groups. The groups must already exist, which is the case once Redshift exports logs to CloudWatch. Only their names are sent to the Universal Connector profile.
+
+- **Default (`existing_cloudwatch_log_group_name` empty):** the names are `/aws/redshift/cluster/<cluster-id>/connectionlog` and `/aws/redshift/cluster/<cluster-id>/useractivitylog`.
+- **Custom location:** set `existing_cloudwatch_log_group_name` to the base path (without `/connectionlog` or `/useractivitylog`), for example `/aws/redshift/cluster/my-cluster`. The module appends both suffixes. It also checks that the connection log group exists.
 
 ## Prerequisites
 
@@ -39,7 +46,8 @@ Before using this example, ensure you have:
 
 1. **AWS**:
    - An existing AWS Redshift cluster
-   - AWS credentials with permissions to manage Redshift parameter groups, logging, and CloudWatch log groups
+   - Redshift audit logging already enabled and exporting `connectionlog` and `useractivitylog` to CloudWatch
+   - AWS credentials with permission to read the CloudWatch log groups (`logs:DescribeLogGroups`), used by Terraform when a custom base path is set
 
 2. **Guardium Data Protection** (12.2.2 or later):
    - A running Guardium Data Protection instance with a Kafka cluster attached to Central Manager
@@ -87,7 +95,7 @@ After successful application:
 | name_prefix | Prefix for resource names | `string` | `"guardium"` | no |
 | redshift_cluster_identifier | Identifier of the Redshift cluster | `string` | - | yes |
 | tags | Tags to apply to all resources | `map(string)` | `{ Purpose = "guardium-redshift-kafka-uc", Owner = "your-email@example.com" }` | no |
-| existing_cloudwatch_log_group_name | Name of an existing CloudWatch Log Group base to use | `string` | `""` | no |
+| existing_cloudwatch_log_group_name | Base path of the CloudWatch Log Groups (`/connectionlog` and `/useractivitylog` are appended). If empty, defaults to `/aws/redshift/cluster/<redshift_cluster_identifier>`. Terraform never creates these groups | `string` | `""` | no |
 | gdp_server | Hostname or IP address of Guardium Central Manager | `string` | - | yes |
 | gdp_port | Port of Guardium Central Manager | `number` | `8443` | no |
 | gdp_username | Username of Guardium Web UI user | `string` | - | yes |

@@ -12,12 +12,12 @@ output "udc_name" {
 
 output "cloudwatch_log_group_connectionlog" {
   description = "Name of the CloudWatch Log Group for connection logs"
-  value       = var.uc_mode == "kafka" || var.input_type == "cloudwatch" ? (local.use_existing_cloudwatch_log_group ? "${var.existing_cloudwatch_log_group_name}/connectionlog" : try(aws_cloudwatch_log_group.redshift_connectionlog[0].name, "")) : ""
+  value       = var.uc_mode == "kafka" || var.input_type == "cloudwatch" ? (local.manage_cloudwatch_log_groups ? try(aws_cloudwatch_log_group.redshift_connectionlog[0].name, "") : local.resolved_log_group_connectionlog) : ""
 }
 
 output "cloudwatch_log_group_useractivitylog" {
   description = "Name of the CloudWatch Log Group for user activity logs"
-  value       = var.uc_mode == "kafka" || var.input_type == "cloudwatch" ? (local.use_existing_cloudwatch_log_group ? "${var.existing_cloudwatch_log_group_name}/useractivitylog" : try(aws_cloudwatch_log_group.redshift_useractivitylog[0].name, "")) : ""
+  value       = var.uc_mode == "kafka" || var.input_type == "cloudwatch" ? (local.manage_cloudwatch_log_groups ? try(aws_cloudwatch_log_group.redshift_useractivitylog[0].name, "") : local.resolved_log_group_useractivitylog) : ""
 }
 
 output "s3_bucket_name" {

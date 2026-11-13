@@ -30,7 +30,6 @@ module "datastore-audit_aws-redshift-audit-kafka" {
   # Redshift Configuration
   redshift_cluster_identifier        = var.redshift_cluster_identifier
   existing_cloudwatch_log_group_name = var.existing_cloudwatch_log_group_name
-  cloudwatch_log_groups              = var.cloudwatch_log_groups
   enable_audit_setup                 = false
 
   # Guardium Data Protection Configuration
