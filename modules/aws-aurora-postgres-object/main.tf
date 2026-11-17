@@ -35,7 +35,7 @@ locals {
 
 module "aws_configuration" {
   source  = "IBM/common/guardium//modules/aws-configuration"
-  version = "= 1.6.8"
+  version = "= 1.6.9"
 }
 
 locals {
@@ -94,7 +94,7 @@ resource "postgresql_grant" "table_permissions" {
 module "aurora-postgres-sqs-registration" {
   count   = var.uc_mode != "kafka" && var.log_export_type == "SQS" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-sqs-registration"
-  version = "= 1.6.8"
+  version = "= 1.6.9"
 
   udc_name                           = local.udc_name
   aws_account_id                     = local.aws_account_id
@@ -116,7 +116,7 @@ module "aurora-postgres-sqs-registration" {
 module "aurora-postgres-cloudwatch-registration" {
   count   = var.uc_mode != "kafka" && var.log_export_type == "Cloudwatch" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
-  version = "= 1.6.8"
+  version = "= 1.6.9"
 
   udc_name                           = local.udc_name
   aws_region                         = var.aws_region
