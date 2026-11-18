@@ -18,11 +18,6 @@ output "cloudwatch_log_group_useractivitylog" {
   value       = module.datastore-audit_aws-redshift-audit-kafka.cloudwatch_log_group_useractivitylog
 }
 
-output "parameter_group_name" {
-  description = "Name of the Redshift parameter group"
-  value       = module.datastore-audit_aws-redshift-audit-kafka.parameter_group_name
-}
-
 output "uc_mode" {
   description = "Universal Connector mode"
   value       = module.datastore-audit_aws-redshift-audit-kafka.uc_mode
