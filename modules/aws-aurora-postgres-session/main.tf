@@ -50,7 +50,7 @@ moved {
 module "aurora-postgres-parameter-group" {
   count                              = var.enable_audit_setup ? 1 : 0
   source                             = "IBM/common/guardium//modules/aurora-postgres-parameter-group"
-  version                            = "= 1.6.8"
+  version                            = "= 1.7.0"
   pg_audit_log                       = var.pg_audit_log
   pg_audit_role                      = "" # Not used in session auditing
   force_failover                     = var.force_failover
