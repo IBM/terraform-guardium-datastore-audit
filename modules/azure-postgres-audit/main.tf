@@ -164,7 +164,7 @@ locals {
 
 module "common_azure-eventhub-registration" {
   source  = "IBM/common/guardium//modules/azure-eventhub-registration"
-  version = "= 1.7.0"
+  version = "= 1.7.1"
 
   # Profile Configuration
   profile_definition_name = "Azure Postgres Over Event Hub"
