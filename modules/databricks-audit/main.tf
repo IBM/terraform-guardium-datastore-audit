@@ -88,7 +88,7 @@ locals {
 
 module "common_databricks-eventhub-registration" {
   source  = "IBM/common/guardium//modules/databricks-eventhub-registration"
-  version = "= 1.7.1"
+  version = "= 1.7.2"
 
   # Profile Configuration
   uc_version               = var.uc_version
