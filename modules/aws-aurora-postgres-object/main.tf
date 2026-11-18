@@ -45,7 +45,7 @@ locals {
 module "aurora-postgres-parameter-group" {
   count                              = var.enable_audit_setup ? 1 : 0
   source                             = "IBM/common/guardium//modules/aurora-postgres-parameter-group"
-  version                            = "= 1.6.8"
+  version                            = "= 1.7.0"
   pg_audit_log                       = "none"        # For object auditing, we don't use session logging
   pg_audit_role                      = "rds_pgaudit" # Use the dedicated audit role
   force_failover                     = var.force_failover

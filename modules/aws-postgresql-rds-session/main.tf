@@ -16,7 +16,7 @@ data "aws_db_instance" "cluster_metadata" {
 
 module "common_rds-postgres-parameter-group" {
   source                          = "IBM/common/guardium//modules/rds-postgres-parameter-group"
-  version                         = "= 1.6.8"
+  version                         = "= 1.7.0"
   pg_audit_log                    = "all, -misc"
   pg_audit_role                   = ""
   force_failover                  = var.force_failover
