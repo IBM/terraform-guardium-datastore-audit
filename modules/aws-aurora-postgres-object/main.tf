@@ -50,6 +50,7 @@ module "aurora-postgres-parameter-group" {
   pg_audit_role                      = "rds_pgaudit" # Use the dedicated audit role
   force_failover                     = var.force_failover
   skip_reboot                        = var.skip_reboot
+  cloudwatch_logs_exports            = var.cloudwatch_logs_exports
   aurora_postgres_cluster_identifier = var.aurora_postgres_cluster_identifier
   aws_region                         = var.aws_region
 }
