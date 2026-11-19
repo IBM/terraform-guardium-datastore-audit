@@ -92,7 +92,6 @@ After successful application:
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | aws_region | AWS region where Redshift cluster is deployed | `string` | `"us-east-1"` | no |
-| name_prefix | Prefix for resource names | `string` | `"guardium"` | no |
 | redshift_cluster_identifier | Identifier of the Redshift cluster | `string` | - | yes |
 | tags | Tags to apply to all resources | `map(string)` | `{ Purpose = "guardium-redshift-kafka-uc", Owner = "your-email@example.com" }` | no |
 | existing_cloudwatch_log_group_name | Base path of the CloudWatch Log Groups (`/connectionlog` and `/useractivitylog` are appended). If empty, defaults to `/aws/redshift/cluster/<redshift_cluster_identifier>`. Terraform never creates these groups | `string` | `""` | no |
@@ -126,7 +125,6 @@ After successful application:
 | udc_name | Name of the Universal Connector |
 | cloudwatch_log_group_connectionlog | Name of the CloudWatch Log Group for connection logs |
 | cloudwatch_log_group_useractivitylog | Name of the CloudWatch Log Group for user activity logs |
-| parameter_group_name | Name of the Redshift parameter group |
 | uc_mode | Universal Connector mode |
 
 ## Troubleshooting

@@ -13,12 +13,6 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "name_prefix" {
-  description = "Prefix for resource names"
-  type        = string
-  default     = "guardium"
-}
-
 variable "redshift_cluster_identifier" {
   description = "Identifier of the Redshift cluster"
   type        = string
