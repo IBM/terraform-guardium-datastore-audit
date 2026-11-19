@@ -103,6 +103,10 @@ module "uc_csv_import" {
 - Verify `gdp_client_id` and `gdp_client_secret` match the output of `grdapi register_oauth_client`.
 - Ensure the Guardium Web UI user has the `Manage Universal Connector` permission.
 
+### Import fails with "The credential ... was not found or is not supported for this profile type"
+- The `credential_name` in the CSV does not match a credential in Guardium (or its type does not fit the profile). Create it under **Setup > Tools and Views > Universal Connector > Credentials**, or correct the CSV.
+- An import error stops the whole apply: no profile from any CSV is deployed, even though other files may already have been imported. Fix the cause and re-run `terraform apply`. A failed connection test is different; that profile is skipped and the rest are deployed.
+
 ### Install fails with "connector not found"
 - This means the name in the CSV's `name` column does not match any imported profile. Confirm the CSV is well-formed and has a `name` header column.
 

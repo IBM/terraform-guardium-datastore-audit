@@ -34,7 +34,11 @@ terraform plan
 terraform apply
 ```
 
-After `apply`, the `deployed_profiles` output shows every connector that was deployed, and `skipped_profiles` shows any that were not because their connection test failed on import (each also produces a warning). Failed connection tests do not stop the other profiles from being deployed.
+After `apply`, the `deployed_profiles` output shows every connector that was deployed, and `skipped_profiles` shows any that were not because their connection test failed on import (each also produces a warning). Failed connection tests do not stop the other profiles from being deployed. An import error is different; see [Limitations](#limitations).
+
+## Limitations
+
+- If a CSV fails to import (for example, its `credential_name` does not exist in Guardium), the other CSVs are still imported, but no profiles are deployed on the collectors. Fix the cause and run `terraform apply` again.
 
 ## When to use this example
 
