@@ -22,10 +22,9 @@ module "datastore-audit_aws-redshift-audit-kafka" {
   source = "../../modules/aws-redshift"
 
   # General Configuration
-  name_prefix = var.name_prefix
-  aws_region  = var.aws_region
-  tags        = var.tags
-  uc_mode     = "kafka"
+  aws_region = var.aws_region
+  tags       = var.tags
+  uc_mode    = "kafka"
 
   # Redshift Configuration
   redshift_cluster_identifier        = var.redshift_cluster_identifier

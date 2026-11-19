@@ -6,9 +6,6 @@
 # AWS region where Redshift cluster is deployed
 aws_region = "us-east-1"
 
-# Prefix for resource names
-name_prefix = "guardium"
-
 # Identifier of the Redshift cluster
 redshift_cluster_identifier = "my-redshift-cluster"
 
