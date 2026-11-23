@@ -47,24 +47,11 @@ This approach allows you to focus auditing on specific tables and operations, re
    terraform init
    ```
 
-3. Import the existing cluster parameter group:
+3. Import existing cluster parameter group (if applicable):
 
-   **Option A: Automated Import (Recommended)**
-   
-   The module includes automated parameter group detection. When you run `terraform plan`, the module will:
-   - Query your existing Aurora PostgreSQL cluster to discover the current cluster parameter group
-   - Automatically handle the import if it exists
-   - Prevent "parameter group already exists" errors
-   
-   The automation uses Terraform data sources to fetch your Aurora cluster configuration and extract the parameter group name.
-
-   **Option B: Manual Import**
-   
-   If you prefer to import manually or encounter issues with automated import:
+   If your Aurora PostgreSQL cluster already uses a custom parameter group that you want to manage with Terraform, import it into the Terraform state:
 
    **Find your cluster's parameter group:**
-   
-   Use the cluster identifier from your `terraform.tfvars` file:
    ```bash
    aws rds describe-db-clusters \
      --db-cluster-identifier <your-cluster-identifier> \
@@ -74,10 +61,8 @@ This approach allows you to focus auditing on specific tables and operations, re
    
    **Import the parameter group:**
    ```bash
-   terraform import 'module.aurora_postgres_object_audit.module.aurora-postgres-parameter-group.aws_rds_cluster_parameter_group.guardium' <parameter-group-name>
+   terraform import 'module.aurora_postgres_object_audit.module.aurora-postgres-parameter-group[0].aws_rds_cluster_parameter_group.guardium' <parameter-group-name>
    ```
-   
-   **Note**: The quotes around the module path are important when the path contains hyphens. The automated approach is recommended. Manual import is only needed if you encounter specific issues or prefer explicit control.
 
 4. Apply the configuration:
    ```

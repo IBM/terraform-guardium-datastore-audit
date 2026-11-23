@@ -32,9 +32,21 @@ variable "redshift_cluster_identifier" {
   type        = string
 }
 
-# Input Configuration
+# Universal Connector Mode
+variable "uc_mode" {
+  description = "Universal Connector mode: logstash or kafka"
+  type        = string
+  default     = "logstash"
+
+  validation {
+    condition     = contains(["logstash", "kafka"], var.uc_mode)
+    error_message = "uc_mode must be either 'logstash' or 'kafka'."
+  }
+}
+
+# Input Configuration (for logstash mode)
 variable "input_type" {
-  description = "Type of input for the Universal Connector (cloudwatch or s3)"
+  description = "Type of input for the Universal Connector in logstash mode (cloudwatch or s3)"
   type        = string
   default     = "cloudwatch"
   validation {
@@ -45,9 +57,15 @@ variable "input_type" {
 
 # CloudWatch Configuration
 variable "existing_cloudwatch_log_group_name" {
-  description = "Name of an existing CloudWatch Log Group to use (if empty, a new one will be created)"
+  description = "Name of an existing CloudWatch Log Group base name (or comma-separated list of log groups) to use (if empty, new ones will be created)"
   type        = string
   default     = ""
+}
+
+variable "cloudwatch_log_groups" {
+  description = "Optional list of explicit CloudWatch log group names to monitor. If provided, overrides existing_cloudwatch_log_group_name and default generated names."
+  type        = list(string)
+  default     = []
 }
 
 # S3 Configuration
@@ -78,6 +96,12 @@ variable "existing_parameter_group_name" {
 
 variable "enable_logging" {
   description = "Whether to enable logging for the Redshift cluster"
+  type        = bool
+  default     = true
+}
+
+variable "enable_audit_setup" {
+  description = "Whether to configure the Redshift cluster for audit logging (parameter group + CloudWatch log exports). Set to false to skip all AWS-side audit setup and only manage the Universal Connector."
   type        = bool
   default     = true
 }
@@ -116,8 +140,6 @@ variable "gdp_client_secret" {
   sensitive   = true
 }
 
-
-
 variable "gdp_mu_host" {
   description = "Management Unit host for the Guardium Data Protection server"
   type        = string
@@ -131,48 +153,59 @@ variable "enable_universal_connector" {
   default     = true
 }
 
+variable "udc_name" {
+  description = "Override name for the Universal Connector profile. If not provided, defaults to {aws_region}-{redshift_cluster_identifier}-{aws_account_id}."
+  type        = string
+  default     = ""
+}
+
+variable "udc_description" {
+  description = "Description for the Universal Connector profile. If not provided, an auto-generated description is used."
+  type        = string
+  default     = ""
+}
+
 variable "udc_aws_credential" {
   description = "AWS credential name for the Universal Connector"
   type        = string
 }
 
+# Logstash Mode Variables
 variable "csv_start_position" {
-  description = "Start position for the Universal Connector"
+  description = "Start position for the Universal Connector (logstash mode)"
   type        = string
   default     = "beginning"
 }
 
 variable "csv_interval" {
-  description = "Interval for the Universal Connector"
+  description = "Interval for the Universal Connector (logstash mode)"
   type        = string
   default     = "60"
 }
 
 variable "csv_event_filter" {
-  description = "Event filter for the Universal Connector"
+  description = "Event filter for the Universal Connector (logstash mode)"
   type        = string
   default     = ""
 }
 
 variable "codec_pattern" {
-  description = "Codec pattern for the Universal Connector"
+  description = "Codec pattern for the Universal Connector (logstash mode)"
   type        = string
   default     = "((^'%%{TIMESTAMP_ISO8601:timestamp})|(^(?<action>[^:]*) \\|%%{DAY:day}\\, %%{MONTHDAY:md} %%{MONTH:month} %%{YEAR:year} %%{TIME:time}))"
 }
 
 variable "csv_description" {
-  description = "Description for the Universal Connector"
+  description = "Legacy description for the Universal Connector"
   type        = string
   default     = "Redshift Universal Connector"
 }
 
 variable "csv_cluster_name" {
-  description = "Cluster name for the Universal Connector"
+  description = "Cluster name for the Universal Connector (logstash mode)"
   type        = string
   default     = "default"
 }
-
-
 
 variable "cloudwatch_endpoint" {
   type        = string
@@ -184,4 +217,76 @@ variable "use_aws_bundled_ca" {
   type        = bool
   description = "Whether to use the AWS bundled CA certificates"
   default     = true
+}
+
+# Kafka Mode Variables (AWS Redshift Over Cloudwatch Connect 2.0)
+variable "kafka_cluster_name" {
+  type        = string
+  description = "Kafka cluster name configured in Guardium"
+  default     = "kafka"
+}
+
+variable "use_elb" {
+  type        = bool
+  description = "Whether to use ELB for the Kafka-based Universal Connector"
+  default     = false
+}
+
+variable "filter_pattern" {
+  type        = string
+  description = "CloudWatch Logs filter pattern to include or exclude log events. Default: 'None' (no filter)."
+  default     = "None"
+}
+
+variable "database_cluster_name" {
+  type        = string
+  description = "The name of the Redshift cluster as shown in the AWS console. Defaults to redshift_cluster_identifier if not set."
+  default     = ""
+}
+
+variable "event_delay" {
+  type        = number
+  description = "Number of minutes to delay log ingestion to allow CloudWatch to fully flush log events. Default: 15."
+  default     = 15
+}
+
+variable "nodata_threshold_min" {
+  type        = number
+  description = "Number of minutes without incoming events before a no-traffic alert is raised. Default: 60."
+  default     = 60
+}
+
+variable "poll_interval_sec" {
+  type        = string
+  description = "How frequently (in seconds) the connector polls CloudWatch for new log events. Default: 30."
+  default     = "30"
+
+  validation {
+    condition     = can(regex("^([0-5]?[0-9])$", var.poll_interval_sec))
+    error_message = "poll_interval_sec must be between 0 and 59 seconds."
+  }
+}
+
+variable "poll_interval" {
+  type        = number
+  description = "How frequently (in minutes) the connector polls CloudWatch for new log events. Default: 0."
+  default     = 0
+}
+
+variable "event_limit" {
+  type        = number
+  description = "Maximum number of log events fetched per CloudWatch API call. Default: 1000."
+  default     = 1000
+}
+
+variable "timestamp_start" {
+  type        = string
+  description = "The date and time from which the connector starts polling. Leave empty to start from current time. Stored as ISO 8601."
+  default     = ""
+}
+
+variable "unmask" {
+  type        = bool
+  description = "When true, sensitive values such as SQL query text are included unmasked in the traffic data sent to Guardium. Default: false."
+  default     = false
 }
