@@ -7,7 +7,7 @@
 
 module "aws_configuration" {
   source  = "IBM/common/guardium//modules/aws-configuration"
-  version = "= 1.7.4"
+  version = "= 1.7.5"
 }
 
 locals {
