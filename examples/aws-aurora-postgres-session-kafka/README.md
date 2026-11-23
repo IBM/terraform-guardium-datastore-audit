@@ -95,8 +95,6 @@ Run `terraform apply` to create the resources:
 terraform apply
 ```
 
-**Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
-
 ### 5. Verify the Configuration
 
 1. Log in to Guardium Data Protection.
@@ -111,7 +109,6 @@ terraform apply
 | aws_region | AWS region where the Aurora cluster is deployed | `string` | n/a | yes |
 | aurora_postgres_cluster_identifier | Aurora PostgreSQL cluster identifier to be monitored | `string` | n/a | yes |
 | force_failover | Force failover when applying parameter changes (requires Multi-AZ) | `bool` | `true` | no |
-| skip_reboot | Skip automatic reboot after parameter changes | `bool` | `true` | no |
 | pg_audit_log | PGAudit log configuration for session auditing | `string` | `"all, -misc"` | no |
 | udc_name | Override name for the universal connector profile. Defaults to `{aws_region}-{aurora_postgres_cluster_identifier}-{aws_account_id}` | `string` | `""` | no |
 | udc_aws_credential | Name of AWS credential defined in Guardium | `string` | n/a | yes |

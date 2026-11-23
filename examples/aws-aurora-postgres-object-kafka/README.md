@@ -116,8 +116,6 @@ terraform apply
 
 Review the planned changes and type `yes` to apply them.
 
-**Please note:** By default, this example uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
-
 ### 5. Verify the Configuration
 
 After successful application:
@@ -157,7 +155,6 @@ Valid grant options are:
 | aws_region | AWS region where the Aurora cluster is deployed | `string` | n/a | yes |
 | aurora_postgres_cluster_identifier | Aurora PostgreSQL cluster identifier to be monitored | `string` | n/a | yes |
 | force_failover | Force failover when applying parameter changes (requires Multi-AZ) | `bool` | `true` | no |
-| skip_reboot | Skip automatic reboot after parameter changes | `bool` | `true` | no |
 | db_host | The hostname of the Aurora PostgreSQL cluster endpoint | `string` | n/a | yes |
 | db_port | The port of the Aurora PostgreSQL cluster | `number` | `5432` | no |
 | db_username | The master username for the Aurora PostgreSQL cluster | `string` | n/a | yes |
