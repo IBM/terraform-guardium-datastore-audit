@@ -70,8 +70,6 @@ module "aurora_postgresql_object_audit" {
 }
 ```
 
-**Please note:** By default, this module uses `skip_reboot = true`. After apply, manually reboot the database to activate audit logging. Set `skip_reboot = false` if you want Terraform to perform the reboot.
-
 ## Required Variables
 
 | Name | Description | Type | Default |
@@ -93,7 +91,6 @@ module "aurora_postgresql_object_audit" {
 | aws_region | AWS region where the Aurora cluster is located | string | "us-east-1" |
 | aurora_postgres_cluster_identifier | Aurora PostgreSQL cluster identifier | string | "guardium-aurora-postgres" |
 | force_failover | Whether to force failover during parameter group update | bool | false |
-| skip_reboot | Skip automatic reboot (audit logging won't work until manual reboot) | bool | false |
 | db_port | The port of the Aurora PostgreSQL cluster | number | 5432 |
 | db_name | The database to connect to | string | "postgres" |
 | udc_name | Override name for the Kafka universal connector profile. Defaults to `{aws_region}-{aurora_postgres_cluster_identifier}-{aws_account_id}` | string | "" |
