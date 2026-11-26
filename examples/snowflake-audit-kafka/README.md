@@ -39,6 +39,7 @@ Before using this example, ensure you have:
 
 2. **Guardium Data Protection** (12.2.2 or later):
    - A running Guardium Data Protection instance with a Kafka cluster attached to Central Manager
+   - The Kafka cluster must have at least 3 Kafka nodes
    - The Snowflake JDBC driver jar (3.13.30 or 3.16.0) uploaded to Guardium; set `jdbc_driver_library` to its file name
    - A credential (Snowflake user + password) created in Guardium Credential Management with the Snowflake admin user (`snowflake_admin_user`/`snowflake_admin_password`); set `udc_credential`. Terraform does not create it
    - Completed the one-time manual configurations as described in [Preparing Guardium Documentation](https://github.com/IBM/terraform-guardium-gdp/blob/main/docs/preparing-guardium.md):
