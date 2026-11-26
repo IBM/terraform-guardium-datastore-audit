@@ -129,19 +129,43 @@ resource "snowflake_grant_privileges_to_account_role" "warehouse" {
 // Universal Connector - can be disabled with enable_universal_connector = false
 //////
 
-module "snowflake-kafka-registration" {
+# Provider resources are used directly because the registry module connect-datasource-to-uc
+# installs the profile even when its connection test fails.
+
+moved {
+  from = module.snowflake-kafka-registration[0].local_file.csv_temp
+  to   = local_file.csv_temp[0]
+}
+
+moved {
+  from = module.snowflake-kafka-registration[0].guardium-data-protection_import_profiles.import_profiles
+  to   = guardium-data-protection_import_profiles.import_profiles[0]
+}
+
+moved {
+  from = module.snowflake-kafka-registration[0].guardium-data-protection_install_connector.install_connector
+  to   = guardium-data-protection_install_connector.install_connector[0]
+}
+
+resource "local_file" "csv_temp" {
+  count    = var.enable_universal_connector ? 1 : 0
+  content  = local.snowflake_kafka_csv
+  filename = "${path.root}/.terraform/${local.udc_name}.csv"
+}
+
+data "guardium-data-protection_authentication" "access_token" {
+  count         = var.enable_universal_connector ? 1 : 0
+  client_secret = var.gdp_client_secret
+  username      = var.gdp_username
+  password      = var.gdp_password
+  client_id     = var.gdp_client_id
+}
+
+resource "guardium-data-protection_import_profiles" "import_profiles" {
   count            = var.enable_universal_connector ? 1 : 0
-  source           = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
-  version          = "= 1.3.6"
-  udc_name         = local.udc_name
-  udc_csv_parsed   = local.snowflake_kafka_csv
-  client_id        = var.gdp_client_id
-  client_secret    = var.gdp_client_secret
-  gdp_server       = var.gdp_server
-  gdp_port         = var.gdp_port
-  gdp_username     = var.gdp_username
-  gdp_password     = var.gdp_password
-  gdp_mu_host      = var.gdp_mu_host
+  access_token     = data.guardium-data-protection_authentication.access_token[0].access_token
+  path_to_file     = abspath(local_file.csv_temp[0].filename)
+  update_mode      = true
   test_connections = true
 
   depends_on = [
@@ -150,4 +174,16 @@ module "snowflake-kafka-registration" {
     snowflake_grant_privileges_to_account_role.warehouse,
     snowflake_grant_privileges_to_account_role.monitor_execution,
   ]
+}
+
+resource "guardium-data-protection_install_connector" "install_connector" {
+  count         = var.enable_universal_connector ? 1 : 0
+  access_token  = data.guardium-data-protection_authentication.access_token[0].access_token
+  udc_name      = local.udc_name
+  gdp_mu_host   = var.gdp_mu_host
+  skip_profiles = guardium-data-protection_import_profiles.import_profiles[0].failed_connection_test_profiles
+
+  lifecycle {
+    ignore_changes = [access_token] # token rotation would otherwise trigger an Update that drops the resource id
+  }
 }

@@ -15,5 +15,9 @@ terraform {
       source  = "IBM/guardium-data-protection"
       version = "= 1.4.11"
     }
+
+    local = {
+      source = "hashicorp/local"
+    }
   }
 }
