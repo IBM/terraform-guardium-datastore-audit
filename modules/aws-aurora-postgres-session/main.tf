@@ -34,7 +34,7 @@ locals {
 
 module "aws_configuration" {
   source  = "IBM/common/guardium//modules/aws-configuration"
-  version = "= 1.7.5"
+  version = "= 1.7.6"
 }
 
 data "aws_rds_cluster" "cluster_metadata" {
@@ -50,7 +50,7 @@ moved {
 module "aurora-postgres-parameter-group" {
   count                              = var.enable_audit_setup ? 1 : 0
   source                             = "IBM/common/guardium//modules/aurora-postgres-parameter-group"
-  version                            = "= 1.7.5"
+  version                            = "= 1.7.6"
   pg_audit_log                       = var.pg_audit_log
   pg_audit_role                      = "" # Not used in session auditing
   force_failover                     = var.force_failover
@@ -63,7 +63,7 @@ module "aurora-postgres-parameter-group" {
 module "aurora-postgres-sqs-registration" {
   count   = var.uc_mode != "kafka" && var.log_export_type == "SQS" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-sqs-registration"
-  version = "= 1.7.5"
+  version = "= 1.7.6"
 
   udc_name                           = local.udc_name
   aws_account_id                     = module.aws_configuration.aws_account_id
@@ -85,7 +85,7 @@ module "aurora-postgres-sqs-registration" {
 module "aurora-postgres-cloudwatch-registration" {
   count   = var.uc_mode != "kafka" && var.log_export_type == "Cloudwatch" ? 1 : 0
   source  = "IBM/common/guardium//modules/aurora-postgres-cloudwatch-registration"
-  version = "= 1.7.5"
+  version = "= 1.7.6"
 
   udc_name                           = local.udc_name
   aws_region                         = var.aws_region
@@ -108,54 +108,18 @@ module "aurora-postgres-cloudwatch-registration" {
   use_aws_bundled_ca                 = var.use_aws_bundled_ca
 }
 
-# Kafka registration. Provider resources are used directly because the registry module
-# connect-datasource-to-uc installs the profile even when its connection test fails.
-
-moved {
-  from = module.aurora-postgres-kafka-registration[0].local_file.csv_temp
-  to   = local_file.kafka_csv_temp[0]
-}
-
-moved {
-  from = module.aurora-postgres-kafka-registration[0].guardium-data-protection_import_profiles.import_profiles
-  to   = guardium-data-protection_import_profiles.kafka_import_profiles[0]
-}
-
-moved {
-  from = module.aurora-postgres-kafka-registration[0].guardium-data-protection_install_connector.install_connector
-  to   = guardium-data-protection_install_connector.kafka_install_connector[0]
-}
-
-resource "local_file" "kafka_csv_temp" {
-  count    = var.uc_mode == "kafka" && var.enable_universal_connector ? 1 : 0
-  content  = local.aurora_postgres_kafka_csv
-  filename = "${path.root}/.terraform/${local.udc_name}.csv"
-}
-
-data "guardium-data-protection_authentication" "kafka_access_token" {
-  count         = var.uc_mode == "kafka" && var.enable_universal_connector ? 1 : 0
-  client_secret = var.gdp_client_secret
-  username      = var.gdp_username
-  password      = var.gdp_password
-  client_id     = var.gdp_client_id
-}
-
-resource "guardium-data-protection_import_profiles" "kafka_import_profiles" {
+module "aurora-postgres-kafka-registration" {
   count            = var.uc_mode == "kafka" && var.enable_universal_connector ? 1 : 0
-  access_token     = data.guardium-data-protection_authentication.kafka_access_token[0].access_token
-  path_to_file     = abspath(local_file.kafka_csv_temp[0].filename)
-  update_mode      = true
+  source           = "IBM/gdp/guardium//modules/connect-datasource-to-uc"
+  version          = "= 1.3.7"
+  udc_name         = local.udc_name
+  udc_csv_parsed   = local.aurora_postgres_kafka_csv
+  client_id        = var.gdp_client_id
+  client_secret    = var.gdp_client_secret
+  gdp_server       = var.gdp_server
+  gdp_port         = var.gdp_port
+  gdp_username     = var.gdp_username
+  gdp_password     = var.gdp_password
+  gdp_mu_host      = var.gdp_mu_host
   test_connections = true
-}
-
-resource "guardium-data-protection_install_connector" "kafka_install_connector" {
-  count         = var.uc_mode == "kafka" && var.enable_universal_connector ? 1 : 0
-  access_token  = data.guardium-data-protection_authentication.kafka_access_token[0].access_token
-  udc_name      = local.udc_name
-  gdp_mu_host   = var.gdp_mu_host
-  skip_profiles = guardium-data-protection_import_profiles.kafka_import_profiles[0].failed_connection_test_profiles
-
-  lifecycle {
-    ignore_changes = [access_token] # token rotation would otherwise trigger an Update that drops the resource id
-  }
 }
